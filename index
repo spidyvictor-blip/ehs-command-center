@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EHS Command Center · GE Aerospace Muskegon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET & BASE ─────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#060E1C;
+  --deep:#0A1628;
+  --panel:#0D1F3C;
+  --border:#1A3054;
+  --accent:#0EA5E9;
+  --green:#10B981;
+  --green-lt:#D1FAE5;
+  --amber:#F59E0B;
+  --amber-lt:#FEF3C7;
+  --red:#EF4444;
+  --red-lt:#FEE2E2;
+  --purple:#8B5CF6;
+  --teal:#0DB9A0;
+  --gold:#D97706;
+  --slate:#334155;
+  --mid:#94A3B8;
+  --dim:#475569;
+  --text:#E2E8F0;
+  --heading:#F8FAFC;
+  --stripe:#0B1A30;
+  --input-bg:#0F2340;
+  --radius:10px;
+  --shadow:0 4px 24px rgba(0,0,0,.4);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--navy);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── SCROLLBAR ────────────────────────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--deep)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ── TOPBAR ──────────────────────────────────────────────────────────── */
+#topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,14,28,.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:1400px;margin:0 auto;
+  padding:0 24px;
+  display:flex;align-items:stretch;justify-content:space-between;gap:16px;
+  flex-wrap:wrap;
+}
+.brand{padding:14px 0 10px;display:flex;flex-direction:column;gap:3px}
+.brand-title{font-size:15px;font-weight:900;letter-spacing:-.3px;color:var(--heading);display:flex;align-items:center;gap:8px}
+.brand-title .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.brand-sub{font-size:11px;color:var(--mid);font-family:'JetBrains Mono',monospace}
+.vpp-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:linear-gradient(135deg,#78350F44,#D9770622);
+  border:1px solid #D9770644;
+  border-radius:20px;padding:2px 10px;
+  font-size:10px;font-weight:700;color:var(--gold);
+  margin-left:8px;
+}
+
+/* NAV TABS */
+.nav-tabs{display:flex;align-items:flex-end;gap:2px;padding-bottom:0}
+.nav-tab{
+  display:flex;align-items:center;gap:6px;
+  padding:12px 16px;
+  background:transparent;border:none;
+  color:var(--dim);font-size:12px;font-weight:600;
+  cursor:pointer;border-bottom:3px solid transparent;
+  transition:all .15s;white-space:nowrap;
+  font-family:'Inter',sans-serif;
+}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--heading);border-bottom-color:var(--accent)}
+
+/* ── MAIN ────────────────────────────────────────────────────────────── */
+main{max-width:1400px;margin:0 auto;padding:24px 24px 48px}
+
+/* ── PANEL CARD ───────────────────────────────────────────────────────── */
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.card-header{
+  padding:12px 18px;
+  background:rgba(13,43,85,.8);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  flex-wrap:wrap;
+}
+.card-title{font-size:11px;font-weight:700;color:var(--mid);letter-spacing:1px;text-transform:uppercase}
+.card-title span{color:var(--accent);margin-right:6px}
+
+/* ── KPI GRID ────────────────────────────────────────────────────────── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+.kpi-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  transition:transform .15s,box-shadow .15s;cursor:default;
+}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.kpi-accent{height:3px}
+.kpi-body{padding:14px 16px 12px}
+.kpi-val{font-size:28px;font-weight:900;line-height:1;letter-spacing:-1px}
+.kpi-label{font-size:10px;font-weight:700;color:var(--mid);margin-top:6px;text-transform:uppercase;letter-spacing:.5px}
+.kpi-sub{font-size:10px;color:var(--dim);margin-top:2px}
+
+/* ── STATUS BADGE ─────────────────────────────────────────────────────── */
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  border-radius:20px;padding:2px 9px;
+  font-size:10px;font-weight:700;white-space:nowrap;
+}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.badge-Complete{background:#D1FAE533;color:#34D399}.badge-Complete::before{background:#10B981}
+.badge-OnSchedule,.badge-on-schedule{background:#CFFAFE33;color:#22D3EE}.badge-OnSchedule::before,.badge-on-schedule::before{background:#0DB9A0}
+.badge-Behind{background:#FEE2E233;color:#F87171}.badge-Behind::before{background:#EF4444}
+.badge-AtRisk,.badge-at-risk{background:#FEF3C733;color:#FCD34D}.badge-AtRisk::before,.badge-at-risk::before{background:#F59E0B}
+.badge-NotStarted,.badge-not-started{background:#EEF2FF33;color:#A5B4FC}.badge-NotStarted::before,.badge-not-started::before{background:#8B5CF6}
+.badge-Open{background:#33415533;color:#94A3B8}.badge-Open::before{background:#64748B}
+.badge-Ongoing{background:#CFFAFE22;color:#67E8F9}.badge-Ongoing::before{background:#0DB9A0}
+.badge-OnHold,.badge-on-hold{background:#FEF3C722;color:#FCD34D}.badge-OnHold::before,.badge-on-hold::before{background:#F59E0B}
+
+/* PRI */
+.pri-High{background:#FEE2E233;color:#F87171;border-radius:8px;padding:1px 7px;font-size:10px;font-weight:700}
+.pri-Medium{background:#FEF3C733;color:#FCD34D;border-radius:8px;padding:1px 7px;font-size:10px;font-weight:700}
+.pri-Low{background:#D1FAE533;color:#34D399;border-radius:8px;padding:1px 7px;font-size:10px;font-weight:700}
+
+/* ── PROGRESS BAR ─────────────────────────────────────────────────────── */
+.prog-track{background:#1A3054;border-radius:6px;height:7px;overflow:hidden;width:100%}
+.prog-fill{height:100%;border-radius:6px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+/* ── GRID LAYOUTS ─────────────────────────────────────────────────────── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.two-col,.three-col{grid-template-columns:1fr}}
+
+/* ── TABLE ────────────────────────────────────────────────────────────── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{background:#0B1825}
+th{padding:9px 14px;color:var(--dim);font-size:10px;font-weight:700;text-align:left;
+   border-bottom:1px solid var(--border);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr{transition:background .1s}
+tbody tr:nth-child(even){background:var(--stripe)}
+tbody tr:hover{background:#0D2448}
+
+/* ── FILTER BAR ──────────────────────────────────────────────────────── */
+.filter-bar{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;padding:14px 18px}
+.filter-group{display:flex;flex-direction:column;gap:4px}
+.filter-label{font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.8px}
+select,input[type=text]{
+  background:var(--input-bg);color:var(--text);
+  border:1px solid var(--border);border-radius:6px;
+  padding:6px 10px;font-size:12px;font-family:'Inter',sans-serif;
+  outline:none;cursor:pointer;min-width:130px;
+}
+select:focus,input:focus{border-color:var(--accent)}
+input[type=text]{min-width:200px}
+.filter-count{font-size:11px;color:var(--dim);align-self:flex-end;padding-bottom:6px}
+.filter-count strong{color:var(--accent)}
+.btn-clear{
+  background:#1A3054;color:var(--mid);border:1px solid var(--border);
+  border-radius:6px;padding:6px 14px;font-size:11px;font-weight:600;
+  cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;
+  align-self:flex-end;
+}
+.btn-clear:hover{background:var(--border);color:var(--text)}
+
+/* ── TEAM CARDS ──────────────────────────────────────────────────────── */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.team-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.team-card-header{padding:12px 16px;border-bottom:1px solid var(--border)}
+.team-name{font-size:14px;font-weight:800}
+.team-role{font-size:10px;color:var(--mid);margin-top:2px}
+.team-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.team-stat-row{display:flex;justify-content:space-between;gap:8px}
+.team-stat{text-align:center;flex:1}
+.team-stat-val{font-size:18px;font-weight:800;line-height:1}
+.team-stat-lbl{font-size:9px;color:var(--dim);margin-top:2px}
+.behind-list{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.behind-item{font-size:10px;color:#FCA5A5;background:#EF444411;border:1px solid #EF444422;border-radius:5px;padding:4px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── VPP MILESTONE ────────────────────────────────────────────────────── */
+.milestone-row{
+  display:flex;align-items:center;gap:16px;
+  padding:12px 18px;border-bottom:1px solid var(--border);
+  transition:background .1s;flex-wrap:wrap;
+}
+.milestone-row:hover{background:#0D2448}
+.milestone-row:last-child{border-bottom:none}
+.milestone-num{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--panel);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:var(--accent);
+  flex-shrink:0;font-family:'JetBrains Mono',monospace;
+}
+.milestone-goal .milestone-num{border-color:var(--gold);color:var(--gold)}
+.milestone-text{flex:1;min-width:180px}
+.milestone-ms{font-size:13px;font-weight:500;color:var(--text)}
+.milestone-goal .milestone-ms{font-weight:800;color:var(--gold)}
+.milestone-meta{font-size:10px;color:var(--dim);margin-top:2px}
+.milestone-prog{min-width:160px;display:flex;flex-direction:column;gap:4px}
+.milestone-pct-row{display:flex;justify-content:space-between;font-size:10px;color:var(--dim)}
+.milestone-pct-val{font-weight:800}
+
+/* ── STATUS BREAKDOWN TILES ───────────────────────────────────────────── */
+.status-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;padding:14px 18px}
+.status-tile{
+  background:var(--stripe);border:1px solid var(--border);
+  border-radius:8px;padding:12px 14px;text-align:center;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+}
+.status-tile:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.status-tile-val{font-size:24px;font-weight:900;line-height:1}
+.status-tile-lbl{font-size:9px;font-weight:700;margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.status-tile-pct{font-size:9px;color:var(--dim);margin-top:2px}
+
+/* ── SECTION SPACING ─────────────────────────────────────────────────── */
+.section{display:flex;flex-direction:column;gap:14px}
+.section-hidden{display:none}
+
+/* ── FOOTER ──────────────────────────────────────────────────────────── */
+footer{
+  border-top:1px solid var(--border);
+  padding:16px 24px;text-align:center;
+  font-size:10px;color:var(--dim);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:.3px;
+}
+
+/* ── ANIMATE IN ───────────────────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .3s ease both}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────── */
+@media(max-width:640px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .topbar-inner{flex-direction:column;gap:0}
+  .nav-tabs{overflow-x:auto;width:100%}
+  main{padding:14px 14px 40px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TOPBAR ══════════════════════════════════════════════════════════════ -->
+<div id="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-title">
+        <span class="dot"></span>
+        EHS COMMAND CENTER
+        <span class="vpp-badge">⭐ VPP Star · Oct 2026</span>
+      </div>
+      <div class="brand-sub">GE Aerospace Muskegon · 2026 Strategic Action Plan</div>
+    </div>
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab active" onclick="switchTab('overview')" id="tab-overview">📊 Overview</button>
+      <button class="nav-tab" onclick="switchTab('actions')"  id="tab-actions">✅ Actions</button>
+      <button class="nav-tab" onclick="switchTab('vpp')"      id="tab-vpp">⭐ VPP Path</button>
+      <button class="nav-tab" onclick="switchTab('team')"     id="tab-team">👥 Team</button>
+      <button class="nav-tab" onclick="switchTab('schedule')" id="tab-schedule">📅 Schedule</button>
+    </nav>
+  </div>
+</div>
+
+<!-- ══ MAIN ════════════════════════════════════════════════════════════════ -->
+<main>
+
+<!-- ████ OVERVIEW ████ -->
+<div id="section-overview" class="section fade-in">
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <!-- Two column: scorecard + status breakdown -->
+  <div class="two-col">
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><span>👥</span>Team Performance</span>
+      </div>
+      <div class="tbl-wrap">
+        <table id="scorecard-table">
+          <thead><tr>
+            <th>Member</th><th>Total</th><th>✅</th><th>🔴</th><th>🟡</th><th>% Done</th><th style="min-width:100px">Progress</th>
+          </tr></thead>
+          <tbody id="scorecard-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title"><span>📊</span>Status Breakdown</span>
+        <span style="font-size:10px;color:var(--dim)">Click any tile to filter actions</span>
+      </div>
+      <div class="status-tiles" id="status-tiles"></div>
+    </div>
+
+  </div>
+
+  <!-- VPP progress summary -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title"><span>⭐</span>VPP Star Path — October 2026</span>
+      <span id="vpp-avg-badge" style="font-size:11px;font-weight:700;color:var(--gold)"></span>
+    </div>
+    <div id="vpp-mini"></div>
+  </div>
+
+</div>
+
+<!-- ████ ACTIONS ████ -->
+<div id="section-actions" class="section section-hidden fade-in">
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title"><span>🔍</span>Filter Actions</span>
+    </div>
+    <div class="filter-bar">
+      <div class="filter-group">
+        <label class="filter-label">Person</label>
+        <select id="f-person" onchange="applyFilters()">
+          <option>All</option>
+          <option>Victor Pizarro</option><option>Steve Wolbrink</option>
+          <option>Mike Shuster</option><option>Rich DeLeau</option><option>Zach Tindall</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Status</label>
+        <select id="f-status" onchange="applyFilters()">
+          <option>All</option>
+          <option>Complete</option><option>On Schedule</option><option>Behind</option>
+          <option>At-Risk</option><option>Not Started</option><option>Open</option>
+          <option>Ongoing</option><option>On Hold</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Program</label>
+        <select id="f-program" onchange="applyFilters()">
+          <option>All</option><option>Core EHS</option><option>Ergo</option>
+          <option>VPP</option><option>Security</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Priority</label>
+        <select id="f-pri" onchange="applyFilters()">
+          <option>All</option><option>High</option><option>Medium</option><option>Low</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Search</label>
+        <input type="text" id="f-search" placeholder="Task or owner…" oninput="applyFilters()"/>
+      </div>
+      <span class="filter-count" id="filter-count"></span>
+      <button class="btn-clear" onclick="clearFilters()">Clear All</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Action Item</th><th>Owner</th><th>Status</th>
+          <th>Priority</th><th>Target</th><th>Person</th><th>Program</th>
+        </tr></thead>
+        <tbody id="actions-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ████ VPP ████ -->
+<div id="section-vpp" class="section section-hidden fade-in">
+  <div class="card">
+    <div class="card-header" style="background:linear-gradient(135deg,#78350F22,#D9770611)">
+      <div>
+        <div class="card-title" style="color:var(--gold);font-size:12px">⭐ VPP Star Milestone Tracker</div>
+        <div style="font-size:11px;color:var(--mid);margin-top:2px">Update percentage complete as milestones progress · Target: October 2026</div>
+      </div>
+      <div style="text-align:right">
+        <div id="vpp-avg-large" style="font-size:28px;font-weight:900;color:var(--gold)"></div>
+        <div style="font-size:10px;color:var(--dim)">Avg Progress</div>
+      </div>
+    </div>
+    <div id="vpp-full"></div>
+  </div>
+</div>
+
+<!-- ████ TEAM ████ -->
+<div id="section-team" class="section section-hidden fade-in">
+  <div class="team-grid" id="team-grid"></div>
+</div>
+
+<!-- ████ SCHEDULE ████ -->
+<div id="section-schedule" class="section section-hidden fade-in">
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title"><span>📅</span>Team Weekly Schedule Snapshot</span>
+      <span style="font-size:10px;color:var(--dim)">Standing meetings & hard commitments</span>
+    </div>
+    <div class="tbl-wrap">
+      <table id="schedule-table">
+        <thead><tr><th>Day / Time</th><th>Meeting / Task</th><th>Who</th><th>Frequency</th><th>Category</th></tr></thead>
+        <tbody id="schedule-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  EHS COMMAND CENTER · GE AEROSPACE MUSKEGON · 2026 STRATEGIC ACTION PLAN ·
+  Victor Pizarro · Steve Wolbrink · Mike Shuster · Rich DeLeau · Zach Tindall
+</footer>
+
+<!-- ══ DATA & LOGIC ════════════════════════════════════════════════════════ -->
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+const TEAM_COLORS = {
+  "Victor Pizarro":"#0EA5E9","Steve Wolbrink":"#10B981",
+  "Mike Shuster":"#8B5CF6","Rich DeLeau":"#0DB9A0","Zach Tindall":"#D97706"
+};
+
+const ACTIONS = [
+  {id:1,  task:"MOC Update — GE Linebreaking Requirements",       owner:"Steve",        status:"Complete",    cat:"Safety",   pri:"Low",   target:"Q1 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:2,  task:"Miraclean/FPI Water Meters — Monthly Tracking",  owner:"Steve",        status:"Complete",    cat:"Env",      pri:"Low",   target:"Q1 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:3,  task:"Overhead Doors — Pin/Remove Norton",              owner:"Rich/Steve",   status:"Open",        cat:"Safety",   pri:"High",  target:"Q2 2026",  person:"Rich DeLeau",    program:"Core EHS"},
+  {id:4,  task:"Overhead Doors — Pin/Remove Latimer",             owner:"Steve",        status:"Open",        cat:"Safety",   pri:"High",  target:"Q2 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:5,  task:"LOTO Annual Reviews — Sign-Offs Documented",      owner:"Steve",        status:"Behind",      cat:"Safety",   pri:"High",  target:"Q2 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:6,  task:"MVPP Action Plan — Employee Engagement",          owner:"Victor/Steve", status:"Behind",      cat:"VPP",      pri:"High",  target:"Q1 2026",  person:"Victor Pizarro", program:"Core EHS"},
+  {id:7,  task:"Air Inventory Requirements Review",               owner:"Steve",        status:"At-Risk",     cat:"Env",      pri:"High",  target:"Q2 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:8,  task:"LOTO Program Full Review & Refresh",              owner:"Steve",        status:"Behind",      cat:"Safety",   pri:"High",  target:"Q2 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:9,  task:"Digital Heat Mapping — Baseline Scores",          owner:"Victor",       status:"Open",        cat:"Safety",   pri:"High",  target:"Q2 2026",  person:"Victor Pizarro", program:"Core EHS"},
+  {id:10, task:"Create JSA Training Course per Dept",             owner:"Steve/Victor", status:"Open",        cat:"Safety",   pri:"High",  target:"Q3 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:11, task:"Electrical Safety Framework",                     owner:"Victor/Steve", status:"Open",        cat:"Safety",   pri:"High",  target:"Q3 2026",  person:"Victor Pizarro", program:"Core EHS"},
+  {id:12, task:"Fall Prevention — Grinders Project",              owner:"Rich",         status:"Open",        cat:"Safety",   pri:"High",  target:"Q2 2026",  person:"Rich DeLeau",    program:"Core EHS"},
+  {id:13, task:"E-Gauge Light Curtain Requirements Review",       owner:"Rich",         status:"Open",        cat:"Safety",   pri:"High",  target:"Q2 2026",  person:"Rich DeLeau",    program:"Core EHS"},
+  {id:14, task:"PFAS Updates Tracking",                           owner:"Rich",         status:"Open",        cat:"Env",      pri:"Medium",target:"Ongoing",   person:"Rich DeLeau",    program:"Core EHS"},
+  {id:15, task:"Build Security Assessment Action Plan",           owner:"Zach",         status:"Open",        cat:"Security", pri:"High",  target:"Q2 2026",  person:"Zach Tindall",   program:"Core EHS"},
+  {id:16, task:"Verify Stormwater Plan Updates",                  owner:"Steve",        status:"Open",        cat:"Env",      pri:"High",  target:"Q2 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:17, task:"Verify SPCC & PIPP Updates",                      owner:"Steve",        status:"Open",        cat:"Env",      pri:"High",  target:"Q2 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:18, task:"Add Latimer East to ODS",                         owner:"Steve",        status:"Open",        cat:"Env",      pri:"Medium",target:"Q2 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:19, task:"Enhesa Review with Fishbeck",                     owner:"Steve",        status:"Open",        cat:"Env",      pri:"Medium",target:"Q3 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:20, task:"LOTO Procedures — Decision Tree Addition",        owner:"Steve",        status:"Open",        cat:"Safety",   pri:"Medium",target:"Q3 2026",  person:"Steve Wolbrink", program:"Core EHS"},
+  {id:21, task:"VPP Documentation Package",                       owner:"Victor",       status:"Not Started", cat:"VPP",      pri:"High",  target:"Q3 2026",  person:"Victor Pizarro", program:"VPP"},
+  {id:22, task:"Pre-Assessment Internal VPP Audit",               owner:"Victor",       status:"Not Started", cat:"VPP",      pri:"High",  target:"Sep 2026", person:"Victor Pizarro", program:"VPP"},
+  {id:23, task:"OSHA Site Assessment Scheduled",                  owner:"Victor",       status:"Not Started", cat:"VPP",      pri:"High",  target:"Sep 2026", person:"Victor Pizarro", program:"VPP"},
+  {id:24, task:"Jayco Loading Table Assessment",                  owner:"Victor/Mike",  status:"Behind",      cat:"Ergo",     pri:"High",  target:"Q1 2026",  person:"Victor Pizarro", program:"Ergo"},
+  {id:25, task:"Tool Room Haas Grinder Cradle",                   owner:"Victor/Mike",  status:"Complete",    cat:"Ergo",     pri:"Low",   target:"Complete", person:"Victor Pizarro", program:"Ergo"},
+  {id:30, task:"Muskegon SQDIP Action Plan",                      owner:"Mike",         status:"Ongoing",     cat:"Ergo",     pri:"High",  target:"Ongoing",  person:"Mike Shuster",   program:"Ergo"},
+  {id:31, task:"Leading Indicators Dashboard — Baseline",         owner:"Mike",         status:"Behind",      cat:"Ergo",     pri:"High",  target:"Q1 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:32, task:"CR2031/TS2031 Gap Assessment",                    owner:"Mike/Steve",   status:"Behind",      cat:"Ergo",     pri:"High",  target:"Q1 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:33, task:"Ergo Risk HEAT MAP — Finalize",                   owner:"Mike",         status:"Open",        cat:"Ergo",     pri:"High",  target:"Q2 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:34, task:"Ergo Training Delivery",                          owner:"Mike",         status:"Behind",      cat:"Ergo",     pri:"High",  target:"Q1 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:35, task:"Quick-Ref Workflow Sheets",                       owner:"Mike",         status:"At-Risk",     cat:"Ergo",     pri:"Medium",target:"Q1 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:36, task:"Early Intervention Workflows Documented",         owner:"Mike",         status:"Behind",      cat:"Ergo",     pri:"High",  target:"Q1 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:37, task:"HEAT MAP Q1 Top 10 Published",                    owner:"Mike",         status:"At-Risk",     cat:"Ergo",     pri:"High",  target:"Q1 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:38, task:"MSD / Discomfort Metric Established",             owner:"Mike",         status:"At-Risk",     cat:"Ergo",     pri:"High",  target:"Q1 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:39, task:"Structured TWP Plans",                            owner:"Mike",         status:"At-Risk",     cat:"Ergo",     pri:"Medium",target:"Q2 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:40, task:"TS2031 Gap Tracker — Complete",                   owner:"Mike",         status:"Behind",      cat:"Ergo",     pri:"High",  target:"Q2 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:41, task:"GenX Height Adjustable Table (#2755)",            owner:"Mike",         status:"Behind",      cat:"Ergo",     pri:"Medium",target:"Q1 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:42, task:"Leap Post Coat Totes",                            owner:"Mike",         status:"Complete",    cat:"Ergo",     pri:"Low",   target:"Complete", person:"Mike Shuster",   program:"Ergo"},
+  {id:43, task:"MKG Screen Location Kits",                        owner:"Mike",         status:"On Schedule", cat:"Ergo",     pri:"Medium",target:"Q2 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:44, task:"NoSo 94B Glue Tool Release Fixture",              owner:"Mike",         status:"On Schedule", cat:"Ergo",     pri:"Medium",target:"Q2 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:45, task:"Shroud Packing Improvement",                      owner:"Mike/Tony",    status:"Behind",      cat:"Ergo",     pri:"Medium",target:"Q3 2026",  person:"Mike Shuster",   program:"Ergo"},
+  {id:50, task:"Shipping Skids — Safety/Ergo",                    owner:"Rich/Tony",    status:"Behind",      cat:"Ergo",     pri:"High",  target:"Q2 2026",  person:"Rich DeLeau",    program:"Ergo"},
+  {id:51, task:"Shipping Racks — Safety/Ergo",                    owner:"Rich/Tony",    status:"Behind",      cat:"Ergo",     pri:"High",  target:"Q2 2026",  person:"Rich DeLeau",    program:"Ergo"},
+  {id:52, task:"MVPP Preparation Support",                        owner:"Rich",         status:"Open",        cat:"VPP",      pri:"High",  target:"Q2 2026",  person:"Rich DeLeau",    program:"VPP"},
+  {id:53, task:"Coopermatic Hearing Protection",                  owner:"Rich",         status:"Open",        cat:"Safety",   pri:"Medium",target:"Q3 2026",  person:"Rich DeLeau",    program:"Core EHS"},
+  {id:54, task:"Benching Task — Cut Resistant Glove",             owner:"Rich",         status:"Open",        cat:"Safety",   pri:"Medium",target:"Q2 2026",  person:"Rich DeLeau",    program:"Core EHS"},
+  {id:60, task:"Security Framework Compliance Review",            owner:"Zach",         status:"Open",        cat:"Security", pri:"High",  target:"Q3 2026",  person:"Zach Tindall",   program:"Security"},
+  {id:61, task:"Profiler Updates (Security Module)",              owner:"Zach",         status:"Open",        cat:"Security", pri:"Medium",target:"Annual",    person:"Zach Tindall",   program:"Security"},
+  {id:62, task:"OnGuard Badge Database Audit",                    owner:"Zach",         status:"Ongoing",     cat:"Security", pri:"High",  target:"Ongoing",  person:"Zach Tindall",   program:"Security"},
+  {id:63, task:"Server Room Access — Monthly",                    owner:"Zach",         status:"Ongoing",     cat:"Security", pri:"High",  target:"Monthly",  person:"Zach Tindall",   program:"Security"},
+  {id:64, task:"Quarterly Contraband Audit",                      owner:"Zach",         status:"Ongoing",     cat:"Security", pri:"High",  target:"Quarterly",person:"Zach Tindall",   program:"Security"},
+  {id:65, task:"Security/Emergency Mapping",                      owner:"Zach",         status:"Ongoing",     cat:"Security", pri:"Medium",target:"Q3 2026",  person:"Zach Tindall",   program:"Security"},
+  {id:66, task:"Emergency Exit Testing — Document",               owner:"Zach",         status:"Ongoing",     cat:"Security", pri:"High",  target:"Weekly",   person:"Zach Tindall",   program:"Security"},
+  {id:67, task:"Card Access Reviews — Report Anomalies",          owner:"Zach",         status:"Ongoing",     cat:"Security", pri:"High",  target:"Weekly",   person:"Zach Tindall",   program:"Security"},
+];
+
+const VPP = [
+  {id:1, ms:"Zero Regulatory Violations — All Year",       owner:"Full Team",    target:"Ongoing",   pct:95, status:"On Schedule"},
+  {id:2, ms:"MVPP Employee Engagement Plan Launched",      owner:"Victor/Steve", target:"Q1 2026",   pct:20, status:"Behind"},
+  {id:3, ms:"LOTO Program Full Review & Refresh",          owner:"Steve",        target:"Q1 2026",   pct:15, status:"Behind"},
+  {id:4, ms:"Ergo Risk HEAT MAP Q1 Top 10 Published",      owner:"Mike",         target:"Q1 2026",   pct:30, status:"Behind"},
+  {id:5, ms:"Digital Heat Mapping Baseline Established",   owner:"Victor",       target:"Q2 2026",   pct:5,  status:"Not Started"},
+  {id:6, ms:"Contractor Safety 100% Audit Compliance",     owner:"Zach/Rich",    target:"Q2 2026",   pct:60, status:"On Schedule"},
+  {id:7, ms:"Physical Security Program Documented",        owner:"Zach",         target:"Q3 2026",   pct:25, status:"At-Risk"},
+  {id:8, ms:"All LOTO/JSA/PPE Training Current",           owner:"Steve",        target:"Q3 2026",   pct:40, status:"At-Risk"},
+  {id:9, ms:"VPP Documentation Package Assembled",         owner:"Victor",       target:"Q3 2026",   pct:5,  status:"Not Started"},
+  {id:10,ms:"Employee VPP Education (5 Points of Star)",   owner:"Steve/Victor", target:"Sep 2026",  pct:0,  status:"Not Started"},
+  {id:11,ms:"Pre-Assessment Internal VPP Audit",           owner:"Victor",       target:"Sep 2026",  pct:0,  status:"Not Started"},
+  {id:12,ms:"OSHA Site Assessment Scheduled",              owner:"Victor",       target:"Sep 2026",  pct:0,  status:"Not Started"},
+  {id:13,ms:"⭐ VPP STAR RE-CERTIFICATION AWARDED",        owner:"FULL TEAM",    target:"Oct 2026",  pct:0,  status:"Not Started"},
+];
+
+const SCHEDULE = [
+  {day:"Mon AM",       task:"Review Gensuite Calendar — Zero Past-Due",    who:"Victor + Steve", freq:"Weekly",    cat:"EHS"},
+  {day:"Tue 2:00 PM",  task:"TAVS WOR Plant Health Pulse",                 who:"Victor",         freq:"Weekly",    cat:"Safety"},
+  {day:"Wed 8:00 AM",  task:"Update Weekly EHS Pulse",                     who:"Victor + Steve", freq:"Weekly",    cat:"EHS"},
+  {day:"Thu 7:45 AM",  task:"⭐ EHS TEAM MEETING — ALL HANDS",             who:"Full Team",       freq:"Weekly",    cat:"Leadership"},
+  {day:"Thu 10:00 AM", task:"SQDIP Action Plan + EHS Priorities",          who:"Victor",         freq:"Weekly",    cat:"Safety"},
+  {day:"Fri 12:00 PM", task:"Safe Start Monday Prep & Distribution",       who:"Steve",          freq:"Weekly",    cat:"Safety"},
+  {day:"Bi-Weekly",    task:"EIP / Ergonomic Pulse Meeting",               who:"Mike + Steve",   freq:"Bi-Weekly", cat:"Ergo"},
+  {day:"Bi-Weekly",    task:"EHS Leadership Pulse (Ryan James / Ben Kleyn)",who:"Victor + Steve",freq:"Bi-Weekly", cat:"Leadership"},
+  {day:"Bi-Weekly",    task:"Safety Walks — Schedule, File, Comms",        who:"Steve + Team",   freq:"Bi-Weekly", cat:"Safety"},
+  {day:"First Friday", task:"EHS Bowler Review + TAVS MOR Bowler",         who:"Victor",         freq:"Monthly",   cat:"Safety"},
+  {day:"Monthly",      task:"EHS Monthly Cell Inspection (17/month)",      who:"Steve",          freq:"Monthly",   cat:"Safety"},
+  {day:"Monthly",      task:"SPCC Audits — Both Sites",                    who:"Steve + Zach",   freq:"Monthly",   cat:"Env"},
+  {day:"Monthly",      task:"Server Room Access Audit",                    who:"Zach",           freq:"Monthly",   cat:"Security"},
+  {day:"Monthly",      task:"Security MOR Meeting",                        who:"Victor + Zach",  freq:"Monthly",   cat:"Security"},
+  {day:"Monthly",      task:"IM Sustainability Review",                    who:"Victor",         freq:"Monthly",   cat:"Energy"},
+  {day:"Quarterly",    task:"Contraband Audit",                            who:"Zach",           freq:"Quarterly", cat:"Security"},
+  {day:"Annual",       task:"Framework Compliance Reviews (all programs)", who:"Victor",         freq:"Annual",    cat:"EHS"},
+  {day:"Annual",       task:"Profiler Updates / Maintenance",              who:"Victor",         freq:"Annual",    cat:"EHS"},
+];
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+const byStatus = s => ACTIONS.filter(a => a.status === s).length;
+const total = ACTIONS.length;
+const pctDone = Math.round(byStatus("Complete") / total * 100);
+
+function badgeClass(status){
+  return 'badge badge-' + status.replace(/\s+/g,'-').replace('-','');
+}
+
+function progColor(pct){
+  return pct >= 75 ? '#10B981' : pct >= 40 ? '#F59E0B' : '#EF4444';
+}
+
+function progBar(pct,color){
+  return `<div class="prog-track"><div class="prog-fill" style="width:${Math.min(pct,100)}%;background:${color||progColor(pct)}"></div></div>`;
+}
+
+// ── RENDER KPI CARDS ──────────────────────────────────────────────────────────
+function renderKPI(){
+  const cards = [
+    {label:"TOTAL ACTIONS",  val:total,                           sub:"All programs",      color:"#0EA5E9"},
+    {label:"COMPLETE",        val:byStatus("Complete"),            sub:`${pctDone}% of total`,color:"#10B981"},
+    {label:"BEHIND",          val:byStatus("Behind"),              sub:"Needs attention",   color:"#EF4444"},
+    {label:"AT-RISK",         val:byStatus("At-Risk"),             sub:"Monitor closely",   color:"#F59E0B"},
+    {label:"OPEN",            val:byStatus("Open"),                sub:"Not yet started",   color:"#164F8A"},
+    {label:"ONGOING",         val:byStatus("Ongoing")+byStatus("On Schedule"), sub:"In progress",color:"#0DB9A0"},
+    {label:"TEAM SIZE",       val:"5",                             sub:"Members",           color:"#8B5CF6"},
+    {label:"% DONE",          val:pctDone+"%",                     sub:"Live calc",         color:"#D97706"},
+  ];
+  document.getElementById('kpi-grid').innerHTML = cards.map(c=>`
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:${c.color}"></div>
+      <div class="kpi-body">
+        <div class="kpi-val" style="color:${c.color}">${c.val}</div>
+        <div class="kpi-label">${c.label}</div>
+        <div class="kpi-sub">${c.sub}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── RENDER SCORECARD ──────────────────────────────────────────────────────────
+function renderScorecard(){
+  const tbody = document.getElementById('scorecard-body');
+  tbody.innerHTML = Object.keys(TEAM_COLORS).map(name => {
+    const acts = ACTIONS.filter(a=>a.person===name);
+    const done = acts.filter(a=>a.status==="Complete").length;
+    const beh  = acts.filter(a=>a.status==="Behind").length;
+    const atr  = acts.filter(a=>a.status==="At-Risk").length;
+    const pct  = acts.length ? Math.round(done/acts.length*100) : 0;
+    const clr  = TEAM_COLORS[name];
+    return `<tr>
+      <td style="font-weight:700;color:${clr}">${name}</td>
+      <td style="text-align:center">${acts.length}</td>
+      <td style="text-align:center;color:#10B981;font-weight:700">${done}</td>
+      <td style="text-align:center;color:${beh>0?'#EF4444':'#10B981'};font-weight:700">${beh}</td>
+      <td style="text-align:center;color:${atr>0?'#F59E0B':'#10B981'};font-weight:700">${atr}</td>
+      <td style="text-align:center;font-weight:800;color:${progColor(pct)}">${pct}%</td>
+      <td style="min-width:90px">${progBar(pct)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── RENDER STATUS TILES ───────────────────────────────────────────────────────
+const STATUS_STYLE = {
+  "Complete":    {dot:"#10B981",text:"#34D399"},
+  "On Schedule": {dot:"#0DB9A0",text:"#22D3EE"},
+  "Behind":      {dot:"#EF4444",text:"#F87171"},
+  "At-Risk":     {dot:"#F59E0B",text:"#FCD34D"},
+  "Not Started": {dot:"#8B5CF6",text:"#A5B4FC"},
+  "Open":        {dot:"#64748B",text:"#94A3B8"},
+  "Ongoing":     {dot:"#0DB9A0",text:"#67E8F9"},
+  "On Hold":     {dot:"#F59E0B",text:"#FCD34D"},
+};
+function renderStatusTiles(){
+  document.getElementById('status-tiles').innerHTML = Object.entries(STATUS_STYLE).map(([s,sc])=>{
+    const cnt = byStatus(s), pct2 = Math.round(cnt/total*100);
+    return `<div class="status-tile" onclick="jumpToFilter('${s}')" title="Filter by ${s}">
+      <div class="status-tile-val" style="color:${sc.dot}">${cnt}</div>
+      <div class="status-tile-lbl" style="color:${sc.text}">${s}</div>
+      <div class="status-tile-pct">${pct2}%</div>
+    </div>`;
+  }).join('');
+}
+
+function jumpToFilter(status){
+  document.getElementById('f-status').value = status;
+  switchTab('actions');
+  applyFilters();
+}
+
+// ── RENDER VPP MINI (overview) ───────────────────────────────────────────────
+function renderVPPMini(){
+  const nonGoal = VPP.slice(0,-1);
+  const avg = Math.round(nonGoal.reduce((s,m)=>s+m.pct,0)/nonGoal.length);
+  document.getElementById('vpp-avg-badge').textContent = `Avg Progress: ${avg}%`;
+  document.getElementById('vpp-mini').innerHTML = VPP.slice(0,6).map(m=>`
+    <div class="milestone-row">
+      <div class="milestone-num">${m.id}</div>
+      <div class="milestone-text">
+        <div class="milestone-ms">${m.ms}</div>
+        <div class="milestone-meta">Owner: ${m.owner} · Due: ${m.target}</div>
+      </div>
+      <div class="milestone-prog">
+        <div class="milestone-pct-row">
+          <span>Progress</span>
+          <span class="milestone-pct-val" style="color:${progColor(m.pct)}">${m.pct}%</span>
+        </div>
+        ${progBar(m.pct)}
+      </div>
+      <span class="${badgeClass(m.status)}">${m.status}</span>
+    </div>`).join('') +
+    `<div style="padding:10px 18px;font-size:11px;color:var(--dim);border-top:1px solid var(--border)">
+      <a href="#" onclick="switchTab('vpp');return false;" style="color:var(--accent);text-decoration:none;font-weight:600">
+        View all 13 milestones →
+      </a>
+    </div>`;
+}
+
+// ── RENDER VPP FULL ──────────────────────────────────────────────────────────
+function renderVPPFull(){
+  const nonGoal = VPP.slice(0,-1);
+  const avg = Math.round(nonGoal.reduce((s,m)=>s+m.pct,0)/nonGoal.length);
+  document.getElementById('vpp-avg-large').textContent = avg+'%';
+  document.getElementById('vpp-full').innerHTML = VPP.map(m=>`
+    <div class="milestone-row ${m.id===13?'milestone-goal':''}">
+      <div class="milestone-num">${m.id===13?'⭐':m.id}</div>
+      <div class="milestone-text">
+        <div class="milestone-ms">${m.ms}</div>
+        <div class="milestone-meta">Owner: ${m.owner} · Due: ${m.target}</div>
+      </div>
+      <div class="milestone-prog" style="min-width:200px">
+        <div class="milestone-pct-row">
+          <span>Progress</span>
+          <span class="milestone-pct-val" style="color:${progColor(m.pct)}">${m.pct}%</span>
+        </div>
+        ${progBar(m.pct)}
+      </div>
+      <span class="${badgeClass(m.status)}">${m.status}</span>
+    </div>`).join('');
+}
+
+// ── RENDER ACTIONS TABLE ──────────────────────────────────────────────────────
+let filteredActions = [...ACTIONS];
+function applyFilters(){
+  const person  = document.getElementById('f-person').value;
+  const status  = document.getElementById('f-status').value;
+  const program = document.getElementById('f-program').value;
+  const pri     = document.getElementById('f-pri').value;
+  const search  = document.getElementById('f-search').value.toLowerCase();
+  filteredActions = ACTIONS.filter(a=>{
+    if(person!=='All' && a.person!==person) return false;
+    if(status!=='All' && a.status!==status) return false;
+    if(program!=='All' && a.program!==program) return false;
+    if(pri!=='All' && a.pri!==pri) return false;
+    if(search && !a.task.toLowerCase().includes(search) && !a.owner.toLowerCase().includes(search)) return false;
+    return true;
+  });
+  renderActionsTable();
+}
+function clearFilters(){
+  ['f-person','f-status','f-program','f-pri'].forEach(id=>document.getElementById(id).value='All');
+  document.getElementById('f-search').value='';
+  applyFilters();
+}
+function renderActionsTable(){
+  const count = document.getElementById('filter-count');
+  count.innerHTML = `Showing <strong>${filteredActions.length}</strong> of ${ACTIONS.length} actions`;
+  const tbody = document.getElementById('actions-body');
+  if(!filteredActions.length){
+    tbody.innerHTML = `<tr><td colspan="7" style="padding:32px;text-align:center;color:var(--dim)">No actions match your filters.</td></tr>`;
+    return;
+  }
+  const clr = TEAM_COLORS;
+  tbody.innerHTML = filteredActions.map(a=>`
+    <tr>
+      <td style="max-width:320px;${a.status==='Complete'?'text-decoration:line-through;color:var(--dim)':''}">${a.task}</td>
+      <td style="color:var(--mid);white-space:nowrap">${a.owner}</td>
+      <td><span class="${badgeClass(a.status)}">${a.status}</span></td>
+      <td><span class="pri-${a.pri}">${a.pri}</span></td>
+      <td style="color:#7EB8F7;white-space:nowrap;font-size:11px;font-family:'JetBrains Mono',monospace">${a.target}</td>
+      <td style="white-space:nowrap;font-weight:600;color:${clr[a.person]||'var(--mid)'};font-size:11px">${a.person.split(' ')[0]}</td>
+      <td style="color:var(--dim);font-size:11px">${a.program}</td>
+    </tr>`).join('');
+}
+
+// ── RENDER TEAM CARDS ─────────────────────────────────────────────────────────
+function renderTeam(){
+  document.getElementById('team-grid').innerHTML = Object.entries(TEAM_COLORS).map(([name,clr])=>{
+    const acts = ACTIONS.filter(a=>a.person===name);
+    const done = acts.filter(a=>a.status==="Complete").length;
+    const beh  = acts.filter(a=>a.status==="Behind").length;
+    const atr  = acts.filter(a=>a.status==="At-Risk").length;
+    const opn  = acts.filter(a=>["Open","Not Started"].includes(a.status)).length;
+    const ong  = acts.filter(a=>["Ongoing","On Schedule"].includes(a.status)).length;
+    const pct  = acts.length ? Math.round(done/acts.length*100) : 0;
+    const behind_items = acts.filter(a=>a.status==="Behind").slice(0,3)
+      .map(a=>`<div class="behind-item">🔴 ${a.task.length>48?a.task.slice(0,47)+'…':a.task}</div>`).join('');
+    const roles={
+      "Victor Pizarro":"EHS Leader","Steve Wolbrink":"EHS Compliance Specialist",
+      "Mike Shuster":"Ergonomic Specialist (ATI)","Rich DeLeau":"EHS Specialist (Contract)",
+      "Zach Tindall":"Security Specialist"
+    };
+    return `<div class="team-card">
+      <div class="team-card-header" style="background:${clr}18;border-bottom-color:${clr}44">
+        <div class="team-name" style="color:${clr}">${name}</div>
+        <div class="team-role">${roles[name]||''} · ${acts.length} actions · ${pct}% done</div>
+      </div>
+      <div class="team-body">
+        ${progBar(pct)}
+        <div class="team-stat-row">
+          ${[['✅',done,'#10B981'],['🔴',beh,'#EF4444'],['🟡',atr,'#F59E0B'],['📋',opn,'#94A3B8'],['🔵',ong,'#0DB9A0']]
+            .map(([icon,cnt,c])=>`<div class="team-stat"><div class="team-stat-val" style="color:${c}">${cnt}</div><div class="team-stat-lbl">${icon}</div></div>`).join('')}
+        </div>
+        ${behind_items ? `<div class="behind-list">${behind_items}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── RENDER SCHEDULE ───────────────────────────────────────────────────────────
+const FREQ_STYLE = {
+  "Weekly":    {bg:"#065F4644",text:"#34D399"},
+  "Bi-Weekly": {bg:"#4C1D9544",text:"#A78BFA"},
+  "Monthly":   {bg:"#92400E44",text:"#FCD34D"},
+  "Quarterly": {bg:"#78350F44",text:"#D97706"},
+  "Annual":    {bg:"#7F1D1D44",text:"#F87171"},
+};
+const CAT_STYLE = {
+  "Safety":    "#E65100","Security":"#3730A3","EHS":"#065F46","Ergo":"#5B21B6",
+  "Env":"#164E63","Energy":"#92400E","Leadership":"#1E40AF"
+};
+function renderSchedule(){
+  document.getElementById('schedule-body').innerHTML = SCHEDULE.map((s,i)=>{
+    const fs = FREQ_STYLE[s.freq]||{bg:"#33415544",text:"#94A3B8"};
+    const catClr = CAT_STYLE[s.cat]||"#64748B";
+    const isTeam = s.task.includes('⭐');
+    return `<tr style="${isTeam?'background:#FCE7F311;':''}">
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#7EB8F7;white-space:nowrap">${s.day}</td>
+      <td style="font-weight:${isTeam?700:400};color:${isTeam?'#F8FAFC':'var(--text)'}">${s.task}</td>
+      <td style="color:var(--mid);white-space:nowrap;font-size:11px">${s.who}</td>
+      <td><span style="background:${fs.bg};color:${fs.text};border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700">${s.freq}</span></td>
+      <td><span style="color:${catClr};font-size:10px;font-weight:700">${s.cat}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────────────────────
+const TABS = ['overview','actions','vpp','team','schedule'];
+function switchTab(id){
+  TABS.forEach(t=>{
+    document.getElementById(`section-${t}`).classList.toggle('section-hidden', t!==id);
+    document.getElementById(`section-${t}`).classList.toggle('fade-in', t===id);
+    document.getElementById(`tab-${t}`).classList.toggle('active', t===id);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderKPI();
+renderScorecard();
+renderStatusTiles();
+renderVPPMini();
+renderVPPFull();
+renderActionsTable();
+renderTeam();
+renderSchedule();
+</script>
+</body>
+</html>
