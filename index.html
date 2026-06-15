@@ -2,42 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>EHS Command Center · GE Aerospace Muskegon</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#EEF2FF;
-  --bg2:#E0E7FF;
-  --surface:#FFFFFF;
-  --surface2:#F8FAFF;
-  --border:#CBD5F0;
-  --border2:#A5B4FC;
-  --navy:#0F2D6B;
-  --navy2:#1E3A8A;
-  --blue:#1D4ED8;
-  --blue2:#3B82F6;
-  --blue-lt:#EFF6FF;
-  --green:#059669;
-  --green-lt:#D1FAE5;
-  --amber:#D97706;
-  --amber-lt:#FEF3C7;
-  --red:#DC2626;
-  --red-lt:#FEE2E2;
-  --purple:#7C3AED;
-  --purple-lt:#EDE9FE;
-  --teal:#0891B2;
-  --teal-lt:#CFFAFE;
-  --gold:#B45309;
-  --text:#0F172A;
-  --text2:#1E293B;
-  --text3:#374151;
-  --muted:#6B7280;
+  --bg:#F0F4FF;--surface:#fff;--surface2:#F8FAFF;
+  --border:#CBD5F0;--border2:#A5B4FC;
+  --navy:#0F2D6B;--navy2:#1E3A8A;--blue:#1D4ED8;--blue2:#3B82F6;--blue-lt:#EFF6FF;
+  --green:#059669;--green-lt:#D1FAE5;
+  --amber:#D97706;--amber-lt:#FEF3C7;
+  --red:#DC2626;--red-lt:#FEE2E2;
+  --purple:#7C3AED;--purple-lt:#EDE9FE;
+  --teal:#0891B2;--teal-lt:#CFFAFE;
+  --gold:#B45309;--gold-lt:#FEF3C7;
+  --text:#0F172A;--text2:#1E293B;--text3:#374151;--muted:#6B7280;
   --r:10px;
   --shadow:0 1px 8px rgba(15,45,107,.10);
-  --shadow-md:0 4px 20px rgba(15,45,107,.15);
-  --shadow-lg:0 8px 40px rgba(15,45,107,.2);
+  --shadow-md:0 4px 20px rgba(15,45,107,.14);
+  --shadow-lg:0 8px 40px rgba(15,45,107,.18);
 }
 html{scroll-behavior:smooth}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px}
@@ -45,971 +29,1140 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 ::-webkit-scrollbar-track{background:#E0E7FF}
 ::-webkit-scrollbar-thumb{background:#A5B4FC;border-radius:3px}
 
-/* ─── TOPBAR ─────────────────────────────────────────────────── */
-#topbar{position:sticky;top:0;z-index:500;background:var(--navy);box-shadow:0 2px 16px rgba(0,0,0,.3)}
-.tb-inner{max-width:1600px;margin:0 auto;padding:0 20px;display:flex;align-items:stretch;justify-content:space-between;flex-wrap:wrap}
-.brand{padding:11px 0 8px;display:flex;flex-direction:column;gap:2px}
+/* ── TOPBAR ── */
+#topbar{position:sticky;top:0;z-index:600;background:var(--navy);box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.tb{max-width:1600px;margin:0 auto;padding:0 18px;display:flex;align-items:stretch;justify-content:space-between}
+.brand{padding:11px 0 7px;display:flex;flex-direction:column;gap:2px}
 .brand-name{font-size:15px;font-weight:900;color:#fff;display:flex;align-items:center;gap:9px;letter-spacing:-.2px}
-.live{width:8px;height:8px;border-radius:50%;background:#34D399;box-shadow:0 0 8px #34D399;animation:blink 2s infinite;flex-shrink:0}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#34D399;box-shadow:0 0 8px #34D399;animation:blink 2s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-.brand-sub{font-size:10px;color:#93C5FD;font-weight:500;letter-spacing:.3px}
-.vpp-tag{background:linear-gradient(135deg,#92400E,#D97706);color:#FEF3C7;border-radius:20px;padding:3px 11px;font-size:9px;font-weight:800;letter-spacing:.4px}
-.nav-wrap{display:flex;align-items:flex-end;gap:0;overflow-x:auto}
-.nav-btn{padding:13px 16px;background:transparent;border:none;color:#93C5FD;font-size:11px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif;letter-spacing:.2px}
-.nav-btn:hover{color:#fff;background:rgba(255,255,255,.07)}
-.nav-btn.active{color:#fff;border-bottom-color:#60A5FA;background:rgba(255,255,255,.05)}
+.brand-sub{font-size:10px;color:#93C5FD;font-weight:500}
+.vpp-tag{background:linear-gradient(135deg,#92400E,#D97706);color:#FEF3C7;border-radius:20px;padding:2px 10px;font-size:9px;font-weight:800}
+.nav{display:flex;align-items:flex-end;overflow-x:auto;gap:0}
+.nb{padding:12px 14px;background:transparent;border:none;color:#93C5FD;font-size:11px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif}
+.nb:hover{color:#fff;background:rgba(255,255,255,.07)}
+.nb.active{color:#fff;border-bottom-color:#60A5FA;background:rgba(255,255,255,.05)}
 
-/* ─── LAYOUT ─────────────────────────────────────────────────── */
+/* ── PAGE ── */
 main{max-width:1600px;margin:0 auto;padding:18px 18px 60px}
 .page{display:flex;flex-direction:column;gap:14px}
-.page-hidden{display:none!important}
+.hidden{display:none!important}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeUp .22s ease both}
 
-/* ─── CARD ───────────────────────────────────────────────────── */
+/* ── CARD ── */
 .card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
-.card-hdr{padding:12px 18px;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.card-hdr-gold{background:linear-gradient(135deg,#78350F,#B45309)}
-.ch-title{font-size:11px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:7px}
-.ch-sub{font-size:10px;color:#93C5FD;font-weight:500}
-.ch-sub-gold{color:#FCD34D}
+.ch{padding:12px 16px;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ch-gold{background:linear-gradient(135deg,#78350F,#B45309)}
+.ch-green{background:linear-gradient(135deg,#064E3B,#059669)}
+.ch-purple{background:linear-gradient(135deg,#4C1D95,#7C3AED)}
+.ct{font-size:11px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:7px}
+.cs{font-size:10px;color:#93C5FD;font-weight:500}
+.cs-gold{color:#FCD34D}
 
-/* ─── KPI GRID ───────────────────────────────────────────────── */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:12px}
-.kpi{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:16px 16px 14px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;cursor:default}
-.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
-.kpi-top{position:absolute;top:0;left:0;right:0;height:4px}
-.kpi-val{font-size:30px;font-weight:900;line-height:1;letter-spacing:-1px;margin-top:2px}
-.kpi-lbl{font-size:9px;font-weight:800;color:var(--muted);margin-top:7px;text-transform:uppercase;letter-spacing:.6px}
-.kpi-sub{font-size:10px;color:var(--muted);margin-top:2px;font-weight:500}
+/* ── KPI ── */
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:11px}
+.kcard{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:14px 15px 12px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;cursor:default}
+.kcard:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.ktop{position:absolute;top:0;left:0;right:0;height:4px}
+.kval{font-size:28px;font-weight:900;line-height:1;letter-spacing:-1px;margin-top:2px}
+.klbl{font-size:9px;font-weight:800;color:var(--muted);margin-top:6px;text-transform:uppercase;letter-spacing:.6px}
+.ksub{font-size:10px;color:var(--muted);margin-top:2px}
 
-/* ─── PROGRESS ───────────────────────────────────────────────── */
+/* ── PROGRESS ── */
 .pt{background:#E0E7FF;border-radius:8px;overflow:hidden}
-.pf{border-radius:8px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.pf{border-radius:8px;transition:width .5s cubic-bezier(.4,0,.2,1)}
 
-/* ─── TABLE ──────────────────────────────────────────────────── */
-.tbl-wrap{overflow-x:auto}
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap;border:1.5px solid transparent}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.s-Complete{background:#D1FAE5;color:#065F46;border-color:#6EE7B7}.s-Complete::before{background:#059669}
+.s-OnSchedule{background:#CFFAFE;color:#164E63;border-color:#67E8F9}.s-OnSchedule::before{background:#0891B2}
+.s-Behind{background:#FEE2E2;color:#991B1B;border-color:#FCA5A5}.s-Behind::before{background:#DC2626}
+.s-AtRisk{background:#FEF3C7;color:#92400E;border-color:#FCD34D}.s-AtRisk::before{background:#D97706}
+.s-NotStarted{background:#EDE9FE;color:#4C1D95;border-color:#C4B5FD}.s-NotStarted::before{background:#7C3AED}
+.s-Open{background:#F1F5F9;color:#374151;border-color:#CBD5E1}.s-Open::before{background:#6B7280}
+.s-Ongoing{background:#D1FAE5;color:#065F46;border-color:#6EE7B7}.s-Ongoing::before{background:#059669}
+.s-OnHold{background:#FEF3C7;color:#92400E;border-color:#FCD34D}.s-OnHold::before{background:#D97706}
+.p-High{background:#FEE2E2;color:#991B1B;border:1.5px solid #FCA5A5;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800}
+.p-Medium{background:#FEF3C7;color:#92400E;border:1.5px solid #FCD34D;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800}
+.p-Low{background:#D1FAE5;color:#065F46;border:1.5px solid #6EE7B7;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800}
+
+/* ── TABLE ── */
+.twrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
 thead tr{background:var(--bg)}
-th{padding:9px 12px;color:var(--navy);font-size:9px;font-weight:800;text-align:left;border-bottom:2px solid var(--border2);letter-spacing:.7px;text-transform:uppercase;white-space:nowrap}
-td{padding:8px 12px;border-bottom:1px solid #EEF2FF;vertical-align:middle;color:var(--text2)}
-tbody tr{transition:background .1s}
+th{padding:9px 11px;color:var(--navy);font-size:9px;font-weight:800;text-align:left;border-bottom:2px solid var(--border2);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap}
+td{padding:7px 11px;border-bottom:1px solid #EEF2FF;vertical-align:middle;color:var(--text2)}
 tbody tr:hover{background:#F0F4FF}
+tbody tr.done-row td:nth-child(2){text-decoration:line-through;color:var(--muted)}
 
-/* ─── EDITABLE CELLS ─────────────────────────────────────────── */
-.cell-edit{background:transparent;border:1.5px solid transparent;border-radius:6px;padding:3px 6px;font-size:11px;font-family:'Inter',sans-serif;color:var(--text2);cursor:pointer;transition:all .15s;outline:none;font-weight:500;min-width:90px}
-.cell-edit:hover{border-color:var(--border2);background:#F0F4FF}
-.cell-edit:focus{border-color:var(--blue);background:#EFF6FF;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
-select.cell-edit option{background:#fff;color:var(--text)}
-input.cell-edit{width:100%}
+/* ── EDITABLE ── */
+.esel{background:transparent;border:1.5px solid transparent;border-radius:6px;padding:3px 5px;font-size:11px;font-family:'Inter',sans-serif;color:var(--text2);cursor:pointer;transition:all .15s;outline:none;font-weight:500}
+.esel:hover{border-color:var(--border2);background:#F0F4FF}
+.esel:focus{border-color:var(--blue);background:#EFF6FF;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.etxt{background:transparent;border:1.5px solid transparent;border-radius:6px;padding:3px 6px;font-size:11px;font-family:'Inter',sans-serif;color:var(--text);transition:all .15s;outline:none;width:100%}
+.etxt:hover{border-color:var(--border2);background:#F0F4FF}
+.etxt:focus{border-color:var(--blue);background:#EFF6FF;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
 
-/* ─── STATUS & PRI BADGES ────────────────────────────────────── */
-.badge{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;white-space:nowrap;border:1.5px solid transparent}
-.badge::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.b-Complete{background:#D1FAE5;color:#065F46;border-color:#6EE7B7}.b-Complete::before{background:#059669}
-.b-OnSchedule{background:#CFFAFE;color:#164E63;border-color:#67E8F9}.b-OnSchedule::before{background:#0891B2}
-.b-Behind{background:#FEE2E2;color:#991B1B;border-color:#FCA5A5}.b-Behind::before{background:#DC2626}
-.b-AtRisk{background:#FEF3C7;color:#92400E;border-color:#FCD34D}.b-AtRisk::before{background:#D97706}
-.b-NotStarted{background:#EDE9FE;color:#4C1D95;border-color:#C4B5FD}.b-NotStarted::before{background:#7C3AED}
-.b-Open{background:#F1F5F9;color:#374151;border-color:#CBD5E1}.b-Open::before{background:#6B7280}
-.b-Ongoing{background:#ECFDF5;color:#065F46;border-color:#6EE7B7}.b-Ongoing::before{background:#059669}
-.b-OnHold{background:#FEF3C7;color:#92400E;border-color:#FCD34D}.b-OnHold::before{background:#D97706}
-.p-High{background:#FEE2E2;color:#991B1B;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800;border:1.5px solid #FCA5A5}
-.p-Medium{background:#FEF3C7;color:#92400E;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800;border:1.5px solid #FCD34D}
-.p-Low{background:#D1FAE5;color:#065F46;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800;border:1.5px solid #6EE7B7}
-
-/* ─── CHECK BUTTON ───────────────────────────────────────────── */
-.chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;font-size:12px;flex-shrink:0}
+/* ── CHECK ── */
+.chk{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;font-size:11px;flex-shrink:0}
 .chk:hover{border-color:var(--green);background:var(--green-lt)}
 .chk.on{background:var(--green);border-color:var(--green);color:#fff}
 
-/* ─── FILTER BAR ─────────────────────────────────────────────── */
-.fbar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;padding:14px 16px;background:var(--surface2);border-bottom:1.5px solid var(--border)}
+/* ── BUTTONS ── */
+.btn{border:none;border-radius:7px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:var(--navy)}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#047857}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#991B1B}
+.btn-ghost{background:#EEF2FF;color:var(--navy)}.btn-ghost:hover{background:var(--border2);color:#fff}
+.btn-sm{padding:4px 9px;font-size:10px;border-radius:6px}
+.btn-icon{width:28px;height:28px;padding:0;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+
+/* ── FILTER BAR ── */
+.fbar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;padding:12px 16px;background:var(--surface2);border-bottom:1.5px solid var(--border)}
 .fg{display:flex;flex-direction:column;gap:4px}
 .flbl{font-size:9px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.8px}
-select.fsel,input.fsearch{background:#fff;color:var(--text);border:1.5px solid var(--border);border-radius:7px;padding:6px 9px;font-size:11px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;transition:border-color .15s;font-weight:500}
-select.fsel{min-width:125px}
-input.fsearch{min-width:180px}
-select.fsel:focus,input.fsearch:focus{border-color:var(--blue)}
+select.fsel2,input.fsrch{background:#fff;color:var(--text);border:1.5px solid var(--border);border-radius:7px;padding:6px 9px;font-size:11px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;font-weight:500}
+select.fsel2{min-width:120px}input.fsrch{min-width:170px}
+select.fsel2:focus,input.fsrch:focus{border-color:var(--blue)}
 .fcount{font-size:11px;color:var(--muted);align-self:flex-end;padding-bottom:6px;font-weight:600}
 .fcount strong{color:var(--blue)}
-.btn{border:none;border-radius:7px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
-.btn-clear{background:#E0E7FF;color:var(--navy);align-self:flex-end}
-.btn-clear:hover{background:var(--border2);color:#fff}
-.btn-primary{background:var(--blue);color:#fff}
-.btn-primary:hover{background:var(--navy)}
-.btn-sm{padding:4px 10px;font-size:10px;border-radius:6px}
 
-/* ─── STATUS TILES ───────────────────────────────────────────── */
-.s-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;padding:14px 16px}
-.s-tile{border-radius:9px;padding:12px;text-align:center;cursor:pointer;border:2px solid;transition:transform .15s,box-shadow .15s}
-.s-tile:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
-.s-tile-val{font-size:24px;font-weight:900;line-height:1}
-.s-tile-lbl{font-size:9px;font-weight:800;margin-top:4px;text-transform:uppercase;letter-spacing:.4px}
-.s-tile-pct{font-size:9px;color:var(--muted);margin-top:2px}
+/* ── STATUS TILES ── */
+.stiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:9px;padding:14px 16px}
+.stile{border-radius:9px;padding:12px;text-align:center;cursor:pointer;border:2px solid;transition:transform .15s,box-shadow .15s}
+.stile:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.stv{font-size:22px;font-weight:900;line-height:1}
+.stl{font-size:9px;font-weight:800;margin-top:4px;text-transform:uppercase;letter-spacing:.4px}
+.stp{font-size:9px;color:var(--muted);margin-top:1px}
 
-/* ─── MILESTONES ─────────────────────────────────────────────── */
-.ms-row{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid #EEF2FF;transition:background .1s;flex-wrap:wrap}
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-bg.hidden{display:none}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-hdr{padding:18px 20px 14px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:800;color:var(--navy)}
+.modal-close{width:30px;height:30px;border:none;background:#F1F5F9;border-radius:7px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.modal-close:hover{background:#FEE2E2;color:var(--red)}
+.modal-body{padding:20px}
+.mfield{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.mfield label{font-size:10px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.7px}
+.mfield input,.mfield select,.mfield textarea{background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:8px 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;width:100%}
+.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--blue)}
+.mfield textarea{min-height:80px;resize:vertical}
+.modal-foot{padding:14px 20px;border-top:1.5px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+
+/* ── COMMENTS ── */
+.comment-list{display:flex;flex-direction:column;gap:8px;padding:12px 16px}
+.comment{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.comment-meta{font-size:10px;color:var(--muted);font-weight:600;display:flex;justify-content:space-between;margin-bottom:5px}
+.comment-text{font-size:12px;color:var(--text2);line-height:1.5}
+.comment-input-row{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border);align-items:flex-end}
+.comment-input-row textarea{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:36px}
+.comment-input-row textarea:focus{border-color:var(--blue)}
+
+/* ── CHAT ── */
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 200px);min-height:400px}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:75%;padding:10px 14px;border-radius:12px;font-size:12px;line-height:1.5}
+.msg-user{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg-ai{background:var(--surface2);color:var(--text2);align-self:flex-start;border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg-system{background:#EDE9FE;color:#4C1D95;align-self:center;font-size:11px;font-weight:600;border-radius:20px;padding:5px 14px;border:1px solid #C4B5FD}
+.msg-meta{font-size:10px;opacity:.6;margin-top:4px;font-weight:500}
+.chat-input-area{padding:12px 16px;border-top:1.5px solid var(--border);display:flex;gap:8px;align-items:flex-end;background:var(--surface2)}
+.chat-input-area textarea{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:40px;max-height:100px}
+.chat-input-area textarea:focus{border-color:var(--blue)}
+.ai-thinking{display:flex;gap:4px;padding:10px 14px;background:var(--surface2);border-radius:12px;border:1px solid var(--border);align-self:flex-start}
+.ai-thinking span{width:7px;height:7px;border-radius:50%;background:var(--blue2);animation:bounce .9s infinite}
+.ai-thinking span:nth-child(2){animation-delay:.15s}
+.ai-thinking span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,80%,100%{transform:scale(1)}40%{transform:scale(1.4)}}
+
+/* ── LINKS ── */
+.link-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding:16px}
+.link-card{background:var(--surface);border:1.5px solid var(--border);border-radius:9px;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:box-shadow .15s,border-color .15s;cursor:pointer;text-decoration:none}
+.link-card:hover{box-shadow:var(--shadow-md);border-color:var(--blue2)}
+.link-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.link-name{font-size:13px;font-weight:700;color:var(--navy)}
+.link-desc{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ── METRICS ── */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:16px}
+.mcard{background:var(--surface);border:2px solid var(--border);border-radius:9px;padding:14px 16px;box-shadow:var(--shadow)}
+.mcard-label{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.mcard-val{font-size:26px;font-weight:900;color:var(--navy);line-height:1}
+.mcard-input{background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:6px 9px;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;outline:none;width:100%;transition:border-color .15s;color:var(--navy)}
+.mcard-input:focus{border-color:var(--blue)}
+.mcard-sub{font-size:10px;color:var(--muted);margin-top:5px}
+.mcard-trend{font-size:11px;font-weight:700;margin-top:4px}
+
+/* ── PERSON BANNER ── */
+.pbanner{padding:18px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.pavatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;border:3px solid rgba(255,255,255,.4);flex-shrink:0}
+.pname{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.2px}
+.prole{font-size:11px;color:rgba(255,255,255,.7);margin-top:2px}
+.pmkpis{display:flex;gap:9px;flex-wrap:wrap;margin-left:auto}
+.pmk{background:rgba(255,255,255,.12);border-radius:8px;padding:9px 13px;text-align:center;min-width:65px;border:1px solid rgba(255,255,255,.2)}
+.pmkv{font-size:18px;font-weight:900;color:#fff;line-height:1}
+.pmkl{font-size:8px;font-weight:700;color:rgba(255,255,255,.65);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── SCHED GRID ── */
+.sg{display:grid;grid-template-columns:55px repeat(5,1fr);border-top:1px solid var(--border)}
+.sg-th{padding:7px;text-align:center;background:var(--bg);border-bottom:2px solid var(--border2);font-size:9px;font-weight:800;color:var(--navy);border-right:1px solid var(--border)}
+.sg-time{padding:3px 7px;font-size:9px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;background:var(--surface2);text-align:right;height:28px;line-height:20px}
+.sg-cell{border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;height:28px;padding:2px}
+.sg-ev{border-radius:4px;padding:0 5px;font-size:9px;font-weight:700;height:22px;display:flex;align-items:center;white-space:nowrap;overflow:hidden;border-left:2px solid;cursor:default}
+.sg-ev:hover{overflow:visible;white-space:normal;z-index:10;position:relative;box-shadow:var(--shadow-md)}
+
+/* ── REC TASKS ── */
+.rec-hdr{padding:5px 14px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.7px}
+.rec-item{display:flex;align-items:center;gap:9px;padding:6px 14px;border-bottom:1px solid #EEF2FF;font-size:11px;color:var(--text2);font-weight:500}
+.rec-item:last-child{border-bottom:none}
+.rec-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ── MILESTONE ── */
+.ms-row{display:flex;align-items:center;gap:13px;padding:11px 16px;border-bottom:1px solid #EEF2FF;flex-wrap:wrap;transition:background .1s}
 .ms-row:hover{background:#F0F4FF}
-.ms-row:last-child{border-bottom:none}
-.ms-num{width:30px;height:30px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
+.ms-num{width:28px;height:28px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
 .ms-goal .ms-num{background:linear-gradient(135deg,#92400E,#D97706)}
-.ms-text{flex:1;min-width:160px}
+.ms-text{flex:1;min-width:150px}
 .ms-title{font-size:12px;font-weight:600;color:var(--navy)}
-.ms-goal .ms-title{font-weight:900;font-size:13px;color:var(--gold)}
+.ms-goal .ms-title{font-weight:900;color:var(--gold);font-size:13px}
 .ms-meta{font-size:10px;color:var(--muted);margin-top:1px}
-.ms-prog{min-width:160px;display:flex;flex-direction:column;gap:4px}
+.ms-prog{min-width:150px;display:flex;flex-direction:column;gap:4px}
 
-/* ─── PERSON PAGE ────────────────────────────────────────────── */
-.person-banner{padding:20px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.p-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.2)}
-.p-name{font-size:22px;font-weight:900;color:#fff;letter-spacing:-.3px}
-.p-role{font-size:11px;color:rgba(255,255,255,.75);margin-top:3px;font-weight:500}
-.p-mini-kpis{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
-.p-kpi{background:rgba(255,255,255,.12);border-radius:9px;padding:10px 14px;text-align:center;min-width:70px;border:1px solid rgba(255,255,255,.2)}
-.p-kpi-val{font-size:20px;font-weight:900;color:#fff;line-height:1}
-.p-kpi-lbl{font-size:8px;font-weight:700;color:rgba(255,255,255,.7);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-@media(max-width:1000px){.grid-2,.grid-3{grid-template-columns:1fr}}
-
-/* ─── SCHEDULE CALENDAR ──────────────────────────────────────── */
-.sched-grid{display:grid;grid-template-columns:60px repeat(5,1fr);border-top:1px solid var(--border)}
-.sched-day-hdr{padding:8px;text-align:center;background:var(--bg);border-bottom:2px solid var(--border2);font-size:10px;font-weight:800;color:var(--navy);letter-spacing:.5px;border-right:1px solid var(--border)}
-.sched-time{padding:4px 8px;text-align:right;font-size:9px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;background:var(--surface2);white-space:nowrap;vertical-align:top;height:32px;line-height:22px}
-.sched-cell{border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;height:32px;padding:2px;position:relative;vertical-align:top}
-.sched-event{border-radius:5px;padding:2px 6px;font-size:9px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:26px;display:flex;align-items:center;cursor:default;border-left:3px solid}
-.sched-event:hover{z-index:10;white-space:normal;overflow:visible;box-shadow:var(--shadow-md)}
-
-/* ─── RECURRING LIST ─────────────────────────────────────────── */
-.rec-section{padding:8px 0}
-.rec-hdr{padding:6px 16px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.8px}
-.rec-item{display:flex;align-items:center;gap:10px;padding:7px 16px;border-bottom:1px solid #EEF2FF;transition:background .1s}
-.rec-item:hover{background:#F0F4FF}
-.rec-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.rec-text{font-size:11px;color:var(--text2);font-weight:500;flex:1}
-
-/* ─── TOAST ──────────────────────────────────────────────────── */
-#toast{position:fixed;bottom:22px;right:22px;background:var(--navy);color:#fff;padding:11px 18px;border-radius:9px;font-size:12px;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;z-index:9999;display:flex;align-items:center;gap:8px}
+/* ── TOAST ── */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:10px 18px;border-radius:9px;font-size:12px;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;z-index:9999;display:flex;align-items:center;gap:8px}
 #toast.show{opacity:1;transform:translateY(0)}
 
-/* ─── MISC ───────────────────────────────────────────────────── */
-.info-bar{padding:8px 18px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:8px}
-a.link{color:var(--blue);font-weight:700;text-decoration:none}
-a.link:hover{text-decoration:underline}
-footer{background:var(--navy);color:#93C5FD;text-align:center;padding:16px;font-size:10px;font-weight:500;letter-spacing:.3px;margin-top:24px}
-
-@media(max-width:640px){
-  .kpi-grid{grid-template-columns:repeat(2,1fr)}
-  .nav-wrap{overflow-x:auto}
-  main{padding:12px 10px 40px}
-}
+/* ── MISC ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.section-label{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;padding:10px 16px 6px;border-bottom:1px solid var(--border)}
+.info-bar{padding:8px 16px;background:#EFF6FF;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:7px}
+a.lnk{color:var(--blue);font-weight:700;text-decoration:none}
+a.lnk:hover{text-decoration:underline}
+footer{background:var(--navy);color:#93C5FD;text-align:center;padding:14px;font-size:10px;font-weight:500;letter-spacing:.3px;margin-top:20px}
+@media(max-width:800px){.g2,.g3{grid-template-columns:1fr}}
+@media(max-width:640px){.kgrid{grid-template-columns:repeat(2,1fr)}.nav{overflow-x:auto}main{padding:10px 10px 40px}}
 </style>
 </head>
 <body>
 
 <div id="topbar">
-  <div class="tb-inner">
+  <div class="tb">
     <div class="brand">
-      <div class="brand-name">
-        <span class="live"></span>
-        EHS COMMAND CENTER
-        <span class="vpp-tag">⭐ VPP STAR · OCT 2026</span>
-      </div>
+      <div class="brand-name"><span class="live-dot"></span>EHS COMMAND CENTER<span class="vpp-tag">⭐ VPP STAR · OCT 2026</span></div>
       <div class="brand-sub">GE AEROSPACE MUSKEGON · 2026 STRATEGIC ACTION PLAN</div>
     </div>
-    <div class="nav-wrap" id="nav-wrap"></div>
+    <div class="nav" id="nav"></div>
   </div>
 </div>
 
 <main>
-  <div id="page-overview" class="page fade-in"></div>
-  <div id="page-actions"  class="page page-hidden fade-in"></div>
-  <div id="page-vpp"      class="page page-hidden fade-in"></div>
-  <div id="page-VP"       class="page page-hidden fade-in"></div>
-  <div id="page-SW"       class="page page-hidden fade-in"></div>
-  <div id="page-MS"       class="page page-hidden fade-in"></div>
-  <div id="page-RD"       class="page page-hidden fade-in"></div>
-  <div id="page-ZT"       class="page page-hidden fade-in"></div>
+  <div id="pg-overview"  class="page fade-in"></div>
+  <div id="pg-actions"   class="page hidden"></div>
+  <div id="pg-vpp"       class="page hidden"></div>
+  <div id="pg-metrics"   class="page hidden"></div>
+  <div id="pg-links"     class="page hidden"></div>
+  <div id="pg-chat"      class="page hidden"></div>
+  <div id="pg-VP"        class="page hidden"></div>
+  <div id="pg-SW"        class="page hidden"></div>
+  <div id="pg-MS"        class="page hidden"></div>
+  <div id="pg-RD"        class="page hidden"></div>
+  <div id="pg-ZT"        class="page hidden"></div>
 </main>
 
-<footer>EHS COMMAND CENTER · GE AEROSPACE MUSKEGON · 2026 STRATEGIC ACTION PLAN · Victor Pizarro · Steve Wolbrink · Mike Shuster · Rich DeLeau · Zach Tindall</footer>
+<!-- ADD TASK MODAL -->
+<div class="modal-bg hidden" id="modal-add">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modal-add-title">➕ Add New Task</div>
+      <button class="modal-close" onclick="closeModal('modal-add')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="mfield"><label>Task Name *</label><input id="m-task" placeholder="Describe the task…"/></div>
+      <div class="g2">
+        <div class="mfield"><label>Assigned To</label>
+          <select id="m-owner"><option>Victor Pizarro</option><option>Steve Wolbrink</option><option>Mike Shuster</option><option>Rich DeLeau</option><option>Zach Tindall</option></select>
+        </div>
+        <div class="mfield"><label>Status</label>
+          <select id="m-status"><option>Open</option><option>Not Started</option><option>Ongoing</option><option>On Schedule</option><option>Behind</option><option>At-Risk</option><option>Complete</option><option>On Hold</option></select>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="mfield"><label>Priority</label>
+          <select id="m-pri"><option>High</option><option>Medium</option><option>Low</option></select>
+        </div>
+        <div class="mfield"><label>Target Date</label>
+          <select id="m-target"><option>Q1 2026</option><option>Q2 2026</option><option>Q3 2026</option><option>Q4 2026</option><option>Jan 2026</option><option>Feb 2026</option><option>Mar 2026</option><option>Apr 2026</option><option>May 2026</option><option>Jun 2026</option><option>Jul 2026</option><option>Aug 2026</option><option>Sep 2026</option><option>Oct 2026</option><option>Nov 2026</option><option>Dec 2026</option><option>Weekly</option><option>Monthly</option><option>Quarterly</option><option>Annual</option><option>Ongoing</option><option>Complete</option><option>TBD</option></select>
+        </div>
+      </div>
+      <div class="mfield"><label>Program</label>
+        <select id="m-prog"><option>Core EHS</option><option>Ergo</option><option>VPP</option><option>Security</option></select>
+      </div>
+      <div class="mfield"><label>Notes / Details</label><textarea id="m-notes" placeholder="Any additional context…"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNewTask()">➕ Add Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMMENT MODAL -->
+<div class="modal-bg hidden" id="modal-comment">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">💬 Task Comments & Updates</div>
+      <button class="modal-close" onclick="closeModal('modal-comment')">✕</button>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--navy)" id="comment-task-name"></div>
+      <div class="comment-list" id="comment-list"></div>
+      <div class="comment-input-row">
+        <textarea id="comment-input" placeholder="Add a comment or progress update…" rows="2"></textarea>
+        <button class="btn btn-primary btn-sm" onclick="addComment()">Post</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-comment')">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer>EHS COMMAND CENTER · GE AEROSPACE MUSKEGON · 2026 · Victor Pizarro · Steve Wolbrink · Mike Shuster · Rich DeLeau · Zach Tindall</footer>
 <div id="toast"></div>
 
 <script>
-// ═════════════════════════════════════════════════════════════════
-// TEAM CONFIG
-// ═════════════════════════════════════════════════════════════════
-const TEAM = {
-  VP: {name:"Victor Pizarro",   initials:"VP", role:"EHS Leader",                    color:"#1D4ED8", bg:"linear-gradient(135deg,#1E3A8A,#1D4ED8)"},
-  SW: {name:"Steve Wolbrink",   initials:"SW", role:"EHS Compliance Specialist",     color:"#059669", bg:"linear-gradient(135deg,#064E3B,#059669)"},
-  MS: {name:"Mike Shuster",     initials:"MS", role:"Ergonomic Specialist (ATI)",    color:"#7C3AED", bg:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
-  RD: {name:"Rich DeLeau",      initials:"RD", role:"EHS Specialist (Contract)",     color:"#0891B2", bg:"linear-gradient(135deg,#164E63,#0891B2)"},
-  ZT: {name:"Zach Tindall",     initials:"ZT", role:"Security Specialist",           color:"#D97706", bg:"linear-gradient(135deg,#78350F,#D97706)"},
+// ════════════════════════════════════════════════════
+// TEAM
+// ════════════════════════════════════════════════════
+const TEAM={
+  VP:{name:"Victor Pizarro",  ini:"VP",role:"EHS Leader",                   color:"#1D4ED8",bg:"linear-gradient(135deg,#1E3A8A,#1D4ED8)"},
+  SW:{name:"Steve Wolbrink",  ini:"SW",role:"EHS Compliance Specialist",    color:"#059669",bg:"linear-gradient(135deg,#064E3B,#059669)"},
+  MS:{name:"Mike Shuster",    ini:"MS",role:"Ergonomic Specialist (ATI)",   color:"#7C3AED",bg:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
+  RD:{name:"Rich DeLeau",     ini:"RD",role:"EHS Specialist (Contract)",    color:"#0891B2",bg:"linear-gradient(135deg,#164E63,#0891B2)"},
+  ZT:{name:"Zach Tindall",    ini:"ZT",role:"Security Specialist",          color:"#D97706",bg:"linear-gradient(135deg,#78350F,#D97706)"},
+};
+const STATUS_OPTS=["Complete","On Schedule","Behind","At-Risk","Not Started","Open","On Hold","Ongoing"];
+const PRI_OPTS=["High","Medium","Low"];
+const TARGET_OPTS=["Q1 2026","Q2 2026","Q3 2026","Q4 2026","Jan 2026","Feb 2026","Mar 2026","Apr 2026","May 2026","Jun 2026","Jul 2026","Aug 2026","Sep 2026","Oct 2026","Nov 2026","Dec 2026","Weekly","Monthly","Bi-Weekly","Quarterly","Annual","Ongoing","Complete","TBD"];
+const PROG_OPTS=["Core EHS","Ergo","VPP","Security"];
+const PERSON_OPTS=Object.values(TEAM).map(t=>t.name);
+
+// ════════════════════════════════════════════════════
+// DEFAULT ACTIONS
+// ════════════════════════════════════════════════════
+const DEFAULT_ACTIONS=[
+  {id:1,  task:"MOC Update — GE Linebreaking Requirements",         owner:"Steve Wolbrink", status:"Complete",   pri:"Low",   target:"Q1 2026", prog:"Core EHS"},
+  {id:2,  task:"Miraclean/FPI Water Meters — Monthly Tracking",    owner:"Steve Wolbrink", status:"Complete",   pri:"Low",   target:"Q1 2026", prog:"Core EHS"},
+  {id:3,  task:"Overhead Doors — Pin/Remove Norton",               owner:"Rich DeLeau",    status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
+  {id:4,  task:"Overhead Doors — Pin/Remove Latimer",              owner:"Steve Wolbrink", status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
+  {id:5,  task:"LOTO Annual Reviews — Sign-Offs Documented",       owner:"Steve Wolbrink", status:"Behind",     pri:"High",  target:"Q2 2026", prog:"Core EHS"},
+  {id:6,  task:"MVPP Action Plan — Employee Engagement",           owner:"Victor Pizarro", status:"Behind",     pri:"High",  target:"Q1 2026", prog:"Core EHS"},
+  {id:7,  task:"Air Inventory Requirements Review",                owner:"Steve Wolbrink", status:"At-Risk",    pri:"High",  target:"Q2 2026", prog:"Core EHS"},
+  {id:8,  task:"LOTO Program Full Review & Refresh",               owner:"Steve Wolbrink", status:"Behind",     pri:"High",  target:"Q2 2026", prog:"Core EHS"},
+  {id:9,  task:"Digital Heat Mapping — Baseline Scores",           owner:"Victor Pizarro", status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
+  {id:10, task:"Create JSA Training Course per Dept",              owner:"Steve Wolbrink", status:"Open",       pri:"High",  target:"Q3 2026", prog:"Core EHS"},
+  {id:11, task:"Electrical Safety Framework",                      owner:"Victor Pizarro", status:"Open",       pri:"High",  target:"Q3 2026", prog:"Core EHS"},
+  {id:12, task:"Fall Prevention — Grinders Project",               owner:"Rich DeLeau",    status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
+  {id:13, task:"E-Gauge Light Curtain Requirements Review",        owner:"Rich DeLeau",    status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
+  {id:14, task:"PFAS Updates Tracking",                            owner:"Rich DeLeau",    status:"Open",       pri:"Medium",target:"Ongoing", prog:"Core EHS"},
+  {id:15, task:"Build Security Assessment Action Plan",            owner:"Zach Tindall",   status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
+  {id:16, task:"Verify Stormwater Plan Updates",                   owner:"Steve Wolbrink", status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
+  {id:17, task:"Verify SPCC & PIPP Updates",                       owner:"Steve Wolbrink", status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
+  {id:18, task:"Add Latimer East to ODS",                          owner:"Steve Wolbrink", status:"Open",       pri:"Medium",target:"Q2 2026", prog:"Core EHS"},
+  {id:19, task:"Enhesa Review with Fishbeck",                      owner:"Steve Wolbrink", status:"Open",       pri:"Medium",target:"Q3 2026", prog:"Core EHS"},
+  {id:20, task:"LOTO Procedures — Decision Tree Addition",         owner:"Steve Wolbrink", status:"Open",       pri:"Medium",target:"Q3 2026", prog:"Core EHS"},
+  {id:21, task:"Pipe Labeling — Hire Contractor",                  owner:"Steve Wolbrink", status:"Open",       pri:"Medium",target:"Q2 2026", prog:"Core EHS"},
+  {id:22, task:"Coopermatic Hearing Protection — Enforce",         owner:"Rich DeLeau",    status:"Open",       pri:"Medium",target:"Q3 2026", prog:"Core EHS"},
+  {id:23, task:"Benching Task — Cut Resistant Glove Review",       owner:"Rich DeLeau",    status:"Open",       pri:"Medium",target:"Q2 2026", prog:"Core EHS"},
+  {id:24, task:"VPP Documentation Package Assembled",              owner:"Victor Pizarro", status:"Not Started",pri:"High",  target:"Q3 2026", prog:"VPP"},
+  {id:25, task:"Pre-Assessment Internal VPP Audit",                owner:"Victor Pizarro", status:"Not Started",pri:"High",  target:"Sep 2026",prog:"VPP"},
+  {id:26, task:"OSHA Site Assessment Scheduled",                   owner:"Victor Pizarro", status:"Not Started",pri:"High",  target:"Sep 2026",prog:"VPP"},
+  {id:27, task:"MVPP Preparation Support",                         owner:"Rich DeLeau",    status:"Open",       pri:"High",  target:"Q2 2026", prog:"VPP"},
+  {id:28, task:"Muskegon SQDIP Action Plan",                       owner:"Mike Shuster",   status:"Ongoing",    pri:"High",  target:"Ongoing", prog:"Ergo"},
+  {id:29, task:"Leading Indicators Dashboard — Baseline",          owner:"Mike Shuster",   status:"Behind",     pri:"High",  target:"Q1 2026", prog:"Ergo"},
+  {id:30, task:"CR2031/TS2031 Gap Assessment",                     owner:"Mike Shuster",   status:"Behind",     pri:"High",  target:"Q1 2026", prog:"Ergo"},
+  {id:31, task:"Ergo Risk HEAT MAP — Finalize",                    owner:"Mike Shuster",   status:"Open",       pri:"High",  target:"Q2 2026", prog:"Ergo"},
+  {id:32, task:"Ergo Training Delivery",                           owner:"Mike Shuster",   status:"Behind",     pri:"High",  target:"Q1 2026", prog:"Ergo"},
+  {id:33, task:"Quick-Ref Workflow Sheets",                        owner:"Mike Shuster",   status:"At-Risk",    pri:"Medium",target:"Q1 2026", prog:"Ergo"},
+  {id:34, task:"Early Intervention Workflows Documented",          owner:"Mike Shuster",   status:"Behind",     pri:"High",  target:"Q1 2026", prog:"Ergo"},
+  {id:35, task:"HEAT MAP Q1 Top 10 Published",                     owner:"Mike Shuster",   status:"At-Risk",    pri:"High",  target:"Q1 2026", prog:"Ergo"},
+  {id:36, task:"MSD / Discomfort Metric Established",              owner:"Mike Shuster",   status:"At-Risk",    pri:"High",  target:"Q1 2026", prog:"Ergo"},
+  {id:37, task:"TS2031 Gap Tracker — Complete",                    owner:"Mike Shuster",   status:"Behind",     pri:"High",  target:"Q2 2026", prog:"Ergo"},
+  {id:38, task:"GenX Height Adjustable Table (#2755)",             owner:"Mike Shuster",   status:"Behind",     pri:"Medium",target:"Q1 2026", prog:"Ergo"},
+  {id:39, task:"Leap Post Coat Totes",                             owner:"Mike Shuster",   status:"Complete",   pri:"Low",   target:"Complete",prog:"Ergo"},
+  {id:40, task:"MKG Screen Location Kits",                         owner:"Mike Shuster",   status:"On Schedule",pri:"Medium",target:"Q2 2026", prog:"Ergo"},
+  {id:41, task:"Shroud Packing Improvement",                       owner:"Mike Shuster",   status:"Behind",     pri:"Medium",target:"Q3 2026", prog:"Ergo"},
+  {id:42, task:"Shipping Skids — Safety/Ergo",                     owner:"Rich DeLeau",    status:"Behind",     pri:"High",  target:"Q2 2026", prog:"Ergo"},
+  {id:43, task:"Shipping Racks — Safety/Ergo",                     owner:"Rich DeLeau",    status:"Behind",     pri:"High",  target:"Q2 2026", prog:"Ergo"},
+  {id:44, task:"Security Framework Compliance Review",             owner:"Zach Tindall",   status:"Open",       pri:"High",  target:"Q3 2026", prog:"Security"},
+  {id:45, task:"Profiler Updates (Security Module)",               owner:"Zach Tindall",   status:"Open",       pri:"Medium",target:"Annual",  prog:"Security"},
+  {id:46, task:"OnGuard Badge Database Audit",                     owner:"Zach Tindall",   status:"Ongoing",    pri:"High",  target:"Ongoing", prog:"Security"},
+  {id:47, task:"Security/Emergency Mapping — Complete All",        owner:"Zach Tindall",   status:"Ongoing",    pri:"Medium",target:"Q3 2026", prog:"Security"},
+  {id:48, task:"Emergency Exit Testing — Document Weekly",         owner:"Zach Tindall",   status:"Ongoing",    pri:"High",  target:"Weekly",  prog:"Security"},
+  {id:49, task:"Card Access Reviews — Report Anomalies",           owner:"Zach Tindall",   status:"Ongoing",    pri:"High",  target:"Weekly",  prog:"Security"},
+  {id:50, task:"SPCC Audits — Both Sites Monthly",                 owner:"Zach Tindall",   status:"Ongoing",    pri:"Medium",target:"Monthly", prog:"Security"},
+];
+
+const DEFAULT_VPP=[
+  {id:1,ms:"Zero Regulatory Violations — All Year",        owner:"Full Team",    target:"Ongoing",  pct:95,status:"On Schedule"},
+  {id:2,ms:"MVPP Employee Engagement Plan Launched",       owner:"Victor/Steve", target:"Q1 2026",  pct:20,status:"Behind"},
+  {id:3,ms:"LOTO Program Full Review & Refresh",           owner:"Steve",        target:"Q1 2026",  pct:15,status:"Behind"},
+  {id:4,ms:"Ergo Risk HEAT MAP Q1 Top 10 Published",       owner:"Mike",         target:"Q1 2026",  pct:30,status:"Behind"},
+  {id:5,ms:"Digital Heat Mapping Baseline Established",    owner:"Victor",       target:"Q2 2026",  pct:5, status:"Not Started"},
+  {id:6,ms:"Contractor Safety 100% Audit Compliance",      owner:"Zach/Rich",    target:"Q2 2026",  pct:60,status:"On Schedule"},
+  {id:7,ms:"Physical Security Program Documented",         owner:"Zach",         target:"Q3 2026",  pct:25,status:"At-Risk"},
+  {id:8,ms:"All LOTO/JSA/PPE Training Current",            owner:"Steve",        target:"Q3 2026",  pct:40,status:"At-Risk"},
+  {id:9,ms:"VPP Documentation Package Assembled",          owner:"Victor",       target:"Q3 2026",  pct:5, status:"Not Started"},
+  {id:10,ms:"Employee VPP Education (5 Points of Star)",   owner:"Steve/Victor", target:"Sep 2026", pct:0, status:"Not Started"},
+  {id:11,ms:"Pre-Assessment Internal VPP Audit",           owner:"Victor",       target:"Sep 2026", pct:0, status:"Not Started"},
+  {id:12,ms:"OSHA Site Assessment Scheduled",              owner:"Victor",       target:"Sep 2026", pct:0, status:"Not Started"},
+  {id:13,ms:"⭐ VPP STAR RE-CERTIFICATION AWARDED",        owner:"FULL TEAM",    target:"Oct 2026", pct:0, status:"Not Started"},
+];
+
+const DEFAULT_METRICS={
+  ii_rate:{label:"I&I Rate (YTD)",value:"0.0",sub:"Incidence & Injury Rate",unit:""},
+  recordable_rate:{label:"Recordable Injury Rate",value:"0.0",sub:"Per 200k hrs worked",unit:""},
+  near_miss:{label:"Near Miss Reports",value:"0",sub:"YTD total reported",unit:""},
+  first_aid:{label:"First Aid Cases",value:"0",sub:"YTD non-recordable",unit:""},
+  jsa_completed:{label:"JSA Audits Completed",value:"0",sub:"This month",unit:""},
+  ppe_compliance:{label:"PPE Compliance",value:"0",sub:"% audit score",unit:"%"},
+  loto_compliance:{label:"LOTO Compliance",value:"0",sub:"% audit score",unit:"%"},
+  contractor_audits:{label:"Contractor Audits",value:"0",sub:"This month",unit:""},
+  ergo_encounters:{label:"Ergo Encounters",value:"0",sub:"Discomfort interventions",unit:""},
+  msd_cases:{label:"MSD Cases",value:"0",sub:"YTD musculoskeletal",unit:""},
+  days_no_injury:{label:"Days Without Injury",value:"0",sub:"Current streak",unit:"days"},
+  open_actions:{label:"Open Gensuite Actions",value:"0",sub:"Past due = 0 goal",unit:""},
 };
 
-const STATUS_OPTS = ["Complete","On Schedule","Behind","At-Risk","Not Started","Open","On Hold","Ongoing"];
-const PRI_OPTS    = ["High","Medium","Low"];
-const PERSON_OPTS = Object.entries(TEAM).map(([k,v])=>v.name);
-const TARGET_OPTS = ["Q1 2026","Q2 2026","Q3 2026","Q4 2026","Jan 2026","Feb 2026","Mar 2026","Apr 2026","May 2026","Jun 2026","Jul 2026","Aug 2026","Sep 2026","Oct 2026","Nov 2026","Dec 2026","Weekly","Monthly","Bi-Weekly","Quarterly","Annual","Ongoing","Complete","TBD"];
-
-// ═════════════════════════════════════════════════════════════════
-// ACTION ITEMS  (all 100+, fully editable fields)
-// ═════════════════════════════════════════════════════════════════
-const ACTIONS = [
-  // CORE EHS
-  {id:1,  task:"MOC Update — GE Linebreaking Requirements",         owner:"Steve Wolbrink",  status:"Complete",    pri:"Low",    target:"Q1 2026",  prog:"Core EHS"},
-  {id:2,  task:"Miraclean/FPI Water Meters — Monthly Tracking",    owner:"Steve Wolbrink",  status:"Complete",    pri:"Low",    target:"Q1 2026",  prog:"Core EHS"},
-  {id:3,  task:"Overhead Doors — Pin/Remove Norton",                owner:"Rich DeLeau",     status:"Open",        pri:"High",   target:"Q2 2026",  prog:"Core EHS"},
-  {id:4,  task:"Overhead Doors — Pin/Remove Latimer",               owner:"Steve Wolbrink",  status:"Open",        pri:"High",   target:"Q2 2026",  prog:"Core EHS"},
-  {id:5,  task:"LOTO Annual Reviews — Sign-Offs Documented",        owner:"Steve Wolbrink",  status:"Behind",      pri:"High",   target:"Q2 2026",  prog:"Core EHS"},
-  {id:6,  task:"MVPP Action Plan — Employee Engagement",            owner:"Victor Pizarro",  status:"Behind",      pri:"High",   target:"Q1 2026",  prog:"Core EHS"},
-  {id:7,  task:"Air Inventory Requirements Review",                 owner:"Steve Wolbrink",  status:"At-Risk",     pri:"High",   target:"Q2 2026",  prog:"Core EHS"},
-  {id:8,  task:"LOTO Program Full Review & Refresh",                owner:"Steve Wolbrink",  status:"Behind",      pri:"High",   target:"Q2 2026",  prog:"Core EHS"},
-  {id:9,  task:"Digital Heat Mapping — Baseline Scores",            owner:"Victor Pizarro",  status:"Open",        pri:"High",   target:"Q2 2026",  prog:"Core EHS"},
-  {id:10, task:"Create JSA Training Course per Dept",               owner:"Steve Wolbrink",  status:"Open",        pri:"High",   target:"Q3 2026",  prog:"Core EHS"},
-  {id:11, task:"Electrical Safety Framework",                       owner:"Victor Pizarro",  status:"Open",        pri:"High",   target:"Q3 2026",  prog:"Core EHS"},
-  {id:12, task:"Fall Prevention — Grinders Project",                owner:"Rich DeLeau",     status:"Open",        pri:"High",   target:"Q2 2026",  prog:"Core EHS"},
-  {id:13, task:"E-Gauge Light Curtain Requirements Review",         owner:"Rich DeLeau",     status:"Open",        pri:"High",   target:"Q2 2026",  prog:"Core EHS"},
-  {id:14, task:"PFAS Updates Tracking",                             owner:"Rich DeLeau",     status:"Open",        pri:"Medium", target:"Ongoing",  prog:"Core EHS"},
-  {id:15, task:"Build Security Assessment Action Plan",             owner:"Zach Tindall",    status:"Open",        pri:"High",   target:"Q2 2026",  prog:"Core EHS"},
-  {id:16, task:"Verify Stormwater Plan Updates",                    owner:"Steve Wolbrink",  status:"Open",        pri:"High",   target:"Q2 2026",  prog:"Core EHS"},
-  {id:17, task:"Verify SPCC & PIPP Updates",                        owner:"Steve Wolbrink",  status:"Open",        pri:"High",   target:"Q2 2026",  prog:"Core EHS"},
-  {id:18, task:"Add Latimer East to ODS",                           owner:"Steve Wolbrink",  status:"Open",        pri:"Medium", target:"Q2 2026",  prog:"Core EHS"},
-  {id:19, task:"Enhesa Review with Fishbeck",                       owner:"Steve Wolbrink",  status:"Open",        pri:"Medium", target:"Q3 2026",  prog:"Core EHS"},
-  {id:20, task:"LOTO Procedures — Decision Tree Addition",          owner:"Steve Wolbrink",  status:"Open",        pri:"Medium", target:"Q3 2026",  prog:"Core EHS"},
-  {id:21, task:"Pipe Labeling — Hire Contractor",                   owner:"Steve Wolbrink",  status:"Open",        pri:"Medium", target:"Q2 2026",  prog:"Core EHS"},
-  {id:22, task:"Shop Towel Trials (longevity, cost)",               owner:"Steve Wolbrink",  status:"Open",        pri:"Low",    target:"Q3 2026",  prog:"Core EHS"},
-  {id:23, task:"Coopermatic Hearing Protection — Enforce",          owner:"Rich DeLeau",     status:"Open",        pri:"Medium", target:"Q3 2026",  prog:"Core EHS"},
-  {id:24, task:"Benching Task — Cut Resistant Glove Review",        owner:"Rich DeLeau",     status:"Open",        pri:"Medium", target:"Q2 2026",  prog:"Core EHS"},
-  {id:25, task:"Add Latimer East Radiation Permit to Toolkit",      owner:"Steve Wolbrink",  status:"Open",        pri:"Medium", target:"Q2 2026",  prog:"Core EHS"},
-  {id:26, task:"SPCC Inspection Questions — Cell Updates",          owner:"Steve Wolbrink",  status:"Open",        pri:"Medium", target:"Q2 2026",  prog:"Core EHS"},
-  {id:27, task:"Permit Review — Transformers",                      owner:"Steve Wolbrink",  status:"On Hold",     pri:"Medium", target:"TBD",      prog:"Core EHS"},
-  {id:28, task:"Update Muskegon Training Materials",                owner:"Steve Wolbrink",  status:"Not Started", pri:"Medium", target:"Q2 2026",  prog:"Core EHS"},
-  {id:29, task:"Electrical Safety Framework Support",               owner:"Rich DeLeau",     status:"Open",        pri:"High",   target:"Q3 2026",  prog:"Core EHS"},
-  {id:30, task:"Gensuite ATS Action Closure",                       owner:"Rich DeLeau",     status:"Open",        pri:"Medium", target:"Ongoing",  prog:"Core EHS"},
-  // VPP
-  {id:31, task:"VPP Documentation Package Assembled",               owner:"Victor Pizarro",  status:"Not Started", pri:"High",   target:"Q3 2026",  prog:"VPP"},
-  {id:32, task:"Pre-Assessment Internal VPP Audit",                 owner:"Victor Pizarro",  status:"Not Started", pri:"High",   target:"Sep 2026", prog:"VPP"},
-  {id:33, task:"OSHA Site Assessment Scheduled",                    owner:"Victor Pizarro",  status:"Not Started", pri:"High",   target:"Sep 2026", prog:"VPP"},
-  {id:34, task:"MVPP Preparation Support",                          owner:"Rich DeLeau",     status:"Open",        pri:"High",   target:"Q2 2026",  prog:"VPP"},
-  {id:35, task:"Employee VPP Education — 5 Points of Star",         owner:"Victor Pizarro",  status:"Not Started", pri:"High",   target:"Sep 2026", prog:"VPP"},
-  // VICTOR PERSONAL
-  {id:36, task:"IM Monthly Sustainability Review",                  owner:"Victor Pizarro",  status:"Ongoing",     pri:"Medium", target:"Monthly",  prog:"Core EHS"},
-  {id:37, task:"Energy Saving Action Plan Review",                  owner:"Victor Pizarro",  status:"Ongoing",     pri:"Medium", target:"Monthly",  prog:"Core EHS"},
-  {id:38, task:"SQDIP Action Plan Submissions",                     owner:"Victor Pizarro",  status:"Ongoing",     pri:"High",   target:"Weekly",   prog:"Core EHS"},
-  {id:39, task:"Security Assessment Plan (lead)",                   owner:"Victor Pizarro",  status:"Open",        pri:"High",   target:"Q2 2026",  prog:"Security"},
-  // ERGO
-  {id:40, task:"Muskegon SQDIP Action Plan",                        owner:"Mike Shuster",    status:"Ongoing",     pri:"High",   target:"Ongoing",  prog:"Ergo"},
-  {id:41, task:"Leading Indicators Dashboard — Baseline",           owner:"Mike Shuster",    status:"Behind",      pri:"High",   target:"Q1 2026",  prog:"Ergo"},
-  {id:42, task:"CR2031/TS2031 Gap Assessment",                      owner:"Mike Shuster",    status:"Behind",      pri:"High",   target:"Q1 2026",  prog:"Ergo"},
-  {id:43, task:"Ergo Risk HEAT MAP — Finalize",                     owner:"Mike Shuster",    status:"Open",        pri:"High",   target:"Q2 2026",  prog:"Ergo"},
-  {id:44, task:"Ergo Training Delivery",                            owner:"Mike Shuster",    status:"Behind",      pri:"High",   target:"Q1 2026",  prog:"Ergo"},
-  {id:45, task:"Quick-Ref Workflow Sheets (Non-Occ/Occ)",           owner:"Mike Shuster",    status:"At-Risk",     pri:"Medium", target:"Q1 2026",  prog:"Ergo"},
-  {id:46, task:"Leader Expectations — ATs as Prevention",           owner:"Mike Shuster",    status:"Behind",      pri:"High",   target:"Q1 2026",  prog:"Ergo"},
-  {id:47, task:"Early Intervention Workflows Documented",           owner:"Mike Shuster",    status:"Behind",      pri:"High",   target:"Q1 2026",  prog:"Ergo"},
-  {id:48, task:"Feedback & Conversion Rates Dashboard",             owner:"Mike Shuster",    status:"Behind",      pri:"Medium", target:"Q1 2026",  prog:"Ergo"},
-  {id:49, task:"HEAT MAP Q1 Top 10 Published",                      owner:"Mike Shuster",    status:"At-Risk",     pri:"High",   target:"Q1 2026",  prog:"Ergo"},
-  {id:50, task:"MSD / Discomfort Metric Established",               owner:"Mike Shuster",    status:"At-Risk",     pri:"High",   target:"Q1 2026",  prog:"Ergo"},
-  {id:51, task:"Structured TWP Plans",                              owner:"Mike Shuster",    status:"At-Risk",     pri:"Medium", target:"Q2 2026",  prog:"Ergo"},
-  {id:52, task:"TS2031 Gap Tracker — Complete",                     owner:"Mike Shuster",    status:"Behind",      pri:"High",   target:"Q2 2026",  prog:"Ergo"},
-  {id:53, task:"GenX Height Adjustable Table (#2755)",              owner:"Mike Shuster",    status:"Behind",      pri:"Medium", target:"Q1 2026",  prog:"Ergo"},
-  {id:54, task:"Leap Post Coat Totes",                              owner:"Mike Shuster",    status:"Complete",    pri:"Low",    target:"Complete", prog:"Ergo"},
-  {id:55, task:"MKG Screen Location Kits",                          owner:"Mike Shuster",    status:"On Schedule", pri:"Medium", target:"Q2 2026",  prog:"Ergo"},
-  {id:56, task:"NoSo 94B Glue Tool Release Fixture",                owner:"Mike Shuster",    status:"On Schedule", pri:"Medium", target:"Q2 2026",  prog:"Ergo"},
-  {id:57, task:"Shroud Packing Improvement",                        owner:"Mike Shuster",    status:"Behind",      pri:"Medium", target:"Q3 2026",  prog:"Ergo"},
-  {id:58, task:"Refresh HEAT MAP & 2027 Priorities",                owner:"Mike Shuster",    status:"Not Started", pri:"Medium", target:"Q4 2026",  prog:"Ergo"},
-  {id:59, task:"Jayco Loading Table Assessment",                    owner:"Mike Shuster",    status:"Behind",      pri:"High",   target:"Q1 2026",  prog:"Ergo"},
-  {id:60, task:"Height Adj Box Holder — East Packing",              owner:"Mike Shuster",    status:"Complete",    pri:"Medium", target:"Complete", prog:"Ergo"},
-  {id:61, task:"Braze Oven Loading Assessments",                    owner:"Mike Shuster",    status:"Complete",    pri:"Medium", target:"Complete", prog:"Ergo"},
-  {id:62, task:"Graphite Electrodes Storage Assessment",            owner:"Mike Shuster",    status:"Complete",    pri:"Medium", target:"Complete", prog:"Ergo"},
-  {id:63, task:"Tool Room Haas Grinder Cradle",                     owner:"Victor Pizarro",  status:"Complete",    pri:"Low",    target:"Complete", prog:"Ergo"},
-  {id:64, task:"Shipping Skids — Safety/Ergo Height Limits",        owner:"Rich DeLeau",     status:"Behind",      pri:"High",   target:"Q2 2026",  prog:"Ergo"},
-  {id:65, task:"Shipping Racks — Safety/Ergo",                      owner:"Rich DeLeau",     status:"Behind",      pri:"High",   target:"Q2 2026",  prog:"Ergo"},
-  // SECURITY / ZACH
-  {id:70, task:"Security Framework Compliance Review",              owner:"Zach Tindall",    status:"Open",        pri:"High",   target:"Q3 2026",  prog:"Security"},
-  {id:71, task:"Profiler Updates (Security Module)",                owner:"Zach Tindall",    status:"Open",        pri:"Medium", target:"Annual",   prog:"Security"},
-  {id:72, task:"OnGuard Badge Database Audit",                      owner:"Zach Tindall",    status:"Ongoing",     pri:"High",   target:"Ongoing",  prog:"Security"},
-  {id:73, task:"Server Room Access Audit — Monthly",                owner:"Zach Tindall",    status:"Ongoing",     pri:"High",   target:"Monthly",  prog:"Security"},
-  {id:74, task:"Quarterly Contraband Audit",                        owner:"Zach Tindall",    status:"Ongoing",     pri:"High",   target:"Quarterly",prog:"Security"},
-  {id:75, task:"Security/Emergency Mapping — Complete All",         owner:"Zach Tindall",    status:"Ongoing",     pri:"Medium", target:"Q3 2026",  prog:"Security"},
-  {id:76, task:"Commercial Carrier Process Verification",           owner:"Zach Tindall",    status:"Ongoing",     pri:"Medium", target:"Q2 2026",  prog:"Security"},
-  {id:77, task:"NEO Security Module Standardized",                  owner:"Zach Tindall",    status:"Ongoing",     pri:"Medium", target:"Ongoing",  prog:"Security"},
-  {id:78, task:"Emergency Exit Testing — Document Weekly",          owner:"Zach Tindall",    status:"Ongoing",     pri:"High",   target:"Weekly",   prog:"Security"},
-  {id:79, task:"Card Access Reviews — Report Anomalies",            owner:"Zach Tindall",    status:"Ongoing",     pri:"High",   target:"Weekly",   prog:"Security"},
-  {id:80, task:"Stormwater Audits — Both Sites Bi-Weekly",          owner:"Zach Tindall",    status:"Ongoing",     pri:"Medium", target:"Bi-Weekly",prog:"Security"},
-  {id:81, task:"SPCC Audits — Both Sites Monthly",                  owner:"Zach Tindall",    status:"Ongoing",     pri:"Medium", target:"Monthly",  prog:"Security"},
+const DEFAULT_LINKS=[
+  {name:"Gensuite EHS",url:"https://gehscloud.com",desc:"Compliance & action tracking",icon:"📋",color:"#1D4ED8"},
+  {name:"Spotfire Bowler",url:"https://ge.com",desc:"EHS & Security dashboard metrics",icon:"📊",color:"#059669"},
+  {name:"TAVS WOR",url:"https://ge.com",desc:"Plant health pulse reports",icon:"🏭",color:"#7C3AED"},
+  {name:"OnGuard",url:"https://ge.com",desc:"Badge & access control system",icon:"🔒",color:"#D97706"},
+  {name:"Right Crowd",url:"https://ge.com",desc:"Visitor & contractor management",icon:"👥",color:"#0891B2"},
+  {name:"Box / GE Docs",url:"https://box.com",desc:"EHS document storage & sharing",icon:"📁",color:"#374151"},
+  {name:"GE Aerospace Hub",url:"https://gehub.ge.com",desc:"Internal GE portal",icon:"✈️",color:"#1D4ED8"},
+  {name:"Enhesa",url:"https://enhesa.com",desc:"Regulatory intelligence platform",icon:"⚖️",color:"#DC2626"},
+  {name:"OSHA Resources",url:"https://osha.gov",desc:"Standards, regulations, VPP info",icon:"🛡️",color:"#059669"},
+  {name:"EPA Compliance",url:"https://epa.gov",desc:"Environmental regulations",icon:"🌱",color:"#065F46"},
+  {name:"ATI / Ergo Portal",url:"https://ati.com",desc:"Ergonomics contractor portal",icon:"🤝",color:"#7C3AED"},
+  {name:"GE Muskegon EHS Shared Drive",url:"https://box.com",desc:"Site-specific EHS files",icon:"🗂️",color:"#0891B2"},
 ];
 
-// ═════════════════════════════════════════════════════════════════
-// VPP DATA
-// ═════════════════════════════════════════════════════════════════
-const VPP_DATA = [
-  {id:1, ms:"Zero Regulatory Violations — All Year",       owner:"Full Team",    target:"Ongoing",   pct:95, status:"On Schedule"},
-  {id:2, ms:"MVPP Employee Engagement Plan Launched",      owner:"Victor/Steve", target:"Q1 2026",   pct:20, status:"Behind"},
-  {id:3, ms:"LOTO Program Full Review & Refresh",          owner:"Steve",        target:"Q1 2026",   pct:15, status:"Behind"},
-  {id:4, ms:"Ergo Risk HEAT MAP Q1 Top 10 Published",      owner:"Mike",         target:"Q1 2026",   pct:30, status:"Behind"},
-  {id:5, ms:"Digital Heat Mapping Baseline Established",   owner:"Victor",       target:"Q2 2026",   pct:5,  status:"Not Started"},
-  {id:6, ms:"Contractor Safety 100% Audit Compliance",     owner:"Zach/Rich",    target:"Q2 2026",   pct:60, status:"On Schedule"},
-  {id:7, ms:"Physical Security Program Documented",        owner:"Zach",         target:"Q3 2026",   pct:25, status:"At-Risk"},
-  {id:8, ms:"All LOTO/JSA/PPE Training Current",           owner:"Steve",        target:"Q3 2026",   pct:40, status:"At-Risk"},
-  {id:9, ms:"VPP Documentation Package Assembled",         owner:"Victor",       target:"Q3 2026",   pct:5,  status:"Not Started"},
-  {id:10,ms:"Employee VPP Education (5 Points of Star)",   owner:"Steve/Victor", target:"Sep 2026",  pct:0,  status:"Not Started"},
-  {id:11,ms:"Pre-Assessment Internal VPP Audit",           owner:"Victor",       target:"Sep 2026",  pct:0,  status:"Not Started"},
-  {id:12,ms:"OSHA Site Assessment Scheduled",              owner:"Victor",       target:"Sep 2026",  pct:0,  status:"Not Started"},
-  {id:13,ms:"⭐ VPP STAR RE-CERTIFICATION AWARDED",        owner:"FULL TEAM",    target:"Oct 2026",  pct:0,  status:"Not Started"},
-];
-
-// ═════════════════════════════════════════════════════════════════
-// SCHEDULE (per person key → weekly calendar blocks)
-// ═════════════════════════════════════════════════════════════════
-const TIMES = ["7:00","7:30","8:00","8:30","9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","1:00","1:30","2:00","2:30","3:00","3:30","4:00","4:30"];
-const SCHED = {
+const SCHED_DATA={
   VP:[
-    {day:1,time:"8:00",label:"Update Weekly Pulse",                bg:"#DBEAFE",color:"#1E40AF"},
-    {day:1,time:"8:30",label:"Floor Genba / Tier 4-5",             bg:"#D1FAE5",color:"#065F46"},
-    {day:1,time:"9:00",label:"Review Gensuite Calendar",           bg:"#EDE9FE",color:"#4C1D95"},
-    {day:1,time:"10:00",label:"NEO Safety Module",                 bg:"#FEF3C7",color:"#92400E"},
-    {day:1,time:"2:00",label:"Fac + EHS Align",                    bg:"#EDE9FE",color:"#4C1D95"},
-    {day:2,time:"8:30",label:"Floor Genba / Tier 4-5",             bg:"#D1FAE5",color:"#065F46"},
-    {day:2,time:"9:30",label:"W. Hoshin",                          bg:"#EDE9FE",color:"#4C1D95"},
-    {day:2,time:"2:00",label:"SQDIP Action Plan Prep",             bg:"#DBEAFE",color:"#1E40AF"},
-    {day:3,time:"8:30",label:"Floor Genba / Tier 4-5",             bg:"#D1FAE5",color:"#065F46"},
-    {day:3,time:"9:30",label:"Director Update",                    bg:"#EDE9FE",color:"#4C1D95"},
-    {day:3,time:"10:00",label:"LOTO / Safety Training",            bg:"#FEF3C7",color:"#92400E"},
-    {day:3,time:"1:00",label:"Eng. RA Review",                     bg:"#FEF9C3",color:"#713F12"},
-    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",                bg:"#FCE7F3",color:"#831843"},
-    {day:4,time:"8:30",label:"Floor Genba / Tier 4-5",             bg:"#D1FAE5",color:"#065F46"},
-    {day:4,time:"9:30",label:"EHS + HR Align",                     bg:"#EDE9FE",color:"#4C1D95"},
-    {day:4,time:"10:00",label:"SQDIP Staff Mtg",                   bg:"#DBEAFE",color:"#1E40AF"},
-    {day:4,time:"11:00",label:"W. Mainsite Align",                 bg:"#EDE9FE",color:"#4C1D95"},
-    {day:4,time:"1:00",label:"Health Services Align",              bg:"#EDE9FE",color:"#4C1D95"},
-    {day:5,time:"8:30",label:"Floor Genba / Tier 4-5",             bg:"#D1FAE5",color:"#065F46"},
-    {day:5,time:"11:00",label:"W. Safety Chat",                    bg:"#D1FAE5",color:"#065F46"},
-    {day:5,time:"12:00",label:"Safe Start Monday Prep",            bg:"#FEF3C7",color:"#92400E"},
+    {day:1,time:"8:00",label:"Update Weekly Pulse",bg:"#DBEAFE",color:"#1E40AF"},
+    {day:1,time:"8:30",label:"Floor Genba / Tier 4-5",bg:"#D1FAE5",color:"#065F46"},
+    {day:1,time:"9:00",label:"Review Gensuite Calendar",bg:"#EDE9FE",color:"#4C1D95"},
+    {day:2,time:"8:30",label:"Floor Genba / Tier 4-5",bg:"#D1FAE5",color:"#065F46"},
+    {day:2,time:"9:30",label:"W. Hoshin",bg:"#EDE9FE",color:"#4C1D95"},
+    {day:3,time:"8:30",label:"Floor Genba / Tier 4-5",bg:"#D1FAE5",color:"#065F46"},
+    {day:3,time:"10:00",label:"LOTO / Safety Training",bg:"#FEF3C7",color:"#92400E"},
+    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",bg:"#FCE7F3",color:"#831843"},
+    {day:4,time:"10:00",label:"SQDIP Staff Mtg",bg:"#DBEAFE",color:"#1E40AF"},
+    {day:5,time:"8:30",label:"Floor Genba / Tier 4-5",bg:"#D1FAE5",color:"#065F46"},
+    {day:5,time:"12:00",label:"Safe Start Monday Prep",bg:"#FEF3C7",color:"#92400E"},
   ],
   SW:[
-    {day:1,time:"7:30",label:"Cell Inspection Rounds",             bg:"#D1FAE5",color:"#065F46"},
-    {day:1,time:"8:00",label:"Update Weekly Pulse",                bg:"#DBEAFE",color:"#1E40AF"},
-    {day:1,time:"9:00",label:"Gensuite Calendar Review",           bg:"#EDE9FE",color:"#4C1D95"},
-    {day:1,time:"10:00",label:"PPE Audits",                        bg:"#FEF3C7",color:"#92400E"},
-    {day:1,time:"2:00",label:"Slip/Trip/Fall Audits",              bg:"#FEF3C7",color:"#92400E"},
-    {day:2,time:"7:30",label:"Cell Inspection Rounds",             bg:"#D1FAE5",color:"#065F46"},
-    {day:2,time:"10:00",label:"JSA Audits",                        bg:"#FEF3C7",color:"#92400E"},
-    {day:2,time:"11:00",label:"LOTO Audits",                       bg:"#FEF3C7",color:"#92400E"},
-    {day:3,time:"7:30",label:"Cell Inspection Rounds",             bg:"#D1FAE5",color:"#065F46"},
-    {day:3,time:"8:00",label:"Update Weekly EHS Pulse",            bg:"#DBEAFE",color:"#1E40AF"},
-    {day:3,time:"9:00",label:"Labor Hours Verify",                 bg:"#DBEAFE",color:"#1E40AF"},
-    {day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",         bg:"#D1FAE5",color:"#065F46"},
-    {day:3,time:"2:00",label:"Clear Desk Audit",                   bg:"#EEF2FF",color:"#3730A3"},
-    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",                bg:"#FCE7F3",color:"#831843"},
-    {day:4,time:"9:00",label:"EHS Committee Mtg",                  bg:"#EDE9FE",color:"#4C1D95"},
-    {day:4,time:"10:00",label:"LOTO Annual Review Docs",           bg:"#FEF3C7",color:"#92400E"},
-    {day:4,time:"2:00",label:"Stormwater Audit (Alt)",             bg:"#CFFAFE",color:"#164E63"},
-    {day:5,time:"7:30",label:"Cell Inspection Rounds",             bg:"#D1FAE5",color:"#065F46"},
-    {day:5,time:"10:00",label:"PPE / STF Audit",                   bg:"#FEF3C7",color:"#92400E"},
-    {day:5,time:"12:00",label:"Safe Start Monday Delivery",        bg:"#FEF3C7",color:"#92400E"},
+    {day:1,time:"7:30",label:"Cell Inspection Rounds",bg:"#D1FAE5",color:"#065F46"},
+    {day:1,time:"9:00",label:"Gensuite Calendar Review",bg:"#EDE9FE",color:"#4C1D95"},
+    {day:1,time:"10:00",label:"PPE Audits",bg:"#FEF3C7",color:"#92400E"},
+    {day:2,time:"7:30",label:"Cell Inspection Rounds",bg:"#D1FAE5",color:"#065F46"},
+    {day:2,time:"10:00",label:"JSA Audits",bg:"#FEF3C7",color:"#92400E"},
+    {day:3,time:"7:30",label:"Cell Inspection Rounds",bg:"#D1FAE5",color:"#065F46"},
+    {day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",bg:"#D1FAE5",color:"#065F46"},
+    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",bg:"#FCE7F3",color:"#831843"},
+    {day:4,time:"10:00",label:"LOTO Annual Review Docs",bg:"#FEF3C7",color:"#92400E"},
+    {day:5,time:"7:30",label:"Cell Inspection Rounds",bg:"#D1FAE5",color:"#065F46"},
+    {day:5,time:"12:00",label:"Safe Start Monday Delivery",bg:"#FEF3C7",color:"#92400E"},
   ],
   MS:[
-    {day:1,time:"7:30",label:"AT Floor Time / EI",                 bg:"#EDE9FE",color:"#4C1D95"},
-    {day:1,time:"9:00",label:"Stretching Monitor",                 bg:"#D1FAE5",color:"#065F46"},
-    {day:1,time:"10:00",label:"Ergo Improvement Projects",         bg:"#EDE9FE",color:"#4C1D95"},
-    {day:1,time:"2:00",label:"TS2031 Gap Work",                    bg:"#EDE9FE",color:"#4C1D95"},
-    {day:2,time:"7:30",label:"AT Floor Time / Occ Cases",          bg:"#EDE9FE",color:"#4C1D95"},
-    {day:2,time:"9:00",label:"Leading Indicators Update",          bg:"#DBEAFE",color:"#1E40AF"},
-    {day:2,time:"10:00",label:"HEAT MAP / Analysis",               bg:"#EDE9FE",color:"#4C1D95"},
-    {day:3,time:"7:30",label:"AT Floor Time / Non-Occ",            bg:"#EDE9FE",color:"#4C1D95"},
-    {day:3,time:"9:00",label:"Ergo Dashboard Update",              bg:"#DBEAFE",color:"#1E40AF"},
-    {day:3,time:"2:00",label:"Improvement Project Work",           bg:"#EDE9FE",color:"#4C1D95"},
-    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",                bg:"#FCE7F3",color:"#831843"},
-    {day:4,time:"9:00",label:"EIP / Ergo Pulse",                   bg:"#EDE9FE",color:"#4C1D95"},
-    {day:4,time:"10:00",label:"Ergo Committee (Mo)",               bg:"#EDE9FE",color:"#4C1D95"},
-    {day:4,time:"2:00",label:"Feedback & Conversion Review",       bg:"#DBEAFE",color:"#1E40AF"},
-    {day:5,time:"7:30",label:"AT Floor Time / Coaching",           bg:"#EDE9FE",color:"#4C1D95"},
-    {day:5,time:"9:00",label:"Recognize Teams / AT Engagement",    bg:"#D1FAE5",color:"#065F46"},
+    {day:1,time:"7:30",label:"AT Floor Time / EI",bg:"#EDE9FE",color:"#4C1D95"},
+    {day:1,time:"10:00",label:"Ergo Projects",bg:"#EDE9FE",color:"#4C1D95"},
+    {day:2,time:"7:30",label:"AT Floor / Occ Cases",bg:"#EDE9FE",color:"#4C1D95"},
+    {day:2,time:"10:00",label:"HEAT MAP Analysis",bg:"#EDE9FE",color:"#4C1D95"},
+    {day:3,time:"7:30",label:"AT Floor / Non-Occ",bg:"#EDE9FE",color:"#4C1D95"},
+    {day:3,time:"9:00",label:"Ergo Dashboard Update",bg:"#DBEAFE",color:"#1E40AF"},
+    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",bg:"#FCE7F3",color:"#831843"},
+    {day:4,time:"9:00",label:"EIP / Ergo Pulse",bg:"#EDE9FE",color:"#4C1D95"},
+    {day:5,time:"7:30",label:"AT Floor / Coaching",bg:"#EDE9FE",color:"#4C1D95"},
+    {day:5,time:"9:00",label:"Recognize Teams",bg:"#D1FAE5",color:"#065F46"},
   ],
   RD:[
-    {day:1,time:"7:00",label:"Contractor JSA Audit",               bg:"#FEF3C7",color:"#92400E"},
-    {day:1,time:"7:30",label:"Aerial/Scissor Lift Inspection",     bg:"#FEF3C7",color:"#92400E"},
-    {day:1,time:"8:30",label:"Contractor Safety Audit",            bg:"#FEF3C7",color:"#92400E"},
-    {day:1,time:"10:00",label:"PPE Audits",                        bg:"#FEF3C7",color:"#92400E"},
-    {day:2,time:"7:00",label:"Contractor JSA Audit",               bg:"#FEF3C7",color:"#92400E"},
-    {day:2,time:"7:30",label:"Aerial/Scissor Lift Inspection",     bg:"#FEF3C7",color:"#92400E"},
-    {day:2,time:"10:00",label:"Slip/Trip/Fall Audits",             bg:"#FEF3C7",color:"#92400E"},
-    {day:3,time:"7:00",label:"Contractor JSA Audit",               bg:"#FEF3C7",color:"#92400E"},
-    {day:3,time:"7:30",label:"Aerial/Scissor Lift Inspection",     bg:"#FEF3C7",color:"#92400E"},
-    {day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",         bg:"#D1FAE5",color:"#065F46"},
-    {day:3,time:"2:00",label:"MVPP Prep Work",                     bg:"#FEF3C7",color:"#92400E"},
-    {day:4,time:"7:00",label:"Contractor JSA Audit",               bg:"#FEF3C7",color:"#92400E"},
-    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",                bg:"#FCE7F3",color:"#831843"},
-    {day:4,time:"10:00",label:"LOTO Support",                      bg:"#FEF3C7",color:"#92400E"},
-    {day:5,time:"7:00",label:"Contractor JSA Audit",               bg:"#FEF3C7",color:"#92400E"},
-    {day:5,time:"7:30",label:"Aerial/Scissor Lift Inspection",     bg:"#FEF3C7",color:"#92400E"},
-    {day:5,time:"10:00",label:"Gensuite ATS Closures",             bg:"#DBEAFE",color:"#1E40AF"},
+    {day:1,time:"7:00",label:"Contractor JSA Audit",bg:"#FEF3C7",color:"#92400E"},
+    {day:1,time:"7:30",label:"Aerial/Scissor Lift Insp.",bg:"#FEF3C7",color:"#92400E"},
+    {day:2,time:"7:00",label:"Contractor JSA Audit",bg:"#FEF3C7",color:"#92400E"},
+    {day:2,time:"7:30",label:"Aerial/Scissor Lift Insp.",bg:"#FEF3C7",color:"#92400E"},
+    {day:3,time:"7:00",label:"Contractor JSA Audit",bg:"#FEF3C7",color:"#92400E"},
+    {day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",bg:"#D1FAE5",color:"#065F46"},
+    {day:4,time:"7:00",label:"Contractor JSA Audit",bg:"#FEF3C7",color:"#92400E"},
+    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",bg:"#FCE7F3",color:"#831843"},
+    {day:5,time:"7:00",label:"Contractor JSA Audit",bg:"#FEF3C7",color:"#92400E"},
+    {day:5,time:"10:00",label:"Gensuite ATS Closures",bg:"#DBEAFE",color:"#1E40AF"},
   ],
   ZT:[
-    {day:1,time:"7:00",label:"Badge Audit + Sign-in Review",       bg:"#EEF2FF",color:"#3730A3"},
-    {day:1,time:"7:30",label:"Contractor Safety Audit",            bg:"#EEF2FF",color:"#3730A3"},
-    {day:1,time:"8:00",label:"Contractor JSA Audit",               bg:"#EEF2FF",color:"#3730A3"},
-    {day:1,time:"9:00",label:"Perimeter + Fenceline Inspection",   bg:"#EEF2FF",color:"#3730A3"},
-    {day:1,time:"10:00",label:"Camera Inspection",                  bg:"#EEF2FF",color:"#3730A3"},
-    {day:1,time:"11:00",label:"Card Access Review",                bg:"#EEF2FF",color:"#3730A3"},
-    {day:2,time:"7:00",label:"Badge Audit + Sign-in Review",       bg:"#EEF2FF",color:"#3730A3"},
-    {day:2,time:"7:30",label:"Contractor Safety Audit",            bg:"#EEF2FF",color:"#3730A3"},
-    {day:2,time:"9:00",label:"Lighting Inspection",                bg:"#EEF2FF",color:"#3730A3"},
-    {day:2,time:"10:00",label:"Clear Desk Audit",                  bg:"#EEF2FF",color:"#3730A3"},
-    {day:3,time:"7:00",label:"Badge Audit + Sign-in Review",       bg:"#EEF2FF",color:"#3730A3"},
-    {day:3,time:"7:30",label:"Contractor Safety Audit",            bg:"#EEF2FF",color:"#3730A3"},
-    {day:3,time:"9:00",label:"Eyewash / Spill Kit Audit",          bg:"#D1FAE5",color:"#065F46"},
-    {day:3,time:"10:00",label:"Stormwater Audit (Bi-Wkly)",        bg:"#CFFAFE",color:"#164E63"},
-    {day:4,time:"7:00",label:"Badge Audit + Sign-in Review",       bg:"#EEF2FF",color:"#3730A3"},
-    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",                bg:"#FCE7F3",color:"#831843"},
-    {day:4,time:"9:00",label:"Emergency Exit Testing",             bg:"#FEF3C7",color:"#92400E"},
-    {day:4,time:"10:00",label:"Server Room Access (Mo)",           bg:"#EEF2FF",color:"#3730A3"},
-    {day:5,time:"7:00",label:"Badge Audit + Sign-in Review",       bg:"#EEF2FF",color:"#3730A3"},
-    {day:5,time:"8:30",label:"NEO Security Module",                bg:"#EEF2FF",color:"#3730A3"},
-    {day:5,time:"10:00",label:"Spotfire Security Bowler",          bg:"#EEF2FF",color:"#3730A3"},
+    {day:1,time:"7:00",label:"Badge Audit + Sign-in",bg:"#EEF2FF",color:"#3730A3"},
+    {day:1,time:"9:00",label:"Perimeter Inspection",bg:"#EEF2FF",color:"#3730A3"},
+    {day:1,time:"10:00",label:"Camera Inspection",bg:"#EEF2FF",color:"#3730A3"},
+    {day:2,time:"7:00",label:"Badge Audit + Sign-in",bg:"#EEF2FF",color:"#3730A3"},
+    {day:2,time:"9:00",label:"Lighting Inspection",bg:"#EEF2FF",color:"#3730A3"},
+    {day:3,time:"7:00",label:"Badge Audit + Sign-in",bg:"#EEF2FF",color:"#3730A3"},
+    {day:3,time:"9:00",label:"Eyewash / Spill Kit",bg:"#D1FAE5",color:"#065F46"},
+    {day:4,time:"7:00",label:"Badge Audit + Sign-in",bg:"#EEF2FF",color:"#3730A3"},
+    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",bg:"#FCE7F3",color:"#831843"},
+    {day:4,time:"9:00",label:"Emergency Exit Testing",bg:"#FEF3C7",color:"#92400E"},
+    {day:5,time:"7:00",label:"Badge Audit + Sign-in",bg:"#EEF2FF",color:"#3730A3"},
+    {day:5,time:"8:30",label:"NEO Security Module",bg:"#EEF2FF",color:"#3730A3"},
   ],
 };
 
-const REC_TASKS = {
-  VP:{
-    DAILY:["Floor Genba — Tier 4/5","Review team comms & prioritize day","Check Gensuite for new open items"],
-    WEEKLY:["EHS Team Meeting (Thu 7:45)","TAVS WOR Pulse (Tue 2 PM)","Update EHS Pulse (Wed 8 AM)","SQDIP Action Plan","Safe Start Monday prep","Bi-Weekly Safety Walks","Bi-Weekly EHS Leadership Pulse"],
-    MONTHLY:["EHS Bowler Review","TAVS MOR Bowler + Safety Moment","EHS Priorities — Staff Mtg","Security MOR","IM Sustainability Review","Check Spotfire Bowlers","Energy Action Plan Review"],
-    ONGOING:["VPP Star Re-Certification prep","Profiler Updates","Framework Compliance reviews","Environmental Permit Review","Gensuite ATS closures"],
-  },
-  SW:{
-    DAILY:["Cell inspection rounds / floor presence","Eyewash station check","Spill kit check"],
-    WEEKLY:["EHS Team Meeting (Thu 7:45)","PPE Audits — 38/week","JSA Audits — 26/month","STF Audits — 88/week","LOTO Audits","EHS Electronic Cell Inspection (17/wk)","Labor Hours verify","Clear Desk Audit","Safe Start Monday delivery"],
-    MONTHLY:["EHS Monthly Cell Inspection (17/month)","LOTO Annual Reviews","SPCC Audits — both sites","EHS Training Compliance","EHS Committee Mtgs","Bi-Weekly Stormwater Audits"],
-    ONGOING:["MVPP prep","LOTO Procedures — decision tree","JSA Training Course per dept","Update training materials","Enhesa Review with Fishbeck","Air Inventory Review"],
-  },
-  MS:{
-    DAILY:["AT floor time / coaching sessions","Early intervention check-ins","Monitor stretching participation"],
-    WEEKLY:["EHS Team Meeting (Thu 7:45)","Structured AT floor time","Early Intervention: Non-Occ 1-2x; Occ 2x","Recognize teams engaging with ATs","Ergo improvement project work"],
-    MONTHLY:["EIP / Ergonomic Pulse (bi-weekly)","Ergo Committee Review","Ergo Dashboard metrics","Leading indicators tracking","Feedback & conversion review","Biometric tracking"],
-    ONGOING:["Ergo HEAT MAP — finalize","CR2031/TS2031 Gap Assessment","Ergo training delivery","MSD/discomfort metric","Structured TWP Plans","Refresh HEAT MAP — 2027 priorities"],
-  },
-  RD:{
-    DAILY:["Contractor JSA Audit & Collection","Aerial/Scissor Lift Inspection","Contractor Safety Audit (all contractors)"],
-    WEEKLY:["EHS Team Meeting (Thu 7:45)","PPE Audits (support 38/wk)","JSA Audits (support)","STF Audits (support)","EHS Cell Inspection (support)","Eyewash Station Audit","Spill Kit Audit","NEO Safety Module (backup)"],
-    MONTHLY:["MVPP preparation support","Gensuite ATS action closure"],
-    ONGOING:["LOTO Program Review support","E-Gauge light curtain review","Coopermatic hearing protection","PFAS Updates tracking","Electrical Safety Framework","Fall Prevention — Grinders","Shipping skids/racks ergo support"],
-  },
-  ZT:{
-    DAILY:["Badge audits — all employees","Contractor safety audits (all)","JSA audit & collection","Sign-in sheets — audit vs OnGuard","Security Tasks File update"],
-    WEEKLY:["Perimeter inspections","Lighting inspections","Fenceline inspections","Camera inspections","Clear desk audit","Card access reviews","Emergency exit testing","NEO Security/Safety Module","Parking violation audits","Permanent badges for new hires","Eyewash Station Audit","Spill Kit Audit"],
-    MONTHLY:["SPCC Audits — both sites","Server Room Access Audit","Security MOR Meeting","Check Security Spotfire Bowler","Stormwater Audits (bi-weekly)"],
-    ONGOING:["Quarterly Contraband Audit","Security/Emergency Mapping","Security Assessment Action Plan","Security Framework Compliance","Profiler Updates","Emergency Preparedness (Victor-assigned)"],
-  },
+const REC_TASKS={
+  VP:{DAILY:["Floor Genba — Tier 4/5","Review team comms & day priority","Check Gensuite open items"],WEEKLY:["EHS Team Meeting Thu 7:45","TAVS WOR Pulse Tue 2PM","Update EHS Pulse Wed 8AM","SQDIP Action Plan update","Safe Start Monday prep","Bi-Weekly Safety Walks"],MONTHLY:["EHS Bowler Review","TAVS MOR Bowler + Safety Moment","Muskegon EHS Staff Mtg","Security MOR","IM Sustainability Review","Check Spotfire Bowlers"],ONGOING:["VPP Re-Certification prep","Profiler Updates","Framework Compliance","Environmental Permit Review"]},
+  SW:{DAILY:["Cell inspection rounds","Eyewash station check","Spill kit check"],WEEKLY:["EHS Team Meeting Thu 7:45","PPE Audits — 38/wk","JSA Audits — 26/mo","STF Audits — 88/wk","LOTO Audits","EHS Cell Inspection (17/wk)","Labor Hours verify","Clear Desk Audit","Safe Start Monday delivery"],MONTHLY:["EHS Monthly Cell Inspection","LOTO Annual Reviews","SPCC Audits","EHS Training Compliance","EHS Committee Mtgs"],ONGOING:["MVPP prep","LOTO Procedures — decision tree","JSA Training Course","Update training materials","Enhesa Review"]},
+  MS:{DAILY:["AT floor time / coaching","Early intervention check-ins","Monitor stretching participation"],WEEKLY:["EHS Team Meeting Thu 7:45","Structured AT floor time","Early Intervention rounds","Recognize AT engagement teams","Ergo project work"],MONTHLY:["EIP / Ergonomic Pulse","Ergo Committee Review","Ergo Dashboard metrics","Leading indicators tracking","Biometric tracking"],ONGOING:["Ergo HEAT MAP finalize","CR2031/TS2031 Gap Assessment","Ergo training delivery","MSD metric","TWP Plans","Refresh HEAT MAP — 2027"]},
+  RD:{DAILY:["Contractor JSA Audit & Collection","Aerial/Scissor Lift Inspection","Contractor Safety Audit (all)"],WEEKLY:["EHS Team Meeting Thu 7:45","PPE Audits support","JSA/STF Audit support","EHS Cell Inspection support","Eyewash Station Audit","Spill Kit Audit"],MONTHLY:["MVPP prep support","Gensuite ATS closures"],ONGOING:["LOTO Program Review support","E-Gauge light curtain","Coopermatic hearing protection","PFAS tracking","Electrical Safety Framework","Grinders fall prevention"]},
+  ZT:{DAILY:["Badge audits — all employees","Contractor safety audits","JSA audit & collection","Sign-in sheets vs OnGuard"],WEEKLY:["Perimeter inspections","Lighting inspections","Camera inspections","Clear desk audit","Card access reviews","Emergency exit testing","NEO Security Module","Parking violation audits","New hire permanent badges"],MONTHLY:["SPCC Audits — both sites","Server Room Access Audit","Security MOR Meeting","Check Security Spotfire Bowler"],ONGOING:["Quarterly Contraband Audit","Security/Emergency Mapping","Security Assessment Action Plan","Security Framework Compliance","Profiler Updates"]},
 };
 
-// ═════════════════════════════════════════════════════════════════
-// STATE — localStorage persistence
-// ═════════════════════════════════════════════════════════════════
-function loadState(){
-  try{return JSON.parse(localStorage.getItem('ehs_v3')||'{}')}catch(e){return {}}
-}
-function saveState(){
-  try{localStorage.setItem('ehs_v3',JSON.stringify(state))}catch(e){}
-}
-let state = loadState();
-// state[id] = {status, pri, target, owner, notes}
+// ════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════
+function loadS(){try{return JSON.parse(localStorage.getItem('ehsv4')||'{}')}catch(e){return {}}}
+function saveS(){try{localStorage.setItem('ehsv4',JSON.stringify(S))}catch(e){}}
 
-function getField(id, field){
-  const s = state[id];
-  const a = ACTIONS.find(x=>x.id===id);
-  if(s && s[field] !== undefined) return s[field];
-  return a ? a[field] : '';
-}
-function setField(id, field, val){
-  if(!state[id]) state[id] = {};
-  state[id][field] = val;
-  saveState();
-  refreshCounts();
-  showToast(`✅ Updated`);
-}
+let S=loadS();
+if(!S.actions)  S.actions=JSON.parse(JSON.stringify(DEFAULT_ACTIONS));
+if(!S.vpp)      S.vpp=JSON.parse(JSON.stringify(DEFAULT_VPP));
+if(!S.metrics)  S.metrics=JSON.parse(JSON.stringify(DEFAULT_METRICS));
+if(!S.links)    S.links=JSON.parse(JSON.stringify(DEFAULT_LINKS));
+if(!S.comments) S.comments={};
+if(!S.chat)     S.chat=[];
+if(!S.nextId)   S.nextId=200;
 
-// ═════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════
 // HELPERS
-// ═════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════
 function pc(p){return p>=75?'#059669':p>=40?'#D97706':'#DC2626'}
-function pb(pct,h=8){return `<div class="pt" style="height:${h}px"><div class="pf" style="width:${Math.min(pct,100)}%;background:${pc(pct)};height:${h}px"></div></div>`}
-function bc(s){return 'badge b-'+(s||'Open').replace(/[\s-]/g,'')}
-function priClass(p){return 'p-'+(p||'Low')}
-function toast(msg){
+function pb(pct,h=8){const p=Math.min(pct,100);return `<div class="pt" style="height:${h}px"><div class="pf" style="width:${p}%;background:${pc(pct)};height:${h}px"></div></div>`}
+function bk(s){return 'badge s-'+(s||'Open').replace(/[\s-]/g,'')}
+function pri(p){return `<span class="p-${p||'Low'}">${p||'Low'}</span>`}
+function toast(msg,col){
   const t=document.getElementById('toast');
+  t.style.background=col||'var(--navy)';
   t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2200);
 }
-function showToast(m){toast(m)}
-function actionsForPerson(nameOrKey){
-  const name = TEAM[nameOrKey]?TEAM[nameOrKey].name:nameOrKey;
-  return ACTIONS.filter(a=>(getField(a.id,'owner')||a.owner)===name);
-}
-function byStatus(s){return ACTIONS.filter(a=>getField(a.id,'status')===s).length}
-function totalDone(){return ACTIONS.filter(a=>getField(a.id,'status')==='Complete').length}
+function opts(arr,cur){return arr.map(o=>`<option${o===cur?' selected':''}>${o}</option>`).join('')}
 
-// Select HTML helper
-function selOpts(opts, current){
-  return opts.map(o=>`<option value="${o}"${o===current?' selected':''}>${o}</option>`).join('');
-}
+function actionsFor(name){return S.actions.filter(a=>a.owner===name)}
+function byStatus(s){return S.actions.filter(a=>a.status===s).length}
+function totalDone(){return S.actions.filter(a=>a.status==='Complete').length}
+function totalCount(){return S.actions.length}
 
-// Editable select cell
-function editSel(id, field, opts, current, extraStyle=''){
-  return `<select class="cell-edit" style="${extraStyle}" onchange="setField(${id},'${field}',this.value);updateRow(${id})">
-    ${selOpts(opts, current)}
-  </select>`;
-}
-// Editable text cell
-function editTxt(id, field, current){
-  return `<input class="cell-edit" type="text" value="${(current||'').replace(/"/g,'&quot;')}" onchange="setField(${id},'${field}',this.value);updateRow(${id})" placeholder="Edit…"/>`;
+function upd(id,field,val){
+  const a=S.actions.find(x=>x.id===id);if(a){a[field]=val;saveS();}
+  rebuildAll();
+  toast(`✅ ${field} updated`,'#059669');
 }
 
-function updateRow(id){
-  refreshCounts();
-  // Re-render the specific row if it exists
-  const row = document.getElementById('arow-'+id);
-  if(row) row.outerHTML = buildActionRow(id, ACTIONS.find(a=>a.id===id));
+function del(id){
+  if(!confirm('Delete this task?')) return;
+  S.actions=S.actions.filter(a=>a.id!==id);
+  saveS();rebuildAll();
+  toast('🗑️ Task deleted','#DC2626');
 }
 
-// ═════════════════════════════════════════════════════════════════
-// BUILD ACTION ROW  — fully editable
-// ═════════════════════════════════════════════════════════════════
-function buildActionRow(id, a){
-  const status  = getField(id,'status');
-  const pri     = getField(id,'pri');
-  const target  = getField(id,'target');
-  const owner   = getField(id,'owner');
-  const prog    = getField(id,'prog');
-  const isDone  = status==='Complete';
-  const ownerKey= Object.entries(TEAM).find(([k,v])=>v.name===owner);
-  const oc = ownerKey ? TEAM[ownerKey[0]].color : '#374151';
-  const rowBg = isDone?'background:#F0FDF4':'';
+function toggleDone(id){
+  const a=S.actions.find(x=>x.id===id);
+  if(!a) return;
+  a.status=a.status==='Complete'?'Open':'Complete';
+  saveS();rebuildAll();
+  toast(a.status==='Complete'?'✅ Marked Complete!':'↩ Reopened');
+}
 
-  return `<tr id="arow-${id}" style="${rowBg}">
+function rebuildAll(){
+  buildOverview();
+  // Re-render current visible page if it's actions or a person page
+  const cur=Object.keys(PAGES).find(k=>!document.getElementById('pg-'+k).classList.contains('hidden'));
+  if(cur==='actions') buildActions();
+  else if(['VP','SW','MS','RD','ZT'].includes(cur)) buildPersonPage(cur);
+}
+
+// ════════════════════════════════════════════════════
+// ACTION ROW
+// ════════════════════════════════════════════════════
+function buildRow(a){
+  const done=a.status==='Complete';
+  const tkey=Object.entries(TEAM).find(([k,v])=>v.name===a.owner);
+  const tc=tkey?TEAM[tkey[0]].color:'#374151';
+  const cmtCount=(S.comments[a.id]||[]).length;
+  return `<tr id="r${a.id}" class="${done?'done-row':''}">
+    <td><button class="chk${done?' on':''}" onclick="toggleDone(${a.id})">${done?'✓':''}</button></td>
+    <td style="max-width:250px"><input class="etxt" value="${a.task.replace(/"/g,'&quot;')}" style="width:100%;font-weight:${done?400:500};${done?'text-decoration:line-through;color:var(--muted)':''}" onchange="upd(${a.id},'task',this.value)"/></td>
+    <td><select class="esel" onchange="upd(${a.id},'owner',this.value)">${opts(PERSON_OPTS,a.owner)}</select></td>
+    <td><select class="esel" onchange="upd(${a.id},'status',this.value)">${opts(STATUS_OPTS,a.status)}</select></td>
+    <td><select class="esel" onchange="upd(${a.id},'pri',this.value)">${opts(PRI_OPTS,a.pri)}</select></td>
+    <td><select class="esel" onchange="upd(${a.id},'target',this.value)">${opts(TARGET_OPTS,a.target)}</select></td>
+    <td><select class="esel" onchange="upd(${a.id},'prog',this.value)">${opts(PROG_OPTS,a.prog)}</select></td>
     <td>
-      <button class="chk${isDone?' on':''}" onclick="toggleDone(${id})">${isDone?'✓':''}</button>
-    </td>
-    <td style="max-width:280px;font-weight:500;font-size:12px;${isDone?'text-decoration:line-through;color:#9CA3AF':''}">${a.task}</td>
-    <td>
-      <select class="cell-edit" onchange="setField(${id},'owner',this.value);updateRow(${id})">
-        ${selOpts(PERSON_OPTS, owner)}
-      </select>
-    </td>
-    <td>
-      <select class="cell-edit" onchange="setField(${id},'status',this.value);updateRow(${id})">
-        ${selOpts(STATUS_OPTS, status)}
-      </select>
-    </td>
-    <td>
-      <select class="cell-edit" onchange="setField(${id},'pri',this.value);updateRow(${id})">
-        ${selOpts(PRI_OPTS, pri)}
-      </select>
-    </td>
-    <td>
-      <select class="cell-edit" onchange="setField(${id},'target',this.value);updateRow(${id})">
-        ${selOpts(TARGET_OPTS, target)}
-      </select>
-    </td>
-    <td>
-      <select class="cell-edit" onchange="setField(${id},'prog',this.value);updateRow(${id})">
-        ${selOpts(['Core EHS','Ergo','VPP','Security'], prog)}
-      </select>
+      <div style="display:flex;gap:5px;align-items:center">
+        <button class="btn btn-ghost btn-sm btn-icon" onclick="openComments(${a.id})" title="Comments & Updates" style="font-size:12px">
+          💬${cmtCount>0?`<span style="font-size:9px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 5px;margin-left:2px">${cmtCount}</span>`:''}
+        </button>
+        <button class="btn btn-red btn-sm btn-icon" onclick="del(${a.id})" title="Delete task">🗑️</button>
+      </div>
     </td>
   </tr>`;
 }
 
-function toggleDone(id){
-  const s=getField(id,'status');
-  const ns=s==='Complete'?'Open':'Complete';
-  setField(id,'status',ns);
-  updateRow(id);
-  toast(ns==='Complete'?'✅ Marked Complete!':'↩ Reopened');
+// ════════════════════════════════════════════════════
+// ADD TASK MODAL
+// ════════════════════════════════════════════════════
+let editingId=null;
+function openAddModal(preOwner){
+  editingId=null;
+  document.getElementById('modal-add-title').textContent='➕ Add New Task';
+  document.getElementById('m-task').value='';
+  document.getElementById('m-notes').value='';
+  document.getElementById('m-status').value='Open';
+  document.getElementById('m-pri').value='High';
+  document.getElementById('m-target').value='Q2 2026';
+  document.getElementById('m-prog').value='Core EHS';
+  if(preOwner) document.getElementById('m-owner').value=preOwner;
+  document.getElementById('modal-add').classList.remove('hidden');
+  document.getElementById('m-task').focus();
+}
+function closeModal(id){document.getElementById(id).classList.add('hidden')}
+function saveNewTask(){
+  const task=document.getElementById('m-task').value.trim();
+  if(!task){toast('⚠️ Task name required','#DC2626');return;}
+  const newA={
+    id:S.nextId++,
+    task,
+    owner:document.getElementById('m-owner').value,
+    status:document.getElementById('m-status').value,
+    pri:document.getElementById('m-pri').value,
+    target:document.getElementById('m-target').value,
+    prog:document.getElementById('m-prog').value,
+  };
+  const notes=document.getElementById('m-notes').value.trim();
+  if(notes){
+    S.comments[newA.id]=[{author:"You",text:notes,time:new Date().toLocaleString()}];
+  }
+  S.actions.push(newA);
+  saveS();closeModal('modal-add');rebuildAll();
+  toast('✅ Task added!','#059669');
 }
 
-// ═════════════════════════════════════════════════════════════════
-// OVERVIEW PAGE
-// ═════════════════════════════════════════════════════════════════
-function buildOverview(){
-  const total=ACTIONS.length, done=totalDone(), pct=Math.round(done/total*100);
-  const behind=byStatus('Behind'), atRisk=byStatus('At-Risk');
-  const open=byStatus('Open'), ongoing=byStatus('Ongoing')+byStatus('On Schedule');
+// ════════════════════════════════════════════════════
+// COMMENTS MODAL
+// ════════════════════════════════════════════════════
+let commentTaskId=null;
+function openComments(id){
+  commentTaskId=id;
+  const a=S.actions.find(x=>x.id===id);
+  document.getElementById('comment-task-name').textContent=a?a.task:'';
+  renderComments();
+  document.getElementById('modal-comment').classList.remove('hidden');
+}
+function renderComments(){
+  const list=document.getElementById('comment-list');
+  const cmts=S.comments[commentTaskId]||[];
+  if(!cmts.length){
+    list.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No comments yet. Add the first update below.</div>';
+    return;
+  }
+  list.innerHTML=cmts.map(c=>`
+    <div class="comment">
+      <div class="comment-meta"><span>👤 ${c.author}</span><span>${c.time}</span></div>
+      <div class="comment-text">${c.text}</div>
+    </div>`).join('');
+  list.scrollTop=list.scrollHeight;
+}
+function addComment(){
+  const inp=document.getElementById('comment-input');
+  const text=inp.value.trim();
+  if(!text) return;
+  if(!S.comments[commentTaskId]) S.comments[commentTaskId]=[];
+  S.comments[commentTaskId].push({author:"Team Member",text,time:new Date().toLocaleString()});
+  inp.value='';
+  saveS();renderComments();rebuildAll();
+  toast('💬 Comment added');
+}
 
-  const kpiDefs=[
-    {lbl:"TOTAL",val:total,sub:"All programs",c:"#1D4ED8",bc:"#BFDBFE",bg:"#EFF6FF"},
-    {lbl:"COMPLETE",val:done,sub:`${pct}% done`,c:"#059669",bc:"#6EE7B7",bg:"#D1FAE5"},
-    {lbl:"BEHIND",val:behind,sub:"Needs action",c:"#DC2626",bc:"#FCA5A5",bg:"#FEE2E2"},
-    {lbl:"AT-RISK",val:atRisk,sub:"Monitor",c:"#D97706",bc:"#FCD34D",bg:"#FEF3C7"},
-    {lbl:"OPEN",val:open,sub:"Not started",c:"#6B7280",bc:"#D1D5DB",bg:"#F9FAFB"},
-    {lbl:"ONGOING",val:ongoing,sub:"In progress",c:"#0891B2",bc:"#67E8F9",bg:"#CFFAFE"},
-    {lbl:"TEAM",val:"5",sub:"Members",c:"#7C3AED",bc:"#C4B5FD",bg:"#EDE9FE"},
-    {lbl:"% DONE",val:pct+"%",sub:"Live",c:"#D97706",bc:"#FCD34D",bg:"#FEF3C7"},
+// ════════════════════════════════════════════════════
+// OVERVIEW
+// ════════════════════════════════════════════════════
+function buildOverview(){
+  const total=totalCount(),done=totalDone(),pct=total?Math.round(done/total*100):0;
+  const beh=byStatus('Behind'),atr=byStatus('At-Risk'),open=byStatus('Open');
+
+  const KS=[
+    {l:"TOTAL",v:total,s:"All programs",c:"#1D4ED8",bc:"#BFDBFE",bg:"#EFF6FF"},
+    {l:"COMPLETE",v:done,s:pct+"% done",c:"#059669",bc:"#6EE7B7",bg:"#D1FAE5"},
+    {l:"BEHIND",v:beh,s:"Needs action",c:"#DC2626",bc:"#FCA5A5",bg:"#FEE2E2"},
+    {l:"AT-RISK",v:atr,s:"Monitor",c:"#D97706",bc:"#FCD34D",bg:"#FEF3C7"},
+    {l:"OPEN",v:open,s:"Not started",c:"#6B7280",bc:"#D1D5DB",bg:"#F9FAFB"},
+    {l:"ONGOING",v:byStatus('Ongoing')+byStatus('On Schedule'),s:"In progress",c:"#0891B2",bc:"#67E8F9",bg:"#CFFAFE"},
+    {l:"TEAM",v:"5",s:"Members",c:"#7C3AED",bc:"#C4B5FD",bg:"#EDE9FE"},
+    {l:"% DONE",v:pct+"%",s:"Live calc",c:"#D97706",bc:"#FCD34D",bg:"#FEF3C7"},
   ];
 
-  const kpiHTML = `<div class="kpi-grid">`+kpiDefs.map(k=>`
-    <div class="kpi" style="border-color:${k.bc};background:${k.bg}">
-      <div class="kpi-top" style="background:${k.c}"></div>
-      <div class="kpi-val" style="color:${k.c}">${k.val}</div>
-      <div class="kpi-lbl">${k.lbl}</div>
-      <div class="kpi-sub">${k.sub}</div>
-    </div>`).join('')+`</div>`;
+  const kHTML=`<div class="kgrid">`+KS.map(k=>`<div class="kcard" style="border-color:${k.bc};background:${k.bg}"><div class="ktop" style="background:${k.c}"></div><div class="kval" style="color:${k.c}">${k.v}</div><div class="klbl">${k.l}</div><div class="ksub">${k.s}</div></div>`).join('')+'</div>';
 
-  // Scorecard
-  const scorecardRows = Object.entries(TEAM).map(([key,t])=>{
-    const acts=actionsForPerson(key);
-    const d=acts.filter(a=>getField(a.id,'status')==='Complete').length;
-    const b=acts.filter(a=>getField(a.id,'status')==='Behind').length;
-    const r=acts.filter(a=>getField(a.id,'status')==='At-Risk').length;
+  const TILE_CFG=[
+    {s:"Complete",dot:"#059669",text:"#065F46",bg:"#D1FAE5",bc:"#6EE7B7"},
+    {s:"On Schedule",dot:"#0891B2",text:"#164E63",bg:"#CFFAFE",bc:"#67E8F9"},
+    {s:"Behind",dot:"#DC2626",text:"#991B1B",bg:"#FEE2E2",bc:"#FCA5A5"},
+    {s:"At-Risk",dot:"#D97706",text:"#92400E",bg:"#FEF3C7",bc:"#FCD34D"},
+    {s:"Not Started",dot:"#7C3AED",text:"#4C1D95",bg:"#EDE9FE",bc:"#C4B5FD"},
+    {s:"Open",dot:"#6B7280",text:"#374151",bg:"#F1F5F9",bc:"#CBD5E1"},
+    {s:"Ongoing",dot:"#059669",text:"#065F46",bg:"#D1FAE5",bc:"#6EE7B7"},
+    {s:"On Hold",dot:"#D97706",text:"#92400E",bg:"#FEF3C7",bc:"#FCD34D"},
+  ];
+  const tilesHTML=`<div class="stiles">`+TILE_CFG.map(t=>{
+    const cnt=S.actions.filter(a=>a.status===t.s).length;
+    return `<div class="stile" style="background:${t.bg};border-color:${t.bc}" onclick="filterJump('${t.s}')"><div class="stv" style="color:${t.dot}">${cnt}</div><div class="stl" style="color:${t.text}">${t.s}</div><div class="stp">${total?Math.round(cnt/total*100):0}%</div></div>`;
+  }).join('')+'</div>';
+
+  const scoreHTML=Object.entries(TEAM).map(([k,t])=>{
+    const acts=actionsFor(t.name);
+    const d=acts.filter(a=>a.status==='Complete').length;
+    const b=acts.filter(a=>a.status==='Behind').length;
+    const r=acts.filter(a=>a.status==='At-Risk').length;
     const p=acts.length?Math.round(d/acts.length*100):0;
-    return `<tr onclick="switchPage('${key}')" style="cursor:pointer" title="View ${t.name}'s page">
-      <td><span style="font-weight:800;color:${t.color}">${t.name}</span></td>
+    return `<tr onclick="goPage('${k}')" style="cursor:pointer" title="Open ${t.name} dashboard">
+      <td><span style="font-weight:800;color:${t.color}">${t.name}</span><span style="font-size:9px;color:var(--muted);margin-left:6px">${t.role}</span></td>
       <td style="text-align:center">${acts.length}</td>
       <td style="text-align:center;font-weight:800;color:#059669">${d}</td>
       <td style="text-align:center;font-weight:800;color:${b>0?'#DC2626':'#059669'}">${b}</td>
       <td style="text-align:center;font-weight:800;color:${r>0?'#D97706':'#059669'}">${r}</td>
-      <td style="text-align:center;font-weight:800;color:${pc(p)}">${p}%</td>
-      <td style="min-width:120px">${pb(p)}</td>
-      <td><span style="font-size:10px;color:var(--blue);font-weight:700">View →</span></td>
+      <td style="text-align:center;font-weight:900;color:${pc(p)}">${p}%</td>
+      <td style="min-width:110px">${pb(p)}</td>
+      <td><span style="font-size:10px;color:var(--blue);font-weight:700">Open →</span></td>
     </tr>`;
   }).join('');
 
-  // Status tiles
-  const TILE_CFG=[
-    {s:"Complete",  dot:"#059669",text:"#065F46",bg:"#D1FAE5",bc:"#6EE7B7"},
-    {s:"On Schedule",dot:"#0891B2",text:"#164E63",bg:"#CFFAFE",bc:"#67E8F9"},
-    {s:"Behind",    dot:"#DC2626",text:"#991B1B",bg:"#FEE2E2",bc:"#FCA5A5"},
-    {s:"At-Risk",   dot:"#D97706",text:"#92400E",bg:"#FEF3C7",bc:"#FCD34D"},
-    {s:"Not Started",dot:"#7C3AED",text:"#4C1D95",bg:"#EDE9FE",bc:"#C4B5FD"},
-    {s:"Open",      dot:"#6B7280",text:"#374151",bg:"#F1F5F9",bc:"#CBD5E1"},
-    {s:"Ongoing",   dot:"#059669",text:"#065F46",bg:"#D1FAE5",bc:"#6EE7B7"},
-    {s:"On Hold",   dot:"#D97706",text:"#92400E",bg:"#FEF3C7",bc:"#FCD34D"},
-  ];
-  const tilesHTML=`<div class="s-tiles">`+TILE_CFG.map(t=>{
-    const cnt=byStatus(t.s);
-    return `<div class="s-tile" style="background:${t.bg};border-color:${t.bc}" onclick="jumpFilter('${t.s}')">
-      <div class="s-tile-val" style="color:${t.dot}">${cnt}</div>
-      <div class="s-tile-lbl" style="color:${t.text}">${t.s}</div>
-      <div class="s-tile-pct">${Math.round(cnt/total*100)}%</div>
-    </div>`;
-  }).join('')+`</div>`;
+  const nonGoal=S.vpp.slice(0,-1);
+  const avg=nonGoal.length?Math.round(nonGoal.reduce((s,m)=>s+m.pct,0)/nonGoal.length):0;
+  const vppMini=S.vpp.slice(0,5).map(m=>`<div class="ms-row"><div class="ms-num">${m.id}</div><div class="ms-text"><div class="ms-title">${m.ms}</div><div class="ms-meta">${m.owner} · ${m.target}</div></div><div class="ms-prog">${pb(m.pct)}<div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);margin-top:3px"><span>Progress</span><span style="color:${pc(m.pct)}">${m.pct}%</span></div></div><span class="${bk(m.status)}">${m.status}</span></div>`).join('')+`<div style="padding:8px 16px;border-top:1px solid #EEF2FF"><a class="lnk" href="#" onclick="goPage('vpp');return false">View all 13 milestones →</a></div>`;
 
-  // VPP mini
-  const nonGoal=VPP_DATA.slice(0,-1);
-  const avg=Math.round(nonGoal.reduce((s,m)=>s+m.pct,0)/nonGoal.length);
-  const vppMiniHTML=VPP_DATA.slice(0,6).map(m=>`
-    <div class="ms-row">
-      <div class="ms-num">${m.id}</div>
-      <div class="ms-text"><div class="ms-title">${m.ms}</div><div class="ms-meta">Owner: ${m.owner} · Due: ${m.target}</div></div>
-      <div class="ms-prog"><div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted)"><span>Progress</span><span style="color:${pc(m.pct)}">${m.pct}%</span></div>${pb(m.pct)}</div>
-      <span class="${bc(m.status)}">${m.status}</span>
-    </div>`).join('')+
-    `<div style="padding:10px 18px;font-size:11px;border-top:1px solid #EEF2FF"><a href="#" class="link" onclick="switchPage('vpp');return false">View all 13 milestones →</a></div>`;
-
-  document.getElementById('page-overview').innerHTML=`
-    ${kpiHTML}
-    <div style="display:grid;grid-template-columns:3fr 2fr;gap:14px">
+  document.getElementById('pg-overview').innerHTML=`
+    ${kHTML}
+    <div class="g2">
       <div class="card">
-        <div class="card-hdr">
-          <span class="ch-title">👥 Team Scorecard — Click a row to open their personal dashboard</span>
-          <span class="ch-sub">Live counts · All fields editable</span>
-        </div>
-        <div class="tbl-wrap">
-          <table id="scorecard-tbl">
-            <thead><tr><th>Member</th><th>Total</th><th>✅</th><th>🔴</th><th>🟡</th><th>%</th><th style="min-width:110px">Progress</th><th></th></tr></thead>
-            <tbody id="scorecard-body">${scorecardRows}</tbody>
-          </table>
-        </div>
+        <div class="ch"><span class="ct">👥 Team Scorecard — Click to open personal dashboard</span><span class="cs">Live counts</span></div>
+        <div class="twrap"><table><thead><tr><th>Member</th><th>Total</th><th>✅</th><th>🔴</th><th>🟡</th><th>%</th><th style="min-width:100px">Progress</th><th></th></tr></thead><tbody>${scoreHTML}</tbody></table></div>
       </div>
       <div class="card">
-        <div class="card-hdr"><span class="ch-title">📊 Status Breakdown — Click to filter</span></div>
+        <div class="ch"><span class="ct">📊 Status Breakdown — Click tile to filter</span></div>
         ${tilesHTML}
       </div>
     </div>
     <div class="card">
-      <div class="card-hdr"><span class="ch-title">⭐ VPP Path — Top 6 Milestones</span><span class="ch-sub">Avg Progress: ${avg}%</span></div>
-      ${vppMiniHTML}
+      <div class="ch"><span class="ct">⭐ VPP Milestones — Top 5</span><span class="cs">Avg: ${avg}%</span></div>
+      ${vppMini}
     </div>`;
 }
 
-function refreshCounts(){
-  // Re-render KPI grid and scorecard inline without full rebuild
-  buildOverview();
-}
+function filterJump(s){document.getElementById('fa-status').value=s;goPage('actions');applyF();}
 
-function jumpFilter(s){
-  document.getElementById('f-status').value=s;
-  switchPage('actions');
-  applyFilters();
-}
-
-// ═════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════
 // ACTIONS PAGE
-// ═════════════════════════════════════════════════════════════════
-let filteredActions=[...ACTIONS];
+// ════════════════════════════════════════════════════
 function buildActions(){
-  document.getElementById('page-actions').innerHTML=`
+  document.getElementById('pg-actions').innerHTML=`
     <div class="card">
-      <div class="card-hdr"><span class="ch-title">🔍 Filter & Search</span><span class="ch-sub" id="fcount"></span></div>
+      <div class="ch"><span class="ct">🔍 Filter, Search & Manage</span><span class="cs" id="fc"></span></div>
       <div class="fbar">
-        <div class="fg"><label class="flbl">Person</label>
-          <select class="fsel" id="f-person" onchange="applyFilters()">
-            <option>All</option>${Object.values(TEAM).map(t=>`<option>${t.name}</option>`).join('')}
-          </select>
-        </div>
-        <div class="fg"><label class="flbl">Status</label>
-          <select class="fsel" id="f-status" onchange="applyFilters()">
-            <option>All</option>${STATUS_OPTS.map(s=>`<option>${s}</option>`).join('')}
-          </select>
-        </div>
-        <div class="fg"><label class="flbl">Program</label>
-          <select class="fsel" id="f-program" onchange="applyFilters()">
-            <option>All</option><option>Core EHS</option><option>Ergo</option><option>VPP</option><option>Security</option>
-          </select>
-        </div>
-        <div class="fg"><label class="flbl">Priority</label>
-          <select class="fsel" id="f-pri" onchange="applyFilters()">
-            <option>All</option><option>High</option><option>Medium</option><option>Low</option>
-          </select>
-        </div>
-        <div class="fg"><label class="flbl">Search</label>
-          <input class="fsearch" type="text" id="f-search" placeholder="Task or owner…" oninput="applyFilters()"/>
-        </div>
-        <button class="btn btn-clear" onclick="clearFilters()">Clear All</button>
+        <div class="fg"><label class="flbl">Person</label><select class="fsel2" id="fa-person" onchange="applyF()"><option>All</option>${PERSON_OPTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
+        <div class="fg"><label class="flbl">Status</label><select class="fsel2" id="fa-status" onchange="applyF()"><option>All</option>${STATUS_OPTS.map(s=>`<option>${s}</option>`).join('')}</select></div>
+        <div class="fg"><label class="flbl">Program</label><select class="fsel2" id="fa-prog" onchange="applyF()"><option>All</option>${PROG_OPTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
+        <div class="fg"><label class="flbl">Priority</label><select class="fsel2" id="fa-pri" onchange="applyF()"><option>All</option>${PRI_OPTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
+        <div class="fg"><label class="flbl">Search</label><input class="fsrch" type="text" id="fa-search" placeholder="Task or owner…" oninput="applyF()"/></div>
+        <button class="btn btn-ghost" onclick="clearF()">Clear</button>
+        <button class="btn btn-primary" onclick="openAddModal()">➕ Add Task</button>
       </div>
     </div>
     <div class="card">
-      <div style="padding:9px 16px;background:#EFF6FF;border-bottom:1.5px solid var(--border);font-size:11px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px">
-        ✏️ Every field is editable — click any dropdown to change status, owner, priority, target, or program. Checkbox marks complete.
-      </div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>✔</th><th>Action Item</th><th>Owner</th><th>Status</th><th>Priority</th><th>Target Date</th><th>Program</th></tr></thead>
-          <tbody id="actions-body"></tbody>
-        </table>
-      </div>
+      <div class="info-bar">✏️ Every field is editable — click any dropdown to change. 💬 for comments. 🗑️ to delete.</div>
+      <div class="twrap"><table><thead><tr><th>✔</th><th>Task Name</th><th>Owner</th><th>Status</th><th>Priority</th><th>Target</th><th>Program</th><th>Actions</th></tr></thead><tbody id="atbody"></tbody></table></div>
     </div>`;
-  applyFilters();
+  applyF();
 }
 
-function applyFilters(){
-  const person  = (document.getElementById('f-person')||{}).value||'All';
-  const status  = (document.getElementById('f-status')||{}).value||'All';
-  const program = (document.getElementById('f-program')||{}).value||'All';
-  const pri     = (document.getElementById('f-pri')||{}).value||'All';
-  const search  = ((document.getElementById('f-search')||{}).value||'').toLowerCase();
-  filteredActions=ACTIONS.filter(a=>{
-    const s=getField(a.id,'status'),o=getField(a.id,'owner'),p=getField(a.id,'pri'),pg=getField(a.id,'prog');
-    if(person!=='All'&&o!==person) return false;
-    if(status!=='All'&&s!==status) return false;
-    if(program!=='All'&&pg!==program) return false;
-    if(pri!=='All'&&p!==pri) return false;
-    if(search&&!a.task.toLowerCase().includes(search)&&!o.toLowerCase().includes(search)) return false;
+function applyF(){
+  const p=val('fa-person'),s=val('fa-status'),g=val('fa-prog'),r=val('fa-pri'),q=(val('fa-search')||'').toLowerCase();
+  const fl=S.actions.filter(a=>{
+    if(p!=='All'&&a.owner!==p) return false;
+    if(s!=='All'&&a.status!==s) return false;
+    if(g!=='All'&&a.prog!==g) return false;
+    if(r!=='All'&&a.pri!==r) return false;
+    if(q&&!a.task.toLowerCase().includes(q)&&!a.owner.toLowerCase().includes(q)) return false;
     return true;
   });
-  const fc=document.getElementById('fcount');
-  if(fc) fc.innerHTML=`Showing <strong>${filteredActions.length}</strong> of ${ACTIONS.length}`;
-  const tbody=document.getElementById('actions-body');
-  if(!tbody) return;
-  if(!filteredActions.length){
-    tbody.innerHTML=`<tr><td colspan="7" style="padding:30px;text-align:center;color:var(--muted)">No actions match. <a class="link" href="#" onclick="clearFilters();return false">Clear filters</a></td></tr>`;
+  const fc=document.getElementById('fc');
+  if(fc) fc.innerHTML=`Showing <strong>${fl.length}</strong> of ${S.actions.length}`;
+  const tb=document.getElementById('atbody');
+  if(!tb) return;
+  tb.innerHTML=fl.length?fl.map(buildRow).join(''):
+    '<tr><td colspan="8" style="padding:28px;text-align:center;color:var(--muted)">No tasks match. <a class="lnk" href="#" onclick="clearF();return false">Clear filters</a></td></tr>';
+}
+
+function clearF(){['fa-person','fa-status','fa-prog','fa-pri'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='All';});const e=document.getElementById('fa-search');if(e)e.value='';applyF();}
+function val(id){const e=document.getElementById(id);return e?e.value:'All';}
+
+// ════════════════════════════════════════════════════
+// VPP PAGE
+// ════════════════════════════════════════════════════
+function buildVPP(){
+  const ng=S.vpp.slice(0,-1);
+  const avg=ng.length?Math.round(ng.reduce((s,m)=>s+m.pct,0)/ng.length):0;
+  document.getElementById('pg-vpp').innerHTML=`
+    <div class="card">
+      <div class="ch ch-gold"><span class="ct" style="color:#FEF3C7">⭐ VPP Star Milestone Tracker</span><div style="text-align:right"><div style="font-size:28px;font-weight:900;color:#FEF3C7">${avg}%</div><div style="font-size:9px;color:#FCD34D;font-weight:600">AVG PROGRESS</div></div></div>
+      ${S.vpp.map(m=>`<div class="ms-row ${m.id===13?'ms-goal':''}" style="${m.id===13?'background:#FEF3C7;border-left:4px solid #D97706':''}">
+        <div class="ms-num">${m.id===13?'⭐':m.id}</div>
+        <div class="ms-text"><div class="ms-title">${m.ms}</div><div class="ms-meta">${m.owner} · ${m.target}</div></div>
+        <div class="ms-prog" style="min-width:160px">
+          <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted)"><span>Progress</span>
+            <input type="number" min="0" max="100" value="${m.pct}" style="width:50px;border:1.5px solid var(--border);border-radius:5px;padding:1px 5px;font-size:11px;font-weight:700;text-align:center;outline:none;color:${pc(m.pct)}" onchange="updVPP(${m.id},+this.value)"/>%
+          </div>
+          ${pb(m.pct,7)}
+        </div>
+        <select class="esel" onchange="updVPPStatus(${m.id},this.value)">${opts(STATUS_OPTS,m.status)}</select>
+      </div>`).join('')}
+    </div>`;
+}
+function updVPP(id,v){const m=S.vpp.find(x=>x.id===id);if(m){m.pct=Math.max(0,Math.min(100,v));saveS();buildVPP();toast('✅ Progress updated','#059669');}}
+function updVPPStatus(id,v){const m=S.vpp.find(x=>x.id===id);if(m){m.status=v;saveS();buildVPP();toast('✅ Status updated','#059669');}}
+
+// ════════════════════════════════════════════════════
+// METRICS PAGE
+// ════════════════════════════════════════════════════
+function buildMetrics(){
+  const mkeys=Object.keys(S.metrics);
+  const cardsHTML=mkeys.map(k=>{
+    const m=S.metrics[k];
+    return `<div class="mcard">
+      <div class="mcard-label">${m.label}</div>
+      <input class="mcard-input" type="text" value="${m.value}" onchange="updMetric('${k}',this.value)" placeholder="Enter value…"/>
+      <div class="mcard-sub">${m.sub}${m.unit?' ('+m.unit+')':''}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('pg-metrics').innerHTML=`
+    <div class="card">
+      <div class="ch ch-green"><span class="ct">📈 Plant Safety & Health Metrics — Click any value to edit</span><span class="cs">All fields manually entered · Saves automatically</span></div>
+      <div class="info-bar">📝 Click any metric value to update it. All changes save automatically. Add notes in the comment fields below.</div>
+      <div class="metric-grid">${cardsHTML}</div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">📝 Metric Notes & Context</span></div>
+      <div style="padding:16px">
+        <textarea id="metric-notes" style="width:100%;min-height:120px;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;font-family:'Inter',sans-serif;outline:none;resize:vertical;color:var(--text2)" placeholder="Add context, trends, or notes about the current metrics here…" onchange="updMetricNotes(this.value)">${S.metricNotes||''}</textarea>
+        <button class="btn btn-primary" style="margin-top:8px" onclick="toast('✅ Notes saved','#059669');saveS()">Save Notes</button>
+      </div>
+    </div>`;
+}
+function updMetric(k,v){S.metrics[k].value=v;saveS();toast('✅ Metric saved','#059669');}
+function updMetricNotes(v){S.metricNotes=v;saveS();}
+
+// ════════════════════════════════════════════════════
+// LINKS PAGE
+// ════════════════════════════════════════════════════
+function buildLinks(){
+  document.getElementById('pg-links').innerHTML=`
+    <div class="card">
+      <div class="ch"><span class="ct">🔗 Important Links & Resources</span><button class="btn btn-primary btn-sm" onclick="addLink()">➕ Add Link</button></div>
+      <div class="link-grid" id="link-grid">
+        ${S.links.map((l,i)=>`
+          <a class="link-card" href="${l.url}" target="_blank">
+            <div class="link-icon" style="background:${l.color}22;border:2px solid ${l.color}33"><span>${l.icon}</span></div>
+            <div style="flex:1;min-width:0">
+              <div class="link-name">${l.name}</div>
+              <div class="link-desc">${l.desc}</div>
+            </div>
+            <button onclick="event.preventDefault();delLink(${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;flex-shrink:0" title="Remove">✕</button>
+          </a>`).join('')}
+      </div>
+    </div>`;
+}
+function addLink(){
+  const name=prompt('Link name (e.g. "Gensuite"):');if(!name) return;
+  const url=prompt('URL (include https://):');if(!url) return;
+  const desc=prompt('Short description:')||'';
+  S.links.push({name,url,desc,icon:'🔗',color:'#1D4ED8'});
+  saveS();buildLinks();toast('✅ Link added','#059669');
+}
+function delLink(i){if(!confirm('Remove this link?')) return;S.links.splice(i,1);saveS();buildLinks();}
+
+// ════════════════════════════════════════════════════
+// CHAT + AI PAGE
+// ════════════════════════════════════════════════════
+function buildChat(){
+  document.getElementById('pg-chat').innerHTML=`
+    <div class="card" style="height:calc(100vh - 160px);min-height:500px;display:flex;flex-direction:column">
+      <div class="ch">
+        <span class="ct">🤖 EHS AI Assistant + Team Chat</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="cs">Ask about tasks, due dates, metrics, or request changes</span>
+          <button class="btn btn-ghost btn-sm" onclick="clearChat()">Clear</button>
+        </div>
+      </div>
+      <div style="padding:8px 14px;background:#EFF6FF;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--navy)">
+        💡 Try: "What's behind?" · "Add a task for Steve: LOTO review by Q3" · "How many open actions?" · "Who has the most behind?" · "Mark task 5 complete"
+      </div>
+      <div class="chat-msgs" id="chat-msgs"></div>
+      <div class="chat-input-area">
+        <textarea id="chat-input" placeholder="Ask anything about the EHS team or request a task change…" rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+        <button class="btn btn-primary" onclick="sendChat()">Send ➤</button>
+      </div>
+    </div>`;
+  renderChat();
+  if(S.chat.length===0) addSysMsg("👋 Hi! I'm your EHS AI assistant. I can answer questions about tasks, update statuses, add new tasks, or chat with the team. What do you need?");
+}
+function addSysMsg(text){S.chat.push({role:'system',text,time:now()});saveS();renderChat();}
+function now(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+function renderChat(){
+  const el=document.getElementById('chat-msgs');if(!el) return;
+  el.innerHTML=S.chat.map(m=>`
+    <div class="msg ${m.role==='user'?'msg-user':m.role==='system'?'msg-system':'msg-ai'}">
+      ${m.text}
+      ${m.role!=='system'?`<div class="msg-meta">${m.role==='user'?'You':'🤖 AI'} · ${m.time}</div>`:''}
+    </div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+function clearChat(){S.chat=[];saveS();buildChat();}
+
+async function sendChat(){
+  const inp=document.getElementById('chat-input');
+  const text=inp.value.trim();if(!text) return;
+  inp.value='';
+  S.chat.push({role:'user',text,time:now()});
+  saveS();renderChat();
+
+  // Show typing indicator
+  const msgs=document.getElementById('chat-msgs');
+  const typDiv=document.createElement('div');
+  typDiv.className='ai-thinking';typDiv.id='typing';
+  typDiv.innerHTML='<span></span><span></span><span></span>';
+  msgs.appendChild(typDiv);msgs.scrollTop=msgs.scrollHeight;
+
+  // Try to handle locally first
+  const localReply=handleLocally(text);
+  if(localReply){
+    setTimeout(()=>{
+      const t=document.getElementById('typing');if(t)t.remove();
+      S.chat.push({role:'ai',text:localReply,time:now()});
+      saveS();renderChat();rebuildAll();
+    },600);
     return;
   }
-  tbody.innerHTML=filteredActions.map(a=>buildActionRow(a.id,a)).join('');
+
+  // Call Anthropic API
+  const systemPrompt=`You are an EHS AI assistant for GE Aerospace Muskegon's EHS department. 
+The team is: Victor Pizarro (EHS Leader), Steve Wolbrink (EHS Compliance Specialist), Mike Shuster (Ergonomic Specialist ATI), Rich DeLeau (EHS Specialist Contract), Zach Tindall (Security Specialist).
+Current action items count: ${S.actions.length}. Complete: ${totalDone()}. Behind: ${byStatus('Behind')}. At-Risk: ${byStatus('At-Risk')}.
+Behind items: ${S.actions.filter(a=>a.status==='Behind').slice(0,5).map(a=>a.task+' ('+a.owner+')').join(', ')}.
+VPP Star target: October 2026.
+Answer questions about the team, EHS best practices, safety regulations, or ergonomics. Be concise, helpful, and professional. Use bullet points when listing things. If asked to create or modify tasks, explain what you would do.`;
+
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-6",
+        max_tokens:400,
+        system:systemPrompt,
+        messages:[{role:"user",content:text}]
+      })
+    });
+    const data=await res.json();
+    const reply=data.content?data.content.map(b=>b.text||'').join(''):'I had trouble responding. Please try again.';
+    const t=document.getElementById('typing');if(t)t.remove();
+    S.chat.push({role:'ai',text:reply,time:now()});
+    saveS();renderChat();
+  }catch(e){
+    const t=document.getElementById('typing');if(t)t.remove();
+    S.chat.push({role:'ai',text:"⚠️ I couldn't connect right now. But I'm still here to help with local queries — try asking what's behind or how many tasks are open!",time:now()});
+    saveS();renderChat();
+  }
 }
 
-function clearFilters(){
-  ['f-person','f-status','f-program','f-pri'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='All';});
-  const fs=document.getElementById('f-search');if(fs)fs.value='';
-  applyFilters();
-}
+function handleLocally(text){
+  const t=text.toLowerCase();
+  const behind=S.actions.filter(a=>a.status==='Behind');
+  const open=S.actions.filter(a=>a.status==='Open'||a.status==='Not Started');
+  const done=S.actions.filter(a=>a.status==='Complete');
 
-// ═════════════════════════════════════════════════════════════════
-// VPP PAGE
-// ═════════════════════════════════════════════════════════════════
-function buildVPP(){
-  const nonGoal=VPP_DATA.slice(0,-1);
-  const avg=Math.round(nonGoal.reduce((s,m)=>s+m.pct,0)/nonGoal.length);
-  const rowsHTML=VPP_DATA.map(m=>`
-    <div class="ms-row ${m.id===13?'ms-goal':''}" style="${m.id===13?'background:#FEF3C7;border-left:4px solid #D97706':''}">
-      <div class="ms-num">${m.id===13?'⭐':m.id}</div>
-      <div class="ms-text"><div class="ms-title">${m.ms}</div><div class="ms-meta">Owner: ${m.owner} · Due: ${m.target}</div></div>
-      <div class="ms-prog" style="min-width:180px">
-        <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted)"><span>Progress</span><span style="color:${pc(m.pct)};font-weight:800">${m.pct}%</span></div>
-        ${pb(m.pct)}
-      </div>
-      <span class="${bc(m.status)}">${m.status}</span>
-    </div>`).join('');
-  document.getElementById('page-vpp').innerHTML=`
-    <div class="card">
-      <div class="card-hdr card-hdr-gold">
-        <div><span class="ch-title" style="color:#FEF3C7">⭐ VPP Star Milestone Tracker</span><div class="ch-sub-gold" style="font-size:10px;margin-top:3px">Target: October 2026 — GE Aerospace Muskegon</div></div>
-        <div style="text-align:right"><div style="font-size:32px;font-weight:900;color:#FEF3C7">${avg}%</div><div style="font-size:9px;color:#FCD34D;font-weight:600">AVG PROGRESS</div></div>
-      </div>
-      ${rowsHTML}
-    </div>`;
-}
-
-// ═════════════════════════════════════════════════════════════════
-// PERSON PAGE  — calendar + mini dashboard + action list
-// ═════════════════════════════════════════════════════════════════
-function buildPersonPage(key){
-  const t = TEAM[key];
-  const acts = actionsForPerson(key);
-  const done = acts.filter(a=>getField(a.id,'status')==='Complete').length;
-  const behind = acts.filter(a=>getField(a.id,'status')==='Behind').length;
-  const atRisk = acts.filter(a=>getField(a.id,'status')==='At-Risk').length;
-  const open = acts.filter(a=>['Open','Not Started'].includes(getField(a.id,'status'))).length;
-  const pct = acts.length?Math.round(done/acts.length*100):0;
-  const rec = REC_TASKS[key]||{};
-
-  // Mini KPIs for banner
-  const miniKPI = `
-    <div class="p-mini-kpis">
-      ${[['TOTAL',acts.length,'#fff'],['✅ DONE',done,'#34D399'],['🔴 BEHIND',behind,'#F87171'],['🟡 AT-RISK',atRisk,'#FCD34D'],['% DONE',pct+'%',pct>=75?'#34D399':pct>=40?'#FCD34D':'#F87171']].map(([l,v,c])=>`
-        <div class="p-kpi">
-          <div class="p-kpi-val" style="color:${c}">${v}</div>
-          <div class="p-kpi-lbl">${l}</div>
-        </div>`).join('')}
-    </div>`;
-
-  // Calendar grid
-  const DAYS = ['MON','TUE','WED','THU','FRI'];
-  const schedMap = {};
-  (SCHED[key]||[]).forEach(ev=>{ schedMap[ev.day+'-'+ev.time]=ev; });
-
-  let calHeader = `<div class="sched-day-hdr" style="background:var(--surface2)"></div>`;
-  DAYS.forEach(d=>{ calHeader+=`<div class="sched-day-hdr">${d}</div>`; });
-
-  let calBody='';
-  TIMES.forEach(time=>{
-    calBody+=`<td class="sched-time">${time}</td>`;
-    for(let day=1;day<=5;day++){
-      const ev=schedMap[day+'-'+time];
-      if(ev){
-        calBody+=`<td class="sched-cell"><div class="sched-event" style="background:${ev.bg};color:${ev.color};border-left-color:${ev.color}">${ev.label}</div></td>`;
-      } else {
-        calBody+=`<td class="sched-cell"></td>`;
-      }
+  if(t.includes("what's behind")||t.includes("whats behind")||t.includes("what is behind")){
+    if(!behind.length) return "✅ Nothing is behind! Great work.";
+    return `🔴 <strong>${behind.length} items are Behind:</strong><br>`+behind.slice(0,8).map(a=>`• ${a.task} — <em>${a.owner}</em>`).join('<br>');
+  }
+  if(t.includes("how many open")){return `📋 There are <strong>${open.length} open/not-started</strong> tasks.`}
+  if(t.includes("how many complete")||t.includes("how many done")){return `✅ <strong>${done.length} of ${S.actions.length}</strong> tasks are complete (${Math.round(done.length/S.actions.length*100)}%).`}
+  if(t.includes("who has the most behind")){
+    const counts={};behind.forEach(a=>{counts[a.owner]=(counts[a.owner]||0)+1;});
+    const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    if(!sorted.length) return "✅ Nobody is behind right now!";
+    return `🔴 Most behind: <strong>${sorted[0][0]}</strong> with ${sorted[0][1]} items. Full breakdown:<br>`+sorted.map(([n,c])=>`• ${n}: ${c}`).join('<br>');
+  }
+  if(t.includes("at-risk")||t.includes("at risk")){
+    const ar=S.actions.filter(a=>a.status==='At-Risk');
+    if(!ar.length) return "✅ No at-risk items right now!";
+    return `🟡 <strong>${ar.length} At-Risk items:</strong><br>`+ar.slice(0,6).map(a=>`• ${a.task} — <em>${a.owner}</em>`).join('<br>');
+  }
+  if(t.includes("add task")&&t.includes("for ")){
+    openAddModal();
+    return "Sure! I've opened the Add Task dialog for you. Fill in the details and click Add Task.";
+  }
+  if(t.includes("mark task")&&t.includes("complete")){
+    const match=t.match(/task\s+(\d+)/);
+    if(match){
+      const id=parseInt(match[1]);
+      const a=S.actions.find(x=>x.id===id);
+      if(a){a.status='Complete';saveS();return `✅ Task #${id} "${a.task}" marked complete!`;}
     }
-  });
+    return "I couldn't find that task. Try: 'mark task 5 complete'";
+  }
+  if(t.includes("vpp")){
+    const ng=S.vpp.slice(0,-1);
+    const avg=ng.length?Math.round(ng.reduce((s,m)=>s+m.pct,0)/ng.length):0;
+    const behind=S.vpp.filter(m=>m.status==='Behind');
+    return `⭐ VPP Star target: October 2026. Average milestone progress: <strong>${avg}%</strong>. ${behind.length} milestones are Behind: ${behind.map(m=>m.ms).slice(0,3).join(', ')}.`;
+  }
+  if(t.includes("how many task")||t.includes("total task")){
+    return `📊 Total tasks: <strong>${S.actions.length}</strong>. Complete: ${done.length}. Behind: ${behind.length}. Open: ${open.length}.`;
+  }
+  if(t.includes("hello")||t.includes("hi ")||t.includes("hey ")){
+    return "👋 Hey! I'm your EHS assistant. I can tell you what's behind, who has the most open items, your VPP progress, or help add/update tasks. What do you need?";
+  }
+  return null; // fall through to API
+}
 
-  // Recurring tasks
-  const REC_BG = {DAILY:'#1D4ED8',WEEKLY:'#059669',MONTHLY:'#7C3AED',ONGOING:'#374151'};
-  const recHTML = Object.entries(rec).map(([freq,items])=>`
-    <div class="rec-section">
-      <div class="rec-hdr" style="background:${REC_BG[freq]||'#374151'}">${freq}</div>
-      ${items.map((item,i)=>`<div class="rec-item"><div class="rec-dot" style="background:${REC_BG[freq]||'#374151'}"></div><div class="rec-text">${item}</div></div>`).join('')}
-    </div>`).join('');
+// ════════════════════════════════════════════════════
+// PERSON PAGE
+// ════════════════════════════════════════════════════
+function buildPersonPage(key){
+  const t=TEAM[key];
+  const acts=actionsFor(t.name);
+  const done=acts.filter(a=>a.status==='Complete').length;
+  const beh=acts.filter(a=>a.status==='Behind').length;
+  const atr=acts.filter(a=>a.status==='At-Risk').length;
+  const open=acts.filter(a=>['Open','Not Started'].includes(a.status)).length;
+  const pct=acts.length?Math.round(done/acts.length*100):0;
+  const rec=REC_TASKS[key]||{};
+  const schedMap={};
+  (SCHED_DATA[key]||[]).forEach(e=>{schedMap[e.day+'-'+e.time]=e;});
+  const TIMES=["7:00","7:30","8:00","8:30","9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","1:00","1:30","2:00","2:30","3:00","3:30","4:00","4:30"];
+  const DAYS=["MON","TUE","WED","THU","FRI"];
 
-  // Actions table for this person
-  const personActRows = acts.map(a=>buildActionRow(a.id,a)).join('');
-
-  document.getElementById('page-'+key).innerHTML=`
-    <div class="card" style="overflow:visible">
-      <div style="background:${t.bg};padding:20px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap">
-        <div class="p-avatar" style="background:rgba(255,255,255,.25);font-size:22px;font-weight:900;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid rgba(255,255,255,.4)">${t.initials}</div>
-        <div>
-          <div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-.3px">${t.name}</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.75);margin-top:3px;font-weight:500">${t.role}</div>
-        </div>
-        ${miniKPI}
-      </div>
-      <div style="padding:14px 24px;background:rgba(255,255,255,.05);border-bottom:1.5px solid var(--border)">
-        ${pb(pct,12)}
-        <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:var(--muted);margin-top:6px"><span>Overall Completion</span><span style="color:${pc(pct)}">${pct}%</span></div>
-      </div>
+  const mkpis=[["TOTAL",acts.length],["✅",done],["🔴",beh],["🟡",atr],["📋",open],["% ",pct+"%"]];
+  const bannerHTML=`<div style="background:${t.bg};border-radius:var(--r) var(--r) 0 0">
+    <div class="pbanner">
+      <div class="pavatar">${t.ini}</div>
+      <div><div class="pname">${t.name}</div><div class="prole">${t.role}</div></div>
+      <div class="pmkpis">${mkpis.map(([l,v])=>`<div class="pmk"><div class="pmkv">${v}</div><div class="pmkl">${l}</div></div>`).join('')}</div>
     </div>
+    <div style="padding:0 22px 14px">${pb(pct,10)}</div>
+  </div>`;
 
-    <div class="grid-2">
+  const RBGS={DAILY:"#1D4ED8",WEEKLY:"#059669",MONTHLY:"#7C3AED",ONGOING:"#374151"};
+  const recHTML=Object.entries(rec).map(([freq,items])=>`
+    <div class="rec-hdr" style="background:${RBGS[freq]||'#374151'}">${freq}</div>
+    ${items.map(item=>`<div class="rec-item"><div class="rec-dot" style="background:${RBGS[freq]||'#374151'}"></div>${item}</div>`).join('')}`).join('');
+
+  const calHTML=`<div style="overflow-x:auto"><table style="border-collapse:collapse;min-width:480px;width:100%">
+    <thead><tr>
+      <th style="width:55px;padding:7px;background:var(--bg);font-size:9px;font-weight:800;color:var(--navy);border-right:1px solid var(--border);border-bottom:2px solid var(--border2)">TIME</th>
+      ${DAYS.map(d=>`<th style="padding:7px;background:var(--bg);font-size:9px;font-weight:800;color:var(--navy);text-align:center;border-right:1px solid var(--border);border-bottom:2px solid var(--border2)">${d}</th>`).join('')}
+    </tr></thead>
+    <tbody>${TIMES.map(time=>`<tr>${[0,1,2,3,4,5].map(di=>{
+      if(di===0) return `<td style="padding:2px 6px;font-size:9px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;background:var(--surface2);height:26px;text-align:right;vertical-align:middle">${time}</td>`;
+      const ev=schedMap[di+'-'+time];
+      return `<td style="border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;height:26px;padding:2px;vertical-align:top">
+        ${ev?`<div style="font-size:9px;font-weight:700;color:${ev.color};background:${ev.bg};border-left:2px solid ${ev.color};padding:0 4px;height:20px;line-height:20px;border-radius:3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${ev.label}</div>`:''}
+      </td>`;
+    }).join('')}</tr>`).join('')}</tbody>
+  </table></div>`;
+
+  const rowsHTML=acts.map(buildRow).join('');
+
+  document.getElementById('pg-'+key).innerHTML=`
+    <div class="card">${bannerHTML}</div>
+    <div class="g2">
       <div class="card">
-        <div class="card-hdr"><span class="ch-title">📅 Weekly Schedule</span></div>
-        <div style="overflow-x:auto">
-          <table style="border-collapse:collapse;min-width:500px;width:100%">
-            <thead><tr>
-              <th style="width:60px;padding:8px;background:var(--bg);font-size:9px;font-weight:800;color:var(--navy);border-right:1px solid var(--border);border-bottom:2px solid var(--border2)">TIME</th>
-              ${DAYS.map(d=>`<th style="padding:8px;background:var(--bg);font-size:9px;font-weight:800;color:var(--navy);text-align:center;border-right:1px solid var(--border);border-bottom:2px solid var(--border2)">${d}</th>`).join('')}
-            </tr></thead>
-            <tbody>
-              ${TIMES.map(time=>`<tr>
-                <td style="padding:3px 8px;font-size:9px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;background:var(--surface2);white-space:nowrap;height:30px">${time}</td>
-                ${[1,2,3,4,5].map(day=>{
-                  const ev=schedMap[day+'-'+time];
-                  return `<td style="border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;height:30px;padding:2px;background:${ev?ev.bg:'transparent'}">
-                    ${ev?`<div style="font-size:9px;font-weight:700;color:${ev.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px;line-height:26px;border-left:3px solid ${ev.color}">${ev.label}</div>`:''}
-                  </td>`;
-                }).join('')}
-              </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
+        <div class="ch"><span class="ct">📅 Weekly Schedule</span></div>
+        ${calHTML}
       </div>
       <div class="card">
-        <div class="card-hdr"><span class="ch-title">🔁 Recurring Tasks</span></div>
+        <div class="ch"><span class="ct">🔁 Recurring Tasks</span></div>
         ${recHTML}
       </div>
     </div>
-
     <div class="card">
-      <div class="card-hdr">
-        <span class="ch-title">✅ My Action Items — All fields editable</span>
-        <span class="ch-sub">${acts.length} total · ${done} complete · ${behind} behind</span>
+      <div class="ch">
+        <span class="ct">✅ My Action Items — All Editable</span>
+        <button class="btn btn-primary btn-sm" onclick="openAddModal('${t.name}')">➕ Add Task</button>
       </div>
-      <div style="padding:8px 16px;background:#EFF6FF;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--navy)">
-        ✏️ Click any dropdown to edit status, owner, priority, target date, or program
-      </div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>✔</th><th>Action Item</th><th>Owner</th><th>Status</th><th>Priority</th><th>Target Date</th><th>Program</th></tr></thead>
-          <tbody>${personActRows}</tbody>
-        </table>
-      </div>
+      <div class="info-bar">✏️ Edit any field inline. 💬 Add comments. 🗑️ Delete tasks.</div>
+      <div class="twrap"><table><thead><tr><th>✔</th><th>Task</th><th>Owner</th><th>Status</th><th>Priority</th><th>Target</th><th>Program</th><th>Actions</th></tr></thead><tbody>${rowsHTML}</tbody></table></div>
     </div>`;
 }
 
-// ═════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════
 // NAVIGATION
-// ═════════════════════════════════════════════════════════════════
-const ALL_PAGES=['overview','actions','vpp','VP','SW','MS','RD','ZT'];
-let currentPage='overview';
+// ════════════════════════════════════════════════════
+const PAGES={
+  overview:{label:"📊 Overview"},
+  actions: {label:"✅ Actions"},
+  vpp:     {label:"⭐ VPP"},
+  metrics: {label:"📈 Metrics"},
+  links:   {label:"🔗 Links"},
+  chat:    {label:"🤖 AI Chat"},
+  VP:      {label:"🔵 Victor"},
+  SW:      {label:"🟢 Steve"},
+  MS:      {label:"🟣 Mike"},
+  RD:      {label:"🩵 Rich"},
+  ZT:      {label:"🟡 Zach"},
+};
+let curPage='overview';
+const pageBuilders={
+  overview:buildOverview,actions:buildActions,vpp:buildVPP,
+  metrics:buildMetrics,links:buildLinks,chat:buildChat,
+  VP:()=>buildPersonPage('VP'),SW:()=>buildPersonPage('SW'),
+  MS:()=>buildPersonPage('MS'),RD:()=>buildPersonPage('RD'),ZT:()=>buildPersonPage('ZT'),
+};
 
 function buildNav(){
-  const wrap=document.getElementById('nav-wrap');
-  const navItems=[
-    {id:'overview',label:'📊 Overview'},
-    {id:'actions', label:'✅ Actions'},
-    {id:'vpp',     label:'⭐ VPP Path'},
-    {id:'VP',      label:'🔵 Victor'},
-    {id:'SW',      label:'🟢 Steve'},
-    {id:'MS',      label:'🟣 Mike'},
-    {id:'RD',      label:'🩵 Rich'},
-    {id:'ZT',      label:'🟡 Zach'},
-  ];
-  wrap.innerHTML=navItems.map(n=>`
-    <button class="nav-btn${n.id===currentPage?' active':''}" id="nav-${n.id}" onclick="switchPage('${n.id}')">${n.label}</button>
-  `).join('');
+  document.getElementById('nav').innerHTML=Object.entries(PAGES).map(([k,v])=>
+    `<button class="nb${k===curPage?' active':''}" id="nb-${k}" onclick="goPage('${k}')">${v.label}</button>`
+  ).join('');
 }
-
-function switchPage(id){
-  ALL_PAGES.forEach(p=>{
-    const el=document.getElementById('page-'+p);
-    if(el) el.classList.toggle('page-hidden',p!==id);
-    if(el && p===id) el.classList.add('fade-in');
-    const nb=document.getElementById('nav-'+p);
-    if(nb) nb.classList.toggle('active',p===id);
+function goPage(id){
+  if(!PAGES[id]) return;
+  Object.keys(PAGES).forEach(k=>{
+    const el=document.getElementById('pg-'+k);
+    const btn=document.getElementById('nb-'+k);
+    if(el) el.classList.toggle('hidden',k!==id);
+    if(el&&k===id){el.classList.remove('fade-in');void el.offsetWidth;el.classList.add('fade-in');}
+    if(btn) btn.classList.toggle('active',k===id);
   });
-  currentPage=id;
+  curPage=id;
   window.scrollTo({top:0,behavior:'smooth'});
-  // Build page on demand if empty
-  if(id==='actions' && !document.getElementById('actions-body')) buildActions();
-  if(id==='vpp' && !document.getElementById('page-vpp').innerHTML.trim()) buildVPP();
-  if(['VP','SW','MS','RD','ZT'].includes(id)) buildPersonPage(id);
+  if(pageBuilders[id]) pageBuilders[id]();
 }
 
-// ═════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════
 // INIT
-// ═════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════
 buildNav();
 buildOverview();
 buildActions();
