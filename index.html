@@ -139,7 +139,7 @@ tbody tr.done-row td:nth-child(2){text-decoration:line-through;color:var(--muted
 .esel{background:transparent;border:1.5px solid transparent;border-radius:7px;padding:3px 6px;font-size:11px;font-family:inherit;color:var(--ink2);cursor:pointer;transition:all .15s;outline:none;font-weight:500}
 .esel:hover{border-color:var(--border2);background:var(--surface2)}
 .esel:focus{border-color:var(--blue);background:var(--blue-lt)}
-.etxt{background:transparent;border:1.5px solid transparent;border-radius:7px;padding:6px 8px;font-size:12px;font-family:inherit;color:var(--ink);transition:all .15s;outline:none;width:100%;line-height:1.5;white-space:normal;resize:none;overflow:hidden}
+.etxt{display:block;background:transparent;border:1.5px solid transparent;border-radius:7px;padding:6px 8px;font-size:12px;font-family:inherit;color:var(--ink);transition:all .15s;outline:none;width:100%;line-height:1.5;white-space:pre-wrap;word-wrap:break-word;resize:none;overflow:hidden;box-sizing:border-box;min-height:30px}
 .etxt:hover{border-color:var(--border2);background:var(--surface2)}
 .etxt:focus{border-color:var(--blue);background:var(--blue-lt)}
 
@@ -232,11 +232,11 @@ select.fsel2:focus,input.fsrch:focus{border-color:var(--blue)}
 .sg{border-collapse:collapse;min-width:560px;width:100%}
 .sg th{padding:8px 4px;background:var(--surface2);font-size:9px;font-weight:800;color:var(--ink2);text-align:center;border-bottom:1.5px solid var(--border2);border-right:1px solid var(--border)}
 .sg th:first-child{width:54px}
-.sg-time{padding:2px 7px;font-size:9px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid #F2F2F5;background:var(--surface2);text-align:right;height:30px;vertical-align:middle;white-space:nowrap}
-.sg-cell{border-right:1px solid var(--border);border-bottom:1px solid #F2F2F5;height:30px;padding:2px;cursor:pointer;transition:background .1s;position:relative}
+.sg-time{padding:2px 7px;font-size:9px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid #F2F2F5;background:var(--surface2);text-align:right;height:36px;vertical-align:middle;white-space:nowrap}
+.sg-cell{border-right:1px solid var(--border);border-bottom:1px solid #F2F2F5;height:36px;padding:2px;cursor:pointer;transition:background .1s;position:relative}
 .sg-cell:hover{background:var(--blue-lt)}
 .sg-cell.has-event:hover .sg-ev{box-shadow:var(--shadow-md)}
-.sg-ev{border-radius:5px;padding:0 6px;font-size:9px;font-weight:700;height:24px;display:flex;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:3px solid;color:#fff;cursor:pointer;transition:all .12s}
+.sg-ev{border-radius:5px;padding:3px 6px;font-size:9px;font-weight:700;min-height:30px;max-height:54px;display:flex;align-items:center;white-space:normal;overflow:hidden;line-height:1.25;word-wrap:break-word;border-left:3px solid;color:#fff;cursor:pointer;transition:all .12s}
 .sg-ev:hover{transform:scale(1.02)}
 .sg-add-hint{opacity:0;font-size:14px;color:var(--blue);text-align:center;line-height:26px;transition:opacity .1s}
 .sg-cell:hover .sg-add-hint{opacity:1}
@@ -246,14 +246,14 @@ select.fsel2:focus,input.fsrch:focus{border-color:var(--blue)}
 .rec-hdr{padding:7px 16px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;justify-content:space-between}
 .rec-add-btn{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .rec-add-btn:hover{background:rgba(255,255,255,.35)}
-.rec-item{display:flex;align-items:center;gap:9px;padding:7px 16px;border-bottom:1px solid #F2F2F5;font-size:11px;color:var(--ink2);font-weight:500;transition:background .1s}
+.rec-item{display:flex;align-items:flex-start;gap:9px;padding:7px 16px;border-bottom:1px solid #F2F2F5;font-size:11px;color:var(--ink2);font-weight:500;transition:background .1s}
+.rec-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:7px}
+.rec-text{flex:1;display:block;background:transparent;border:1px solid transparent;border-radius:6px;padding:4px 5px;font-size:11px;font-family:inherit;color:var(--ink2);outline:none;transition:all .15s;line-height:1.5;white-space:pre-wrap;word-wrap:break-word;resize:none;overflow:hidden;box-sizing:border-box;min-height:22px}
+.rec-text:hover{border-color:var(--border2);background:#fff}
+.rec-text:focus{border-color:var(--blue);background:#fff}
 .rec-item:hover{background:var(--surface2)}
 .rec-item:hover .rec-del{opacity:1}
 .rec-item:last-child{border-bottom:none}
-.rec-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.rec-text{flex:1;background:transparent;border:1px solid transparent;border-radius:6px;padding:2px 5px;font-size:11px;font-family:inherit;color:var(--ink2);outline:none;transition:all .15s}
-.rec-text:hover{border-color:var(--border2);background:#fff}
-.rec-text:focus{border-color:var(--blue);background:#fff}
 .rec-del{opacity:0;background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;transition:opacity .15s}
 .rec-del:hover{color:var(--red)}
 
@@ -1098,6 +1098,23 @@ function pc(p){return p>=75?'#30D158':p>=40?'#FF9F0A':'#FF453A'}
 function pb(pct,h=8){const p=Math.min(pct,100);return `<div class="pt" style="height:${h}px"><div class="pf" style="width:${p}%;background:${pc(pct)};height:${h}px"></div></div>`}
 function bk(s){return 'badge s-'+(s||'Open').replace(/[\s-]/g,'')}
 function pri(p){return `<span class="p-${p||'Low'}">${p||'Low'}</span>`}
+// ── Auto-growing textarea: expands height to fit content as the user
+// types, so longer task names/descriptions never get clipped. ──
+// Escapes user-entered text before inserting into innerHTML, so stray
+// '<', '>', or '&' characters never break the page layout.
+function esc(s){
+  if(s===null||s===undefined) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function autoGrow(el){
+  el.style.height='auto';
+  el.style.height=(el.scrollHeight)+'px';
+}
+function autoGrowAll(){
+  document.querySelectorAll('textarea.etxt').forEach(autoGrow);
+}
+
 function toast(msg,col){
   const t=document.getElementById('toast');
   t.style.background=col||'#1D1D1F';
@@ -1278,7 +1295,7 @@ function buildRow(a){
   const dueVal=a.dueDate||'';
   return `<tr id="r${a.id}" class="${done?'done-row':''}">
     <td><button class="chk${done?' on':''}" onclick="toggleDone(${a.id})">${done?'✓':''}</button></td>
-    <td style="max-width:240px"><input class="etxt" value="${a.task.replace(/"/g,'&quot;')}" style="width:100%;font-weight:${done?400:500};${done?'text-decoration:line-through;color:var(--muted)':''}" onchange="upd(${a.id},'task',this.value)"/></td>
+    <td style="max-width:280px;min-width:180px"><textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="upd(${a.id},'task',this.value)" style="width:100%;font-weight:${done?400:500};${done?'text-decoration:line-through;color:var(--muted)':''}">${a.task.replace(/</g,'&lt;')}</textarea></td>
     <td><select class="esel" onchange="upd(${a.id},'owner',this.value)">${opts(PERSON_OPTS,a.owner)}</select></td>
     <td><select class="esel" onchange="upd(${a.id},'status',this.value)">${opts(STATUS_OPTS,a.status)}</select></td>
     <td><select class="esel" onchange="upd(${a.id},'pri',this.value)">${opts(PRI_OPTS,a.pri)}</select></td>
@@ -1390,20 +1407,23 @@ function updCommentBadge(id){
 let schedEditCtx=null; // {personKey, day, time, eventId}
 const EVENT_COLORS=["#0A84FF","#30D158","#BF5AF2","#FF9F0A","#FF453A","#64D2FF","#5856D6","#FF375F","#8E8E93"];
 
+let schedSelectedColor=EVENT_COLORS[0];
 function openSchedModal(personKey,day,time,eventId){
   schedEditCtx={personKey,day,time,eventId};
   const existing=eventId?S.sched[personKey].find(e=>e.id===eventId):null;
   document.getElementById('sm-title').textContent=existing?'Edit Event':'Add Event';
   document.getElementById('sm-day-time').textContent=`${DAY_NAMES[day-1]} · ${time}`;
   document.getElementById('sm-label').value=existing?existing.label:'';
+  schedSelectedColor=existing?existing.color:EVENT_COLORS[0];
   // build color swatches
   const sw=document.getElementById('sm-colors');
-  sw.innerHTML=EVENT_COLORS.map(c=>`<div class="color-sw" data-color="${c}" style="background:${c};${(existing?existing.color:EVENT_COLORS[0])===c?'box-shadow:0 0 0 3px #fff,0 0 0 5px '+c+';':''}" onclick="selectColor('${c}')"></div>`).join('');
+  sw.innerHTML=EVENT_COLORS.map(c=>`<div class="color-sw" data-color="${c}" style="background:${c};${schedSelectedColor===c?'box-shadow:0 0 0 3px #fff,0 0 0 5px '+c+';':''}" onclick="selectColor('${c}')"></div>`).join('');
   document.getElementById('sm-delete').style.display=existing?'inline-flex':'none';
   document.getElementById('modal-sched').classList.remove('hidden');
   document.getElementById('sm-label').focus();
 }
 function selectColor(c){
+  schedSelectedColor=c;
   document.querySelectorAll('.color-sw').forEach(el=>{
     el.style.boxShadow=el.dataset.color===c?`0 0 0 3px #fff,0 0 0 5px ${c}`:'none';
   });
@@ -1412,8 +1432,7 @@ function saveSchedEvent(){
   const {personKey,day,time,eventId}=schedEditCtx;
   const label=document.getElementById('sm-label').value.trim();
   if(!label){toast('Event name required','#FF453A');return;}
-  const selSw=document.querySelector('.color-sw[style*="box-shadow: 0"]')||document.querySelector('.color-sw');
-  const color=selSw?selSw.dataset.color:'#0A84FF';
+  const color=schedSelectedColor||EVENT_COLORS[0];
   if(eventId){
     const ev=S.sched[personKey].find(e=>e.id===eventId);
     if(ev){ev.label=label;ev.color=color;}
@@ -1864,11 +1883,11 @@ function buildMetrics(){
     <td><input type="date" class="esel" style="min-width:110px" value="${c.date}" onchange="updCase(${c.id},'date',this.value)"/></td>
     <td><select class="esel" onchange="updCase(${c.id},'caseType',this.value)">${opts(["Recordable","Non-Recordable","First Aid","Near Miss"],c.caseType)}</select></td>
     <td><select class="esel" onchange="updCase(${c.id},'dept',this.value)">${opts(["Norton","Latimer"],c.dept)}</select></td>
-    <td><input class="etxt" style="min-width:110px" value="${(c.occupation||'').replace(/"/g,'&quot;')}" onchange="updCase(${c.id},'occupation',this.value)"/></td>
-    <td><input class="etxt" style="min-width:130px" value="${(c.accidentType||'').replace(/"/g,'&quot;')}" onchange="updCase(${c.id},'accidentType',this.value)"/></td>
-    <td><input class="etxt" style="min-width:130px" value="${(c.injuryType||'').replace(/"/g,'&quot;')}" onchange="updCase(${c.id},'injuryType',this.value)"/></td>
-    <td><input class="etxt" style="min-width:90px" value="${(c.bodyPart||'').replace(/"/g,'&quot;')}" onchange="updCase(${c.id},'bodyPart',this.value)"/></td>
-    <td><input class="etxt" style="min-width:200px" value="${(c.desc||'').replace(/"/g,'&quot;')}" onchange="updCase(${c.id},'desc',this.value)"/></td>
+    <td style="min-width:130px"><textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updCase(${c.id},'occupation',this.value)">${(c.occupation||'').replace(/</g,'&lt;')}</textarea></td>
+    <td style="min-width:160px"><textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updCase(${c.id},'accidentType',this.value)">${(c.accidentType||'').replace(/</g,'&lt;')}</textarea></td>
+    <td style="min-width:160px"><textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updCase(${c.id},'injuryType',this.value)">${(c.injuryType||'').replace(/</g,'&lt;')}</textarea></td>
+    <td style="min-width:110px"><textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updCase(${c.id},'bodyPart',this.value)">${(c.bodyPart||'').replace(/</g,'&lt;')}</textarea></td>
+    <td style="min-width:260px"><textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updCase(${c.id},'desc',this.value)">${(c.desc||'').replace(/</g,'&lt;')}</textarea></td>
     <td><button class="btn btn-ghost btn-icon" onclick="delCase(${c.id})" style="color:var(--red)" title="Remove case">🗑️</button></td>
   </tr>`).join('');
   const caseLogHTML=`<div class="twrap"><table><thead><tr><th>Date</th><th>Type</th><th>Dept</th><th>Occupation</th><th>Accident Type</th><th>Injury Type</th><th>Body Part</th><th>Description / Notes</th><th></th></tr></thead><tbody id="case-log-body">${caseRows}</tbody></table></div>`;
@@ -2175,7 +2194,7 @@ function buildPersonPage(key){
       </div>
       ${items.map((item,idx)=>`<div class="rec-item">
         <div class="rec-dot" style="background:${RBGS[freq]||'#48484A'}"></div>
-        <input class="rec-text" data-rec="${key}-${freq}" value="${item.replace(/"/g,'&quot;')}" onchange="updRecItem('${key}','${freq}',${idx},this.value)"/>
+        <textarea class="rec-text" rows="1" oninput="autoGrow(this)" data-rec="${key}-${freq}" onchange="updRecItem('${key}','${freq}',${idx},this.value)">${item.replace(/</g,'&lt;')}</textarea>
         <button class="rec-del" onclick="delRecItem('${key}','${freq}',${idx})" title="Remove">✕</button>
       </div>`).join('')}
     </div>`).join('');
@@ -2187,7 +2206,7 @@ function buildPersonPage(key){
     for(let day=1;day<=5;day++){
       const ev=schedMap[day+'-'+time];
       if(ev){
-        calHTML+=`<td class="sg-cell has-event" onclick="openSchedModal('${key}',${day},'${time}',${ev.id})"><div class="sg-ev" style="background:${ev.color};border-left-color:${ev.color}">${ev.label}</div></td>`;
+        calHTML+=`<td class="sg-cell has-event" onclick="openSchedModal('${key}',${day},'${time}',${ev.id})"><div class="sg-ev" style="background:${ev.color};border-left-color:${ev.color}">${esc(ev.label)}</div></td>`;
       }else{
         calHTML+=`<td class="sg-cell" onclick="openSchedModal('${key}',${day},'${time}')"><div class="sg-add-hint">+</div></td>`;
       }
