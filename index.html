@@ -100,6 +100,11 @@ main{max-width:1600px;margin:0 auto;padding:18px 20px 60px}
 
 /* ═══ KPI ═══ */
 .kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px;padding:18px}
+.rtile{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;border-radius:12px;cursor:pointer;transition:background .15s,transform .15s}
+.rtile:hover{background:var(--surface2);transform:translateY(-2px)}
+.rtile-label{font-size:11px;font-weight:800;color:var(--ink);margin-top:2px}
+.rtile-sub{font-size:9px;color:var(--muted);text-align:center;line-height:1.3}
 .kcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 16px 13px;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;cursor:default;position:relative}
 .kcard:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
 .kicon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:10px}
@@ -982,6 +987,12 @@ function applyDefaults(){
   if(!S.nextId)   S.nextId=200;
   if(!S.nextCaseId) S.nextCaseId=Math.max(0,...S.iiCases.map(c=>c.id))+1;
   if(!S.nextSchedId){S.nextSchedId={};Object.keys(TEAM).forEach(k=>{const max=Math.max(0,...(S.sched[k]||[]).map(e=>e.id));S.nextSchedId[k]=max+1;});}
+  // Ergo pulse — manually-tracked figures, scoped to the current month so they reset naturally
+  const curMonthKey=new Date().toISOString().slice(0,7); // YYYY-MM
+  if(!S.ergoMonthly) S.ergoMonthly={};
+  if(!S.ergoMonthly[curMonthKey]) S.ergoMonthly[curMonthKey]={
+    taskTrackerAtRisk:0, encounters:0, recognitions:0, assessmentsCompleted:0, assessmentsGoal:2
+  };
 }
 
 // saveS() pushes the full current state to Firebase. All connected
@@ -1112,7 +1123,7 @@ function autoGrow(el){
   el.style.height=(el.scrollHeight)+'px';
 }
 function autoGrowAll(){
-  document.querySelectorAll('textarea.etxt').forEach(autoGrow);
+  document.querySelectorAll('textarea.etxt, textarea.rec-text').forEach(autoGrow);
 }
 
 function toast(msg,col){
@@ -1127,12 +1138,50 @@ function actionsFor(name){return S.actions.filter(a=>a.owner===name)}
 function byStatus(s){return S.actions.filter(a=>a.status===s).length}
 function totalDone(){return S.actions.filter(a=>a.status==='Complete').length}
 function totalCount(){return S.actions.length}
+function teamPct(key){
+  const t=TEAM[key];
+  const acts=actionsFor(t.name);
+  if(!acts.length) return 0;
+  return Math.round(acts.filter(a=>a.status==='Complete').length/acts.length*100);
+}
+function avgVppProgress(){
+  const ng=S.vpp.slice(0,-1);
+  if(!ng.length) return 0;
+  return Math.round(ng.reduce((s,m)=>s+m.pct,0)/ng.length);
+}
+function metricsOnTargetPercent(){
+  // Of the annual scorecard metrics that have a clear target/actual comparison,
+  // what fraction are currently on/within target?
+  let onTarget=0,total=0;
+  ANNUAL_METRICS.forEach(m=>{
+    total++;
+    const ok=m.fmt==='rate'?m.actual<=m.target:m.actual>=m.target;
+    if(ok) onTarget++;
+  });
+  return total?Math.round(onTarget/total*100):0;
+}
 
 // ── Donut chart (pure SVG, no library) ──
 const PIE_COLORS={
   "Complete":"#30D158","On Schedule":"#64D2FF","Behind":"#FF453A","At-Risk":"#FF9F0A",
   "Not Started":"#BF5AF2","Open":"#8E8E93","Ongoing":"#0A84FF","On Hold":"#FF9F0A"
 };
+// Compact single-value progress ring — used for tab/section summary tiles.
+function progressRing(pct,size=72,color,label){
+  const p=Math.max(0,Math.min(100,pct));
+  const stroke=size*0.13;
+  const r=size/2, cx=size/2, cy=size/2;
+  const radius=r-stroke/2;
+  const circumference=2*Math.PI*radius;
+  const len=p/100*circumference;
+  const c=color||pc(p);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="display:block">
+    <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="#EEEFF2" stroke-width="${stroke}"/>
+    <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${c}" stroke-width="${stroke}" stroke-dasharray="${len} ${circumference-len}" stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})"/>
+    <text x="${cx}" y="${cy+size*0.06}" text-anchor="middle" font-size="${size*0.24}" font-weight="900" fill="${c}" font-family="-apple-system,sans-serif">${Math.round(p)}%</text>
+  </svg>`;
+}
+
 function buildDonut(actionsList,size=160){
   const total=actionsList.length;
   if(!total) return '<div style="padding:24px;text-align:center;color:var(--muted);font-size:12px">No data yet.</div>';
@@ -1535,6 +1584,26 @@ function buildOverview(){
   // ── COMBINED TEAM CALENDAR ──
   const combinedHTML=buildCombinedCalendar();
 
+  // ── TAB PROGRESS RINGS — one ring per major tab, click to jump there ──
+  const vppAvgForRing=avgVppProgress();
+  const metricsOnTargetPct=metricsOnTargetPercent();
+  const ringTiles=[
+    {label:"Actions",pct:pct,sub:`${done}/${total} complete`,color:"#0A84FF",click:"goPage('actions')"},
+    {label:"VPP Path",pct:vppAvgForRing,sub:"Avg milestone progress",color:"#FF9F0A",click:"goPage('vpp')"},
+    {label:"Metrics",pct:metricsOnTargetPct,sub:"Targets on track",color:"#30D158",click:"goPage('metrics')"},
+    {label:"Victor",pct:teamPct('VP'),sub:"Action items done",color:TEAM.VP.color,click:"goPage('VP')"},
+    {label:"Steve",pct:teamPct('SW'),sub:"Action items done",color:TEAM.SW.color,click:"goPage('SW')"},
+    {label:"Mike",pct:teamPct('MS'),sub:"Action items done",color:TEAM.MS.color,click:"goPage('MS')"},
+    {label:"Rich",pct:teamPct('RD'),sub:"Action items done",color:TEAM.RD.color,click:"goPage('RD')"},
+    {label:"Zach",pct:teamPct('ZT'),sub:"Action items done",color:TEAM.ZT.color,click:"goPage('ZT')"},
+  ];
+  const ringsHTML=`<div class="rgrid">`+ringTiles.map(r=>`
+    <div class="rtile" onclick="${r.click}">
+      ${progressRing(r.pct,76,r.color)}
+      <div class="rtile-label">${r.label}</div>
+      <div class="rtile-sub">${r.sub}</div>
+    </div>`).join('')+'</div>';
+
   document.getElementById('pg-overview').innerHTML=`
     <div class="hero">
       <div class="hero-top">
@@ -1544,6 +1613,10 @@ function buildOverview(){
         </div>
         <div class="hero-badge">⭐ VPP Star Target — October 2026</div>
       </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">🎯 Progress at a Glance</span><span class="cs">Tap any ring to open that tab</span></div>
+      ${ringsHTML}
     </div>
     ${kHTML}
     <div class="g2">
@@ -1693,6 +1766,7 @@ function renderGroupedActions(fl){
       <div class="info-bar">✏️ Tap any field to edit instantly — task name, owner, status, priority, target date, due date, or program. 💬 for comments, 🗑️ to delete.</div>
       ${tableShell(fl.map(buildRow).join(''))}
     </div>`;
+    autoGrowAll();
     return;
   }
   let groups={};
@@ -1720,6 +1794,7 @@ function renderGroupedActions(fl){
         <div id="${gid}" class="${collapsed?'hidden':''}">${tableShell(items.map(buildRow).join(''))}</div>
       </div>`;
     }).join('');
+  autoGrowAll();
 }
 const groupCollapse={};
 function toggleGroup(gid){
@@ -1764,10 +1839,32 @@ function fmtVal(v,fmt){
   return v;
 }
 function buildMetrics(){
+  // ── Computed helpers ──
+  const daysSinceLastRecordable=()=>{
+    const recordableDates=S.iiCases.filter(c=>c.caseType==='Recordable').map(c=>new Date(c.date+'T00:00:00')).filter(d=>!isNaN(d));
+    if(!recordableDates.length) return null;
+    const last=new Date(Math.max(...recordableDates));
+    const diffMs=new Date()-last;
+    return Math.max(0,Math.floor(diffMs/(1000*60*60*24)));
+  };
+  const lastRecordableDate=(()=>{
+    const recordable=S.iiCases.filter(c=>c.caseType==='Recordable').map(c=>c.date).filter(Boolean).sort();
+    return recordable.length?recordable[recordable.length-1]:null;
+  })();
+
   // ── 1. Annual scorecard (editable, top of mind) ──
   const mkeys=Object.keys(S.metrics);
+  const daysNoInjury=daysSinceLastRecordable();
   const cardsHTML=mkeys.map(k=>{
     const m=S.metrics[k];
+    if(k==='days_no_injury'){
+      // Computed automatically from the I&I case log — not manually entered.
+      return `<div class="mcard">
+        <div class="mcard-label">${m.label}</div>
+        <div style="font-size:28px;font-weight:900;color:${daysNoInjury===null?'var(--muted)':daysNoInjury>=30?'#1B5E20':'#A6271E'};padding:7px 0">${daysNoInjury===null?'—':daysNoInjury}</div>
+        <div class="mcard-sub">${lastRecordableDate?`Since last recordable (${lastRecordableDate})`:'No recordable cases logged yet'}</div>
+      </div>`;
+    }
     return `<div class="mcard">
       <div class="mcard-label">${m.label}</div>
       <input class="mcard-input" type="text" value="${m.value}" onchange="updMetric('${k}',this.value)" placeholder="Enter value…"/>
@@ -1851,6 +1948,53 @@ function buildMetrics(){
     </tr>`).join('')}
   </tbody></table></div>`;
 
+  // ── 7a. OSHA-standard Total Case Incident Rate — computed from entered hours + recordables ──
+  // Formula: (Number of recordable cases × 200,000) ÷ Total hours worked
+  const curYear=new Date().getFullYear();
+  const lastYear=curYear-1;
+  const enteredMonths=S.rollingTable.filter(m=>m.hours&&m.injuries!==null&&m.injuries!==undefined);
+  const ytdHours=enteredMonths.reduce((s,m)=>s+m.hours,0);
+  const ytdInjuries=enteredMonths.reduce((s,m)=>s+m.injuries,0);
+  const ytdOshaRate=ytdHours>0?(ytdInjuries*200000/ytdHours):null;
+  const oshaRateGoal=S.rollingTable[S.rollingTable.length-1]?.goal ?? null;
+
+  // Year-over-year recordable case counts, computed straight from the case log
+  const recordablesByYear={};
+  S.iiCases.forEach(c=>{
+    if(c.caseType!=='Recordable'||!c.date) return;
+    const yr=c.date.slice(0,4);
+    recordablesByYear[yr]=(recordablesByYear[yr]||0)+1;
+  });
+  const curYearCount=recordablesByYear[String(curYear)]||0;
+  const lastYearCount=recordablesByYear[String(lastYear)]||0;
+  const yoyDelta=curYearCount-lastYearCount;
+  const yoyPct=lastYearCount>0?Math.round((yoyDelta/lastYearCount)*100):(curYearCount>0?100:0);
+  const yoyColor=yoyDelta<=0?'#1B5E20':'#A6271E';
+  const yoyArrow=yoyDelta<0?'↓':yoyDelta>0?'↑':'→';
+
+  const oshaRateHTML=`<div class="metric-grid">
+    <div class="mcard" style="text-align:center">
+      <div class="mcard-label">${curYear} OSHA Incident Rate (YTD)</div>
+      <div style="font-size:28px;font-weight:900;color:${ytdOshaRate===null?'var(--muted)':(oshaRateGoal!==null&&ytdOshaRate<=oshaRateGoal)?'#1B5E20':'#A6271E'};padding:7px 0">${ytdOshaRate===null?'—':ytdOshaRate.toFixed(2)}</div>
+      <div class="mcard-sub">${ytdHours?`${ytdInjuries} recordable${ytdInjuries===1?'':'s'} ÷ ${ytdHours.toLocaleString()} hrs × 200,000`:'Enter hours & injuries in the table below'}</div>
+    </div>
+    <div class="mcard" style="text-align:center">
+      <div class="mcard-label">${curYear} Recordable Cases</div>
+      <div style="font-size:28px;font-weight:900;color:var(--ink);padding:7px 0">${curYearCount}</div>
+      <div class="mcard-sub">From I&I case log</div>
+    </div>
+    <div class="mcard" style="text-align:center">
+      <div class="mcard-label">${lastYear} Recordable Cases</div>
+      <div style="font-size:28px;font-weight:900;color:var(--muted);padding:7px 0">${lastYearCount}</div>
+      <div class="mcard-sub">Same period prior year</div>
+    </div>
+    <div class="mcard" style="text-align:center">
+      <div class="mcard-label">Year-Over-Year Change</div>
+      <div style="font-size:28px;font-weight:900;color:${yoyColor};padding:7px 0">${yoyArrow} ${Math.abs(yoyDelta)}</div>
+      <div class="mcard-sub">${lastYearCount>0?`${yoyPct>0?'+':''}${yoyPct}% vs ${lastYear}`:'No prior-year baseline'}</div>
+    </div>
+  </div>`;
+
   // ── 7. I&I Cases — computed summaries + full editable case log ──
   const caseYearCounts={};
   S.iiCases.forEach(c=>{
@@ -1892,12 +2036,37 @@ function buildMetrics(){
   </tr>`).join('');
   const caseLogHTML=`<div class="twrap"><table><thead><tr><th>Date</th><th>Type</th><th>Dept</th><th>Occupation</th><th>Accident Type</th><th>Injury Type</th><th>Body Part</th><th>Description / Notes</th><th></th></tr></thead><tbody id="case-log-body">${caseRows}</tbody></table></div>`;
 
-  // ── 8. Ergo pulse weekly metrics ──
+  // ── 8. Ergo pulse — current month, editable, with one computed field ──
+  const curMonthKey=new Date().toISOString().slice(0,7);
+  const curMonthLabel=new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const em=S.ergoMonthly[curMonthKey];
+  const gensuiteCasesThisMonth=S.iiCases.filter(c=>(c.caseType==='Recordable'||c.caseType==='First Aid')&&c.date && c.date.slice(0,7)===curMonthKey).length;
   const ergoHTML=`<div class="metric-grid">
-    ${ERGO_METRICS.map(m=>`<div class="mcard">
-      <div class="mcard-label">${m.label}</div>
-      <div style="font-size:20px;font-weight:900;color:var(--ink)">${m.actual} <span style="font-size:12px;color:var(--muted);font-weight:600">/ ${m.target} target</span></div>
-    </div>`).join('')}
+    <div class="mcard">
+      <div class="mcard-label">Ergo Task Tracker (At-Risk/Past Due)</div>
+      <input class="mcard-input" type="number" value="${em.taskTrackerAtRisk}" onchange="updErgoMonthly('taskTrackerAtRisk',this.value)"/>
+      <div class="mcard-sub">Goal: 0 · ${curMonthLabel}</div>
+    </div>
+    <div class="mcard">
+      <div class="mcard-label">Encounters (this month)</div>
+      <input class="mcard-input" type="number" value="${em.encounters}" onchange="updErgoMonthly('encounters',this.value)"/>
+      <div class="mcard-sub">${curMonthLabel}</div>
+    </div>
+    <div class="mcard">
+      <div class="mcard-label">Team/Associate Positive Recognitions</div>
+      <input class="mcard-input" type="number" value="${em.recognitions}" onchange="updErgoMonthly('recognitions',this.value)"/>
+      <div class="mcard-sub">${curMonthLabel}</div>
+    </div>
+    <div class="mcard">
+      <div class="mcard-label">Gensuite I&I Cases (Occ. First Aid/Recordable)</div>
+      <div style="font-size:20px;font-weight:900;color:var(--ink);padding:7px 0">${gensuiteCasesThisMonth} <span style="font-size:11px;color:var(--muted);font-weight:600">computed</span></div>
+      <div class="mcard-sub">${curMonthLabel} · from case log below</div>
+    </div>
+    <div class="mcard">
+      <div class="mcard-label">Ergonomic Assessments Completed</div>
+      <input class="mcard-input" type="number" value="${em.assessmentsCompleted}" onchange="updErgoMonthly('assessmentsCompleted',this.value)"/>
+      <div class="mcard-sub">Goal: <input type="number" style="width:40px;border:1px solid var(--border2);border-radius:5px;padding:1px 3px;font-size:10px;text-align:center" value="${em.assessmentsGoal}" onchange="updErgoMonthly('assessmentsGoal',this.value)"/> · ${curMonthLabel}</div>
+    </div>
   </div>`;
 
   // ── 9. Notes log ──
@@ -1920,6 +2089,11 @@ function buildMetrics(){
       <div class="info-bar">📝 Enter hours worked and recordable injuries for each month — the I&I rate calculates automatically and feeds the chart below.</div>
       ${rollingHTML}
       <div style="padding:18px;border-top:1px solid var(--border)">${iiChart}</div>
+    </div>
+
+    <div class="card">
+      <div class="ch" style="background:linear-gradient(135deg,#1B5E20,#0E5C73)"><span class="ct" style="color:#fff">🧮 OSHA Incident Rate — Year-to-Date & Year-Over-Year</span><span class="cs" style="color:rgba(255,255,255,.85)">Computed from hours worked + recordables entered above</span></div>
+      ${oshaRateHTML}
     </div>
 
     <div class="card">
@@ -1973,8 +2147,17 @@ function buildMetrics(){
         <textarea id="metric-notes" style="width:100%;min-height:120px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:12px;font-family:inherit;outline:none;resize:vertical;color:var(--ink2)" placeholder="Add context, trends, or notes about current metrics here…" onchange="updMetricNotes(this.value)">${S.metricNotes||''}</textarea>
       </div>
     </div>`;
+  autoGrowAll();
 }
 function updMetric(k,v){S.metrics[k].value=v;saveS();toast('Metric saved','#30D158');}
+function updErgoMonthly(field,val){
+  const curMonthKey=new Date().toISOString().slice(0,7);
+  const em=S.ergoMonthly[curMonthKey];
+  if(!em) return;
+  em[field]=val===''?0:Number(val);
+  saveS();buildMetrics();
+  toast('Saved','#30D158');
+}
 function updMetricNotes(v){S.metricNotes=v;saveS();toast('Notes saved','#30D158');}
 
 // ── Rolling I&I rate table edits ──
@@ -2251,6 +2434,7 @@ function buildPersonPage(key){
         <tbody id="atbody-done-${key}" class="${personView[key]==='done'?'':'hidden'}">${rowsDone}</tbody>
       </table></div>
     </div>`;
+  autoGrowAll();
 }
 
 function setActionView(key,view){
@@ -2259,6 +2443,7 @@ function setActionView(key,view){
   document.getElementById(`seg-done-${key}`).classList.toggle('active',view==='done');
   document.getElementById(`atbody-active-${key}`).classList.toggle('hidden',view!=='active');
   document.getElementById(`atbody-done-${key}`).classList.toggle('hidden',view!=='done');
+  autoGrowAll();
 }
 
 // ════════════════════════════════════════════════════
