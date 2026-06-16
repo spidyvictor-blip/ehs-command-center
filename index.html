@@ -3,286 +3,382 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>EHS Command Center · GE Aerospace Muskegon</title>
+<title>EHS+S Team Dashboard · GE Aerospace Muskegon</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#F0F4FF;--surface:#fff;--surface2:#F8FAFF;
-  --border:#CBD5F0;--border2:#A5B4FC;
-  --navy:#0F2D6B;--navy2:#1E3A8A;--blue:#1D4ED8;--blue2:#3B82F6;--blue-lt:#EFF6FF;
-  --green:#059669;--green-lt:#D1FAE5;
-  --amber:#D97706;--amber-lt:#FEF3C7;
-  --red:#DC2626;--red-lt:#FEE2E2;
-  --purple:#7C3AED;--purple-lt:#EDE9FE;
-  --teal:#0891B2;--teal-lt:#CFFAFE;
-  --gold:#B45309;--gold-lt:#FEF3C7;
-  --text:#0F172A;--text2:#1E293B;--text3:#374151;--muted:#6B7280;
-  --r:10px;
-  --shadow:0 1px 8px rgba(15,45,107,.10);
-  --shadow-md:0 4px 20px rgba(15,45,107,.14);
-  --shadow-lg:0 8px 40px rgba(15,45,107,.18);
+  --bg:#F5F5F7;
+  --surface:#FFFFFF;
+  --surface2:#FBFBFD;
+  --border:#E5E5EA;
+  --border2:#D1D1D6;
+  --ink:#1D1D1F;
+  --ink2:#3A3A3C;
+  --muted:#8E8E93;
+  --blue:#0A84FF;
+  --blue-lt:#E8F2FF;
+  --green:#30D158;
+  --green-lt:#E3FCEA;
+  --amber:#FF9F0A;
+  --amber-lt:#FFF4E5;
+  --red:#FF453A;
+  --red-lt:#FFEBEA;
+  --purple:#BF5AF2;
+  --purple-lt:#F6E9FE;
+  --teal:#64D2FF;
+  --teal-lt:#E5F8FF;
+  --indigo:#5856D6;
+  --indigo-lt:#EEEDFC;
+  --gold:#FF9F0A;
+  --r:14px;
+  --r-sm:9px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,.08);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.14);
+  --blur:saturate(180%) blur(20px);
 }
 html{scroll-behavior:smooth}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px}
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:#E0E7FF}
-::-webkit-scrollbar-thumb{background:#A5B4FC;border-radius:3px}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:13px;-webkit-font-smoothing:antialiased;background-image:radial-gradient(circle at 12% 8%,rgba(10,132,255,.05),transparent 38%),radial-gradient(circle at 88% 92%,rgba(191,90,242,.05),transparent 38%);background-attachment:fixed}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#C7C7CC;border-radius:3px}
 
-/* ── TOPBAR ── */
-#topbar{position:sticky;top:0;z-index:600;background:var(--navy);box-shadow:0 2px 16px rgba(0,0,0,.3)}
-.tb{max-width:1600px;margin:0 auto;padding:0 18px;display:flex;align-items:stretch;justify-content:space-between}
-.brand{padding:11px 0 7px;display:flex;flex-direction:column;gap:2px}
-.brand-name{font-size:15px;font-weight:900;color:#fff;display:flex;align-items:center;gap:9px;letter-spacing:-.2px}
-.live-dot{width:8px;height:8px;border-radius:50%;background:#34D399;box-shadow:0 0 8px #34D399;animation:blink 2s infinite;flex-shrink:0}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-.brand-sub{font-size:10px;color:#93C5FD;font-weight:500}
-.vpp-tag{background:linear-gradient(135deg,#92400E,#D97706);color:#FEF3C7;border-radius:20px;padding:2px 10px;font-size:9px;font-weight:800}
-.nav{display:flex;align-items:flex-end;overflow-x:auto;gap:0}
-.nb{padding:12px 14px;background:transparent;border:none;color:#93C5FD;font-size:11px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif}
-.nb:hover{color:#fff;background:rgba(255,255,255,.07)}
-.nb.active{color:#fff;border-bottom-color:#60A5FA;background:rgba(255,255,255,.05)}
+/* ═══ PIN LOCK SCREEN ═══ */
+#pinscreen{position:fixed;inset:0;background:linear-gradient(160deg,#0A1628 0%,#0F2D6B 50%,#1D4ED8 100%);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;transition:opacity .4s,visibility .4s}
+#pinscreen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.pin-logo{width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:18px;backdrop-filter:var(--blur);border:1px solid rgba(255,255,255,.2)}
+.pin-title{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.pin-sub{font-size:13px;color:rgba(255,255,255,.6);margin-top:4px;margin-bottom:28px}
+.pin-dots{display:flex;gap:14px;margin-bottom:24px}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.4);transition:all .15s}
+.pin-dot.filled{background:#fff;border-color:#fff}
+.pin-dot.error{border-color:#FF453A;background:#FF453A;animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pin-pad{display:grid;grid-template-columns:repeat(3,64px);gap:14px}
+.pin-key{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:22px;font-weight:600;cursor:pointer;transition:all .1s;backdrop-filter:var(--blur)}
+.pin-key:hover{background:rgba(255,255,255,.2)}
+.pin-key:active{transform:scale(.94)}
+.pin-key.wide{font-size:13px;font-weight:700}
+.pin-err{font-size:12px;color:#FF453A;margin-top:14px;font-weight:600;height:16px}
 
-/* ── PAGE ── */
-main{max-width:1600px;margin:0 auto;padding:18px 18px 60px}
-.page{display:flex;flex-direction:column;gap:14px}
+/* ═══ TOPBAR ═══ */
+#topbar{position:sticky;top:0;z-index:500;background:rgba(255,255,255,.78);backdrop-filter:var(--blur);border-bottom:1px solid var(--border)}
+.tb{max-width:1600px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{padding:11px 0;display:flex;align-items:center;gap:11px}
+.brand-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#0040DD,#0A84FF);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:var(--shadow)}
+.brand-text{display:flex;flex-direction:column}
+.brand-name{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-.2px;line-height:1.2}
+.brand-sub{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.3px}
+.nav{display:flex;align-items:center;gap:2px;overflow-x:auto;padding:8px 0}
+.nb{padding:7px 13px;background:transparent;border:none;color:var(--ink2);font-size:12px;font-weight:600;cursor:pointer;border-radius:20px;transition:all .15s;white-space:nowrap;font-family:inherit}
+.nb:hover{background:rgba(0,0,0,.04)}
+.nb.active{background:var(--ink);color:#fff}
+
+/* ═══ MAIN ═══ */
+main{max-width:1600px;margin:0 auto;padding:18px 20px 60px}
+.page{display:flex;flex-direction:column;gap:16px}
 .hidden{display:none!important}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.fade-in{animation:fadeUp .22s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .25s cubic-bezier(.16,1,.3,1) both}
 
-/* ── CARD ── */
-.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
-.ch{padding:12px 16px;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.ch-gold{background:linear-gradient(135deg,#78350F,#B45309)}
-.ch-green{background:linear-gradient(135deg,#064E3B,#059669)}
-.ch-purple{background:linear-gradient(135deg,#4C1D95,#7C3AED)}
-.ct{font-size:11px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:7px}
-.cs{font-size:10px;color:#93C5FD;font-weight:500}
-.cs-gold{color:#FCD34D}
+/* ═══ HERO ═══ */
+.hero{background:linear-gradient(135deg,#0A1628,#0F2D6B 55%,#1D4ED8);border-radius:20px;padding:28px 32px;color:#fff;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;top:-50%;right:-10%;width:340px;height:340px;background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);border-radius:50%}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;position:relative;z-index:1}
+.hero-title{font-size:26px;font-weight:900;letter-spacing:-.5px}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.65);margin-top:5px;font-weight:500}
+.hero-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:800;backdrop-filter:var(--blur)}
 
-/* ── KPI ── */
-.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:11px}
-.kcard{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:14px 15px 12px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;cursor:default}
+/* ═══ CARD ═══ */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.ch{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.ct{font-size:14px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px;letter-spacing:-.2px}
+.cs{font-size:11px;color:var(--muted);font-weight:600}
+
+/* ═══ KPI ═══ */
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.kcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 16px 13px;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;cursor:default;position:relative}
 .kcard:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
-.ktop{position:absolute;top:0;left:0;right:0;height:4px}
-.kval{font-size:28px;font-weight:900;line-height:1;letter-spacing:-1px;margin-top:2px}
-.klbl{font-size:9px;font-weight:800;color:var(--muted);margin-top:6px;text-transform:uppercase;letter-spacing:.6px}
+.kicon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:10px}
+.kval{font-size:28px;font-weight:900;line-height:1;letter-spacing:-1px;color:var(--ink)}
+.klbl{font-size:10px;font-weight:700;color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:.6px}
 .ksub{font-size:10px;color:var(--muted);margin-top:2px}
 
-/* ── PROGRESS ── */
-.pt{background:#E0E7FF;border-radius:8px;overflow:hidden}
-.pf{border-radius:8px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+/* ═══ PROGRESS ═══ */
+.pt{background:#E5E5EA;border-radius:8px;overflow:hidden}
+.pf{border-radius:8px;transition:width .5s cubic-bezier(.16,1,.3,1)}
 
-/* ── BADGES ── */
-.badge{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap;border:1.5px solid transparent}
+/* ═══ BADGES ═══ */
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;white-space:nowrap}
 .badge::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.s-Complete{background:#D1FAE5;color:#065F46;border-color:#6EE7B7}.s-Complete::before{background:#059669}
-.s-OnSchedule{background:#CFFAFE;color:#164E63;border-color:#67E8F9}.s-OnSchedule::before{background:#0891B2}
-.s-Behind{background:#FEE2E2;color:#991B1B;border-color:#FCA5A5}.s-Behind::before{background:#DC2626}
-.s-AtRisk{background:#FEF3C7;color:#92400E;border-color:#FCD34D}.s-AtRisk::before{background:#D97706}
-.s-NotStarted{background:#EDE9FE;color:#4C1D95;border-color:#C4B5FD}.s-NotStarted::before{background:#7C3AED}
-.s-Open{background:#F1F5F9;color:#374151;border-color:#CBD5E1}.s-Open::before{background:#6B7280}
-.s-Ongoing{background:#D1FAE5;color:#065F46;border-color:#6EE7B7}.s-Ongoing::before{background:#059669}
-.s-OnHold{background:#FEF3C7;color:#92400E;border-color:#FCD34D}.s-OnHold::before{background:#D97706}
-.p-High{background:#FEE2E2;color:#991B1B;border:1.5px solid #FCA5A5;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800}
-.p-Medium{background:#FEF3C7;color:#92400E;border:1.5px solid #FCD34D;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800}
-.p-Low{background:#D1FAE5;color:#065F46;border:1.5px solid #6EE7B7;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800}
+.s-Complete{background:var(--green-lt);color:#1B5E20}.s-Complete::before{background:var(--green)}
+.s-OnSchedule{background:var(--teal-lt);color:#0E5C73}.s-OnSchedule::before{background:var(--teal)}
+.s-Behind{background:var(--red-lt);color:#A6271E}.s-Behind::before{background:var(--red)}
+.s-AtRisk{background:var(--amber-lt);color:#8A4A00}.s-AtRisk::before{background:var(--amber)}
+.s-NotStarted{background:var(--purple-lt);color:#5E2A8C}.s-NotStarted::before{background:var(--purple)}
+.s-Open{background:#F1F1F4;color:#48484A}.s-Open::before{background:#8E8E93}
+.s-Ongoing{background:var(--green-lt);color:#1B5E20}.s-Ongoing::before{background:var(--green)}
+.s-OnHold{background:var(--amber-lt);color:#8A4A00}.s-OnHold::before{background:var(--amber)}
+.p-High{background:var(--red-lt);color:#A6271E;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800}
+.p-Medium{background:var(--amber-lt);color:#8A4A00;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800}
+.p-Low{background:var(--green-lt);color:#1B5E20;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800}
 
-/* ── TABLE ── */
+/* ═══ TABLE ═══ */
 .twrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
-thead tr{background:var(--bg)}
-th{padding:9px 11px;color:var(--navy);font-size:9px;font-weight:800;text-align:left;border-bottom:2px solid var(--border2);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap}
-td{padding:7px 11px;border-bottom:1px solid #EEF2FF;vertical-align:middle;color:var(--text2)}
-tbody tr:hover{background:#F0F4FF}
+thead tr{background:var(--surface2)}
+th{padding:10px 12px;color:var(--muted);font-size:10px;font-weight:700;text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap}
+td{padding:12px 12px;border-bottom:1px solid #F2F2F5;vertical-align:middle;color:var(--ink2);line-height:1.5}
+tbody tr:hover{background:var(--surface2)}
 tbody tr.done-row td:nth-child(2){text-decoration:line-through;color:var(--muted)}
 
-/* ── EDITABLE ── */
-.esel{background:transparent;border:1.5px solid transparent;border-radius:6px;padding:3px 5px;font-size:11px;font-family:'Inter',sans-serif;color:var(--text2);cursor:pointer;transition:all .15s;outline:none;font-weight:500}
-.esel:hover{border-color:var(--border2);background:#F0F4FF}
-.esel:focus{border-color:var(--blue);background:#EFF6FF;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
-.etxt{background:transparent;border:1.5px solid transparent;border-radius:6px;padding:3px 6px;font-size:11px;font-family:'Inter',sans-serif;color:var(--text);transition:all .15s;outline:none;width:100%}
-.etxt:hover{border-color:var(--border2);background:#F0F4FF}
-.etxt:focus{border-color:var(--blue);background:#EFF6FF;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+/* ═══ EDITABLE ═══ */
+.esel{background:transparent;border:1.5px solid transparent;border-radius:7px;padding:3px 6px;font-size:11px;font-family:inherit;color:var(--ink2);cursor:pointer;transition:all .15s;outline:none;font-weight:500}
+.esel:hover{border-color:var(--border2);background:var(--surface2)}
+.esel:focus{border-color:var(--blue);background:var(--blue-lt)}
+.etxt{background:transparent;border:1.5px solid transparent;border-radius:7px;padding:6px 8px;font-size:12px;font-family:inherit;color:var(--ink);transition:all .15s;outline:none;width:100%;line-height:1.5;white-space:normal;resize:none;overflow:hidden}
+.etxt:hover{border-color:var(--border2);background:var(--surface2)}
+.etxt:focus{border-color:var(--blue);background:var(--blue-lt)}
 
-/* ── CHECK ── */
-.chk{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;font-size:11px;flex-shrink:0}
-.chk:hover{border-color:var(--green);background:var(--green-lt)}
+/* ═══ CHECK ═══ */
+.chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--border2);background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;font-size:11px;flex-shrink:0}
+.chk:hover{border-color:var(--green)}
 .chk.on{background:var(--green);border-color:var(--green);color:#fff}
 
-/* ── BUTTONS ── */
-.btn{border:none;border-radius:7px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
-.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:var(--navy)}
-.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#047857}
-.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#991B1B}
-.btn-ghost{background:#EEF2FF;color:var(--navy)}.btn-ghost:hover{background:var(--border2);color:#fff}
-.btn-sm{padding:4px 9px;font-size:10px;border-radius:6px}
-.btn-icon{width:28px;height:28px;padding:0;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+/* ═══ BUTTONS ═══ */
+.btn{border:none;border-radius:980px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:#006EDB;transform:translateY(-1px)}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#28BD4E}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#E0392F}
+.btn-ghost{background:#F1F1F4;color:var(--ink)}.btn-ghost:hover{background:#E5E5EA}
+.btn-sm{padding:5px 11px;font-size:10.5px}
+.btn-icon{width:28px;height:28px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;position:relative}
 
-/* ── FILTER BAR ── */
-.fbar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;padding:12px 16px;background:var(--surface2);border-bottom:1.5px solid var(--border)}
+/* ═══ FILTER BAR ═══ */
+.fbar{display:flex;gap:9px;flex-wrap:wrap;align-items:flex-end;padding:13px 18px;background:var(--surface2);border-bottom:1px solid var(--border)}
 .fg{display:flex;flex-direction:column;gap:4px}
-.flbl{font-size:9px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.8px}
-select.fsel2,input.fsrch{background:#fff;color:var(--text);border:1.5px solid var(--border);border-radius:7px;padding:6px 9px;font-size:11px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;font-weight:500}
+.flbl{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+select.fsel2,input.fsrch{background:#fff;color:var(--ink);border:1px solid var(--border2);border-radius:8px;padding:6px 10px;font-size:11px;font-family:inherit;outline:none;transition:border-color .15s;font-weight:500}
 select.fsel2{min-width:120px}input.fsrch{min-width:170px}
 select.fsel2:focus,input.fsrch:focus{border-color:var(--blue)}
 .fcount{font-size:11px;color:var(--muted);align-self:flex-end;padding-bottom:6px;font-weight:600}
 .fcount strong{color:var(--blue)}
 
-/* ── STATUS TILES ── */
-.stiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:9px;padding:14px 16px}
-.stile{border-radius:9px;padding:12px;text-align:center;cursor:pointer;border:2px solid;transition:transform .15s,box-shadow .15s}
+/* ═══ STATUS TILES ═══ */
+.stiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:9px;padding:16px}
+.stile{border-radius:12px;padding:13px;text-align:center;cursor:pointer;border:1px solid var(--border);transition:transform .15s,box-shadow .15s}
 .stile:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
-.stv{font-size:22px;font-weight:900;line-height:1}
-.stl{font-size:9px;font-weight:800;margin-top:4px;text-transform:uppercase;letter-spacing:.4px}
-.stp{font-size:9px;color:var(--muted);margin-top:1px}
+.stv{font-size:24px;font-weight:900;line-height:1}
+.stl{font-size:9px;font-weight:700;margin-top:5px;text-transform:uppercase;letter-spacing:.5px}
+.stp{font-size:9px;color:var(--muted);margin-top:2px}
 
-/* ── MODAL ── */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px}
+/* ═══ MODAL ═══ */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px}
 .modal-bg.hidden{display:none}
-.modal{background:#fff;border-radius:14px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-.modal-hdr{padding:18px 20px 14px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-title{font-size:15px;font-weight:800;color:var(--navy)}
-.modal-close{width:30px;height:30px;border:none;background:#F1F5F9;border-radius:7px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
-.modal-close:hover{background:#FEE2E2;color:var(--red)}
-.modal-body{padding:20px}
+.modal{background:#fff;border-radius:18px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:fadeUp .25s ease}
+.modal-hdr{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:16px;font-weight:800;color:var(--ink)}
+.modal-close{width:30px;height:30px;border:none;background:#F1F1F4;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.modal-close:hover{background:var(--red-lt);color:var(--red)}
+.modal-body{padding:20px 22px}
 .mfield{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
-.mfield label{font-size:10px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.7px}
-.mfield input,.mfield select,.mfield textarea{background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:8px 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;width:100%}
-.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--blue)}
+.mfield label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+.mfield input,.mfield select,.mfield textarea{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;font-family:inherit;outline:none;transition:border-color .15s;width:100%;color:var(--ink)}
+.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--blue);background:#fff}
 .mfield textarea{min-height:80px;resize:vertical}
-.modal-foot{padding:14px 20px;border-top:1.5px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
 
-/* ── COMMENTS ── */
-.comment-list{display:flex;flex-direction:column;gap:8px;padding:12px 16px}
-.comment{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+/* ═══ COMMENTS ═══ */
+.comment-list{display:flex;flex-direction:column;gap:8px;padding:14px 18px;max-height:300px;overflow-y:auto}
+.comment{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 13px}
 .comment-meta{font-size:10px;color:var(--muted);font-weight:600;display:flex;justify-content:space-between;margin-bottom:5px}
-.comment-text{font-size:12px;color:var(--text2);line-height:1.5}
-.comment-input-row{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border);align-items:flex-end}
-.comment-input-row textarea{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:36px}
-.comment-input-row textarea:focus{border-color:var(--blue)}
+.comment-text{font-size:12px;color:var(--ink2);line-height:1.5}
+.comment-input-row{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--border);align-items:flex-end}
+.comment-input-row textarea{flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-family:inherit;outline:none;resize:none;min-height:38px}
+.comment-input-row textarea:focus{border-color:var(--blue);background:#fff}
 
-/* ── CHAT ── */
-.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 200px);min-height:400px}
-.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:75%;padding:10px 14px;border-radius:12px;font-size:12px;line-height:1.5}
-.msg-user{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
-.msg-ai{background:var(--surface2);color:var(--text2);align-self:flex-start;border:1px solid var(--border);border-bottom-left-radius:4px}
-.msg-system{background:#EDE9FE;color:#4C1D95;align-self:center;font-size:11px;font-weight:600;border-radius:20px;padding:5px 14px;border:1px solid #C4B5FD}
-.msg-meta{font-size:10px;opacity:.6;margin-top:4px;font-weight:500}
-.chat-input-area{padding:12px 16px;border-top:1.5px solid var(--border);display:flex;gap:8px;align-items:flex-end;background:var(--surface2)}
-.chat-input-area textarea{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:40px;max-height:100px}
-.chat-input-area textarea:focus{border-color:var(--blue)}
-.ai-thinking{display:flex;gap:4px;padding:10px 14px;background:var(--surface2);border-radius:12px;border:1px solid var(--border);align-self:flex-start}
-.ai-thinking span{width:7px;height:7px;border-radius:50%;background:var(--blue2);animation:bounce .9s infinite}
-.ai-thinking span:nth-child(2){animation-delay:.15s}
-.ai-thinking span:nth-child(3){animation-delay:.3s}
-@keyframes bounce{0%,80%,100%{transform:scale(1)}40%{transform:scale(1.4)}}
-
-/* ── LINKS ── */
-.link-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding:16px}
-.link-card{background:var(--surface);border:1.5px solid var(--border);border-radius:9px;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:box-shadow .15s,border-color .15s;cursor:pointer;text-decoration:none}
-.link-card:hover{box-shadow:var(--shadow-md);border-color:var(--blue2)}
-.link-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.link-name{font-size:13px;font-weight:700;color:var(--navy)}
+/* ═══ LINKS ═══ */
+.link-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding:18px}
+.link-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;transition:box-shadow .15s,border-color .15s,transform .15s;cursor:pointer;text-decoration:none}
+.link-card:hover{box-shadow:var(--shadow-md);border-color:var(--blue);transform:translateY(-1px)}
+.link-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.link-name{font-size:13px;font-weight:700;color:var(--ink)}
 .link-desc{font-size:11px;color:var(--muted);margin-top:2px}
 
-/* ── METRICS ── */
-.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:16px}
-.mcard{background:var(--surface);border:2px solid var(--border);border-radius:9px;padding:14px 16px;box-shadow:var(--shadow)}
-.mcard-label{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
-.mcard-val{font-size:26px;font-weight:900;color:var(--navy);line-height:1}
-.mcard-input{background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:6px 9px;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;outline:none;width:100%;transition:border-color .15s;color:var(--navy)}
-.mcard-input:focus{border-color:var(--blue)}
-.mcard-sub{font-size:10px;color:var(--muted);margin-top:5px}
-.mcard-trend{font-size:11px;font-weight:700;margin-top:4px}
+/* ═══ METRICS ═══ */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:18px}
+.mcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;box-shadow:var(--shadow);transition:box-shadow .15s}
+.mcard:hover{box-shadow:var(--shadow-md)}
+.mcard-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.mcard-input{background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:7px 10px;font-size:18px;font-weight:800;font-family:inherit;outline:none;width:100%;transition:border-color .15s;color:var(--ink)}
+.mcard-input:focus{border-color:var(--blue);background:#fff}
+.mcard-sub{font-size:10px;color:var(--muted);margin-top:6px}
 
-/* ── PERSON BANNER ── */
-.pbanner{padding:18px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.pavatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;border:3px solid rgba(255,255,255,.4);flex-shrink:0}
-.pname{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.2px}
-.prole{font-size:11px;color:rgba(255,255,255,.7);margin-top:2px}
+/* ═══ PERSON BANNER ═══ */
+.pbanner{padding:22px 26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.pavatar{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;color:#fff;border:3px solid rgba(255,255,255,.35);flex-shrink:0}
+.pname{font-size:21px;font-weight:900;color:#fff;letter-spacing:-.3px}
+.prole{font-size:11px;color:rgba(255,255,255,.7);margin-top:2px;font-weight:500}
 .pmkpis{display:flex;gap:9px;flex-wrap:wrap;margin-left:auto}
-.pmk{background:rgba(255,255,255,.12);border-radius:8px;padding:9px 13px;text-align:center;min-width:65px;border:1px solid rgba(255,255,255,.2)}
+.pmk{background:rgba(255,255,255,.14);border-radius:10px;padding:9px 13px;text-align:center;min-width:62px;border:1px solid rgba(255,255,255,.18);backdrop-filter:var(--blur)}
 .pmkv{font-size:18px;font-weight:900;color:#fff;line-height:1}
 .pmkl{font-size:8px;font-weight:700;color:rgba(255,255,255,.65);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
 
-/* ── SCHED GRID ── */
-.sg{display:grid;grid-template-columns:55px repeat(5,1fr);border-top:1px solid var(--border)}
-.sg-th{padding:7px;text-align:center;background:var(--bg);border-bottom:2px solid var(--border2);font-size:9px;font-weight:800;color:var(--navy);border-right:1px solid var(--border)}
-.sg-time{padding:3px 7px;font-size:9px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;background:var(--surface2);text-align:right;height:28px;line-height:20px}
-.sg-cell{border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;height:28px;padding:2px}
-.sg-ev{border-radius:4px;padding:0 5px;font-size:9px;font-weight:700;height:22px;display:flex;align-items:center;white-space:nowrap;overflow:hidden;border-left:2px solid;cursor:default}
-.sg-ev:hover{overflow:visible;white-space:normal;z-index:10;position:relative;box-shadow:var(--shadow-md)}
+/* ═══ CALENDAR / SCHEDULE ═══ */
+.sg-wrap{overflow-x:auto}
+.sg{border-collapse:collapse;min-width:560px;width:100%}
+.sg th{padding:8px 4px;background:var(--surface2);font-size:9px;font-weight:800;color:var(--ink2);text-align:center;border-bottom:1.5px solid var(--border2);border-right:1px solid var(--border)}
+.sg th:first-child{width:54px}
+.sg-time{padding:2px 7px;font-size:9px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid #F2F2F5;background:var(--surface2);text-align:right;height:30px;vertical-align:middle;white-space:nowrap}
+.sg-cell{border-right:1px solid var(--border);border-bottom:1px solid #F2F2F5;height:30px;padding:2px;cursor:pointer;transition:background .1s;position:relative}
+.sg-cell:hover{background:var(--blue-lt)}
+.sg-cell.has-event:hover .sg-ev{box-shadow:var(--shadow-md)}
+.sg-ev{border-radius:5px;padding:0 6px;font-size:9px;font-weight:700;height:24px;display:flex;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:3px solid;color:#fff;cursor:pointer;transition:all .12s}
+.sg-ev:hover{transform:scale(1.02)}
+.sg-add-hint{opacity:0;font-size:14px;color:var(--blue);text-align:center;line-height:26px;transition:opacity .1s}
+.sg-cell:hover .sg-add-hint{opacity:1}
 
-/* ── REC TASKS ── */
-.rec-hdr{padding:5px 14px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.7px}
-.rec-item{display:flex;align-items:center;gap:9px;padding:6px 14px;border-bottom:1px solid #EEF2FF;font-size:11px;color:var(--text2);font-weight:500}
+/* ═══ REC TASKS ═══ */
+.rec-section{padding-bottom:4px}
+.rec-hdr{padding:7px 16px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;justify-content:space-between}
+.rec-add-btn{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.rec-add-btn:hover{background:rgba(255,255,255,.35)}
+.rec-item{display:flex;align-items:center;gap:9px;padding:7px 16px;border-bottom:1px solid #F2F2F5;font-size:11px;color:var(--ink2);font-weight:500;transition:background .1s}
+.rec-item:hover{background:var(--surface2)}
+.rec-item:hover .rec-del{opacity:1}
 .rec-item:last-child{border-bottom:none}
 .rec-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.rec-text{flex:1;background:transparent;border:1px solid transparent;border-radius:6px;padding:2px 5px;font-size:11px;font-family:inherit;color:var(--ink2);outline:none;transition:all .15s}
+.rec-text:hover{border-color:var(--border2);background:#fff}
+.rec-text:focus{border-color:var(--blue);background:#fff}
+.rec-del{opacity:0;background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;transition:opacity .15s}
+.rec-del:hover{color:var(--red)}
 
-/* ── MILESTONE ── */
-.ms-row{display:flex;align-items:center;gap:13px;padding:11px 16px;border-bottom:1px solid #EEF2FF;flex-wrap:wrap;transition:background .1s}
-.ms-row:hover{background:#F0F4FF}
-.ms-num{width:28px;height:28px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
-.ms-goal .ms-num{background:linear-gradient(135deg,#92400E,#D97706)}
-.ms-text{flex:1;min-width:150px}
-.ms-title{font-size:12px;font-weight:600;color:var(--navy)}
-.ms-goal .ms-title{font-weight:900;color:var(--gold);font-size:13px}
-.ms-meta{font-size:10px;color:var(--muted);margin-top:1px}
-.ms-prog{min-width:150px;display:flex;flex-direction:column;gap:4px}
+/* ═══ COMBINED CALENDAR ═══ */
+.combined-row{display:flex;align-items:stretch;border-bottom:1px solid #F2F2F5}
+.combined-row:last-child{border-bottom:none}
+.combined-label{width:90px;flex-shrink:0;padding:6px 10px;font-size:10px;font-weight:700;color:var(--muted);background:var(--surface2);display:flex;align-items:center;border-right:1px solid var(--border)}
+.combined-events{flex:1;display:flex;flex-wrap:wrap;gap:4px;padding:5px 8px;align-items:center}
+.combined-chip{display:inline-flex;align-items:center;gap:5px;border-radius:8px;padding:3px 8px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap}
 
-/* ── TOAST ── */
-#toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:10px 18px;border-radius:9px;font-size:12px;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;z-index:9999;display:flex;align-items:center;gap:8px}
-#toast.show{opacity:1;transform:translateY(0)}
+/* ═══ TOAST ═══ */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:12px;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(8px) scale(.96);transition:all .3s cubic-bezier(.16,1,.3,1);pointer-events:none;z-index:9999;display:flex;align-items:center;gap:8px}
+#toast.show{opacity:1;transform:translateY(0) scale(1)}
 
-/* ── MISC ── */
+/* ═══ INSIGHTS / CHARTS ═══ */
+.insights-grid{display:grid;grid-template-columns:1.1fr 1.4fr;gap:16px;padding:18px}
+@media(max-width:800px){.insights-grid{grid-template-columns:1fr}}
+.pie-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+.pie-legend{display:flex;flex-direction:column;gap:6px;width:100%}
+.pie-legend-item{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--ink2)}
+.pie-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.top3-list{display:flex;flex-direction:column;gap:10px}
+.top3-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);transition:transform .15s,box-shadow .15s}
+.top3-item:hover{transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.top3-rank{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0}
+.top3-text{flex:1}
+.top3-task{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.4}
+.top3-meta{font-size:10.5px;color:var(--muted);margin-top:2px}
+
+/* ═══ COMPLETED TOGGLE ═══ */
+.seg-toggle{display:inline-flex;background:var(--surface2);border:1px solid var(--border);border-radius:980px;padding:3px;gap:2px}
+.seg-btn{border:none;background:transparent;border-radius:980px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;color:var(--muted);transition:all .15s;font-family:inherit}
+.seg-btn.active{background:var(--ink);color:#fff}
+
+/* ═══ ICON / COLOR SWATCHES ═══ */
+.icon-sw{width:34px;height:34px;border-radius:9px;background:var(--surface2);border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:all .12s}
+.icon-sw:hover{background:var(--border)}
+.icon-sw.sel{border-color:var(--blue);background:var(--blue-lt)}
+.color-sw.sel{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--ink)}
+
+/* ═══ MISC ═══ */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.section-label{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;padding:10px 16px 6px;border-bottom:1px solid var(--border)}
-.info-bar{padding:8px 16px;background:#EFF6FF;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:7px}
+.info-bar{padding:9px 18px;background:var(--blue-lt);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:#0040DD;display:flex;align-items:center;gap:7px}
 a.lnk{color:var(--blue);font-weight:700;text-decoration:none}
 a.lnk:hover{text-decoration:underline}
-footer{background:var(--navy);color:#93C5FD;text-align:center;padding:14px;font-size:10px;font-weight:500;letter-spacing:.3px;margin-top:20px}
+footer{background:transparent;color:var(--muted);text-align:center;padding:18px;font-size:10px;font-weight:600;letter-spacing:.3px;margin-top:8px}
 @media(max-width:800px){.g2,.g3{grid-template-columns:1fr}}
-@media(max-width:640px){.kgrid{grid-template-columns:repeat(2,1fr)}.nav{overflow-x:auto}main{padding:10px 10px 40px}}
+@media(max-width:640px){.kgrid{grid-template-columns:repeat(2,1fr)}.nav{overflow-x:auto}main{padding:12px 12px 40px}.hero{padding:20px}.hero-title{font-size:20px}}
+
+.color-sw{width:30px;height:30px;border-radius:50%;cursor:pointer;transition:transform .1s;border:2px solid #fff}
+.color-sw:hover{transform:scale(1.1)}
 </style>
 </head>
 <body>
 
+<!-- PIN LOCK SCREEN -->
+<div id="pinscreen">
+  <div class="pin-logo">
+    <svg width="34" height="34" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="48" fill="none" stroke="#ffffff" stroke-width="4"/>
+      <text x="50" y="62" text-anchor="middle" font-family="-apple-system,Arial,sans-serif" font-size="40" font-weight="800" fill="#ffffff">GE</text>
+    </svg>
+  </div>
+  <div class="pin-title">EHS+S Team Dashboard</div>
+  <div class="pin-sub">GE Aerospace Muskegon &middot; Enter PIN to continue</div>
+  <div class="pin-dots">
+    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+  </div>
+  <div class="pin-pad" id="pin-pad"></div>
+  <div class="pin-err" id="pin-err"></div>
+</div>
+
+<!-- TOPBAR -->
 <div id="topbar">
   <div class="tb">
     <div class="brand">
-      <div class="brand-name"><span class="live-dot"></span>EHS COMMAND CENTER<span class="vpp-tag">⭐ VPP STAR · OCT 2026</span></div>
-      <div class="brand-sub">GE AEROSPACE MUSKEGON · 2026 STRATEGIC ACTION PLAN</div>
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#ffffff" stroke-width="6"/>
+          <text x="50" y="64" text-anchor="middle" font-family="-apple-system,Arial,sans-serif" font-size="42" font-weight="800" fill="#ffffff">GE</text>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-name">EHS+S Team Dashboard</div>
+        <div class="brand-sub">GE AEROSPACE MUSKEGON</div>
+      </div>
     </div>
     <div class="nav" id="nav"></div>
+    <span id="sync-indicator" style="font-size:10px;font-weight:700;color:#FF9F0A;display:flex;align-items:center;gap:5px;padding:8px 4px;flex-shrink:0;white-space:nowrap">Connecting…</span>
+    <button class="btn btn-ghost btn-sm" onclick="openBackupModal()" title="Backup & Restore Data" style="margin:8px 0 8px 4px;flex-shrink:0">💾 Data</button>
   </div>
 </div>
+<div id="loading-screen" style="position:fixed;inset:0;z-index:9998;background:#F5F5F7;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px">
+  <div style="width:40px;height:40px;border-radius:50%;border:3px solid #E5E5EA;border-top-color:#0A84FF;animation:spin 0.8s linear infinite"></div>
+  <div style="font-size:13px;color:#8E8E93;font-weight:600">Loading shared team data…</div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+<input type="file" id="import-file-input" accept="application/json" style="display:none" onchange="if(this.files[0]) importData(this.files[0]); this.value='';"/>
 
 <main>
-  <div id="pg-overview"  class="page fade-in"></div>
-  <div id="pg-actions"   class="page hidden"></div>
-  <div id="pg-vpp"       class="page hidden"></div>
-  <div id="pg-metrics"   class="page hidden"></div>
-  <div id="pg-links"     class="page hidden"></div>
-  <div id="pg-chat"      class="page hidden"></div>
-  <div id="pg-VP"        class="page hidden"></div>
-  <div id="pg-SW"        class="page hidden"></div>
-  <div id="pg-MS"        class="page hidden"></div>
-  <div id="pg-RD"        class="page hidden"></div>
-  <div id="pg-ZT"        class="page hidden"></div>
+  <div id="pg-overview" class="page fade-in"></div>
+  <div id="pg-actions"  class="page hidden"></div>
+  <div id="pg-vpp"      class="page hidden"></div>
+  <div id="pg-metrics"  class="page hidden"></div>
+  <div id="pg-team"     class="page hidden"></div>
+  <div id="pg-links"    class="page hidden"></div>
+  <div id="pg-VP"       class="page hidden"></div>
+  <div id="pg-SW"       class="page hidden"></div>
+  <div id="pg-MS"       class="page hidden"></div>
+  <div id="pg-RD"       class="page hidden"></div>
+  <div id="pg-ZT"       class="page hidden"></div>
 </main>
+
+<footer>EHS+S TEAM DASHBOARD &middot; GE AEROSPACE MUSKEGON &middot; 2026 STRATEGIC ACTION PLAN</footer>
 
 <!-- ADD TASK MODAL -->
 <div class="modal-bg hidden" id="modal-add">
   <div class="modal">
     <div class="modal-hdr">
-      <div class="modal-title" id="modal-add-title">➕ Add New Task</div>
-      <button class="modal-close" onclick="closeModal('modal-add')">✕</button>
+      <div class="modal-title" id="modal-add-title">Add New Task</div>
+      <button class="modal-close" onclick="closeModal('modal-add')">&#10005;</button>
     </div>
     <div class="modal-body">
-      <div class="mfield"><label>Task Name *</label><input id="m-task" placeholder="Describe the task…"/></div>
+      <div class="mfield"><label>Task Name *</label><input id="m-task" placeholder="Describe the task..."/></div>
       <div class="g2">
         <div class="mfield"><label>Assigned To</label>
           <select id="m-owner"><option>Victor Pizarro</option><option>Steve Wolbrink</option><option>Mike Shuster</option><option>Rich DeLeau</option><option>Zach Tindall</option></select>
@@ -302,11 +398,12 @@ footer{background:var(--navy);color:#93C5FD;text-align:center;padding:14px;font-
       <div class="mfield"><label>Program</label>
         <select id="m-prog"><option>Core EHS</option><option>Ergo</option><option>VPP</option><option>Security</option></select>
       </div>
-      <div class="mfield"><label>Notes / Details</label><textarea id="m-notes" placeholder="Any additional context…"></textarea></div>
+      <div class="mfield"><label>Specific Due Date (optional)</label><input id="m-duedate" type="date"/></div>
+      <div class="mfield"><label>Notes / Details</label><textarea id="m-notes" placeholder="Any additional context..."></textarea></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-add')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveNewTask()">➕ Add Task</button>
+      <button class="btn btn-primary" onclick="saveNewTask()">&#10133; Add Task</button>
     </div>
   </div>
 </div>
@@ -315,16 +412,14 @@ footer{background:var(--navy);color:#93C5FD;text-align:center;padding:14px;font-
 <div class="modal-bg hidden" id="modal-comment">
   <div class="modal">
     <div class="modal-hdr">
-      <div class="modal-title">💬 Task Comments & Updates</div>
-      <button class="modal-close" onclick="closeModal('modal-comment')">✕</button>
+      <div class="modal-title">&#128172; Comments &amp; Progress Updates</div>
+      <button class="modal-close" onclick="closeModal('modal-comment')">&#10005;</button>
     </div>
-    <div class="modal-body" style="padding:0">
-      <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--navy)" id="comment-task-name"></div>
-      <div class="comment-list" id="comment-list"></div>
-      <div class="comment-input-row">
-        <textarea id="comment-input" placeholder="Add a comment or progress update…" rows="2"></textarea>
-        <button class="btn btn-primary btn-sm" onclick="addComment()">Post</button>
-      </div>
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--ink)" id="comment-task-name"></div>
+    <div class="comment-list" id="comment-list"></div>
+    <div class="comment-input-row">
+      <textarea id="comment-input" placeholder="Add a comment or progress update..." rows="2"></textarea>
+      <button class="btn btn-primary btn-sm" onclick="addComment()">Post</button>
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-comment')">Close</button>
@@ -332,7 +427,102 @@ footer{background:var(--navy);color:#93C5FD;text-align:center;padding:14px;font-
   </div>
 </div>
 
-<footer>EHS COMMAND CENTER · GE AEROSPACE MUSKEGON · 2026 · Victor Pizarro · Steve Wolbrink · Mike Shuster · Rich DeLeau · Zach Tindall</footer>
+<!-- SCHEDULE EVENT MODAL -->
+<div class="modal-bg hidden" id="modal-sched">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hdr">
+      <div class="modal-title" id="sm-title">Add Event</div>
+      <button class="modal-close" onclick="closeModal('modal-sched')">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:12px" id="sm-day-time"></div>
+      <div class="mfield"><label>Event Name</label><input id="sm-label" placeholder="e.g. Team Huddle, Cell Inspection..."/></div>
+      <div class="mfield"><label>Color</label><div id="sm-colors" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="sm-delete" onclick="deleteSchedEvent()" style="background:var(--red-lt);color:var(--red)">&#128465;&#65039; Delete</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-ghost" onclick="closeModal('modal-sched')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSchedEvent()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- KPI DETAIL MODAL -->
+<div class="modal-bg hidden" id="modal-kpi">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-hdr">
+      <div class="modal-title" id="kpi-detail-title">Details</div>
+      <button class="modal-close" onclick="closeModal('modal-kpi')">&#10005;</button>
+    </div>
+    <div class="modal-body" id="kpi-detail-body" style="padding:0"></div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" onclick="closeModal('modal-kpi')">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- BACKUP & RESTORE MODAL -->
+<div class="modal-bg hidden" id="modal-backup">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-hdr">
+      <div class="modal-title">💾 Data, Backup & Restore</div>
+      <button class="modal-close" onclick="closeModal('modal-backup')">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--ink2);line-height:1.6;margin-bottom:16px">
+        Everything you enter — tasks, comments, calendars, metrics, I&amp;I cases, links — is saved live to a shared cloud database. Every team member on any phone, computer, or browser sees the same data, updated within a couple seconds.
+      </div>
+      <div style="font-size:12px;color:var(--ink2);line-height:1.6;margin-bottom:16px">
+        <strong>Note:</strong> restoring a backup replaces the shared data for the <em>entire team</em>, not just this device. Use it to recover from a mistake or migrate data — download a backup occasionally as a safety net.
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn btn-primary" onclick="exportData()" style="width:100%;justify-content:center">⬇️ Download Backup (.json)</button>
+        <button class="btn btn-ghost" onclick="triggerImport()" style="width:100%;justify-content:center">⬆️ Restore From Backup File</button>
+      </div>
+      <div id="backup-lastsaved" style="font-size:11px;color:var(--muted);margin-top:14px;text-align:center"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-backup')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- INSIGHTS MODAL -->
+<div class="modal-bg hidden" id="modal-insights">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-hdr">
+      <div class="modal-title" id="insights-title">Insights</div>
+      <button class="modal-close" onclick="closeModal('modal-insights')">&#10005;</button>
+    </div>
+    <div class="modal-body" id="insights-body"></div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" onclick="closeModal('modal-insights')">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD LINK MODAL -->
+<div class="modal-bg hidden" id="modal-link">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-hdr">
+      <div class="modal-title">Add Team Link</div>
+      <button class="modal-close" onclick="closeModal('modal-link')">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="mfield"><label>Link Name *</label><input id="lm-name" placeholder="e.g. Gensuite, OSHA Portal..."/></div>
+      <div class="mfield"><label>URL *</label><input id="lm-url" placeholder="e.g. gehscloud.com"/></div>
+      <div class="mfield"><label>Short Description</label><input id="lm-desc" placeholder="e.g. Compliance & action tracking"/></div>
+      <div class="mfield"><label>Icon</label><div id="lm-icons" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"></div></div>
+      <div class="mfield"><label>Color</label><div id="lm-colors" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modal-link')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNewLink()">➕ Add Link</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -340,17 +530,19 @@ footer{background:var(--navy);color:#93C5FD;text-align:center;padding:14px;font-
 // TEAM
 // ════════════════════════════════════════════════════
 const TEAM={
-  VP:{name:"Victor Pizarro",  ini:"VP",role:"EHS Leader",                   color:"#1D4ED8",bg:"linear-gradient(135deg,#1E3A8A,#1D4ED8)"},
-  SW:{name:"Steve Wolbrink",  ini:"SW",role:"EHS Compliance Specialist",    color:"#059669",bg:"linear-gradient(135deg,#064E3B,#059669)"},
-  MS:{name:"Mike Shuster",    ini:"MS",role:"Ergonomic Specialist (ATI)",   color:"#7C3AED",bg:"linear-gradient(135deg,#4C1D95,#7C3AED)"},
-  RD:{name:"Rich DeLeau",     ini:"RD",role:"EHS Specialist (Contract)",    color:"#0891B2",bg:"linear-gradient(135deg,#164E63,#0891B2)"},
-  ZT:{name:"Zach Tindall",    ini:"ZT",role:"Security Specialist",          color:"#D97706",bg:"linear-gradient(135deg,#78350F,#D97706)"},
+  VP:{name:"Victor Pizarro",  ini:"VP",role:"EHS Leader",                   color:"#0A84FF",bg:"linear-gradient(135deg,#0040DD,#0A84FF)"},
+  SW:{name:"Steve Wolbrink",  ini:"SW",role:"EHS Compliance Specialist",    color:"#30D158",bg:"linear-gradient(135deg,#1B5E20,#30D158)"},
+  MS:{name:"Mike Shuster",    ini:"MS",role:"Ergonomic Specialist (ATI)",   color:"#BF5AF2",bg:"linear-gradient(135deg,#5E2A8C,#BF5AF2)"},
+  RD:{name:"Rich DeLeau",     ini:"RD",role:"EHS Specialist (Contract)",    color:"#64D2FF",bg:"linear-gradient(135deg,#0E5C73,#64D2FF)"},
+  ZT:{name:"Zach Tindall",    ini:"ZT",role:"Security Specialist",          color:"#FF9F0A",bg:"linear-gradient(135deg,#8A4A00,#FF9F0A)"},
 };
 const STATUS_OPTS=["Complete","On Schedule","Behind","At-Risk","Not Started","Open","On Hold","Ongoing"];
 const PRI_OPTS=["High","Medium","Low"];
 const TARGET_OPTS=["Q1 2026","Q2 2026","Q3 2026","Q4 2026","Jan 2026","Feb 2026","Mar 2026","Apr 2026","May 2026","Jun 2026","Jul 2026","Aug 2026","Sep 2026","Oct 2026","Nov 2026","Dec 2026","Weekly","Monthly","Bi-Weekly","Quarterly","Annual","Ongoing","Complete","TBD"];
 const PROG_OPTS=["Core EHS","Ergo","VPP","Security"];
 const PERSON_OPTS=Object.values(TEAM).map(t=>t.name);
+const DAY_NAMES=["Monday","Tuesday","Wednesday","Thursday","Friday"];
+const TIMES=["7:00","7:30","8:00","8:30","9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","1:00","1:30","2:00","2:30","3:00","3:30","4:00","4:30"];
 
 // ════════════════════════════════════════════════════
 // DEFAULT ACTIONS
@@ -425,103 +617,104 @@ const DEFAULT_VPP=[
 ];
 
 const DEFAULT_METRICS={
-  ii_rate:{label:"I&I Rate (YTD)",value:"0.0",sub:"Incidence & Injury Rate",unit:""},
-  recordable_rate:{label:"Recordable Injury Rate",value:"0.0",sub:"Per 200k hrs worked",unit:""},
-  near_miss:{label:"Near Miss Reports",value:"0",sub:"YTD total reported",unit:""},
-  first_aid:{label:"First Aid Cases",value:"0",sub:"YTD non-recordable",unit:""},
-  jsa_completed:{label:"JSA Audits Completed",value:"0",sub:"This month",unit:""},
-  ppe_compliance:{label:"PPE Compliance",value:"0",sub:"% audit score",unit:"%"},
-  loto_compliance:{label:"LOTO Compliance",value:"0",sub:"% audit score",unit:"%"},
-  contractor_audits:{label:"Contractor Audits",value:"0",sub:"This month",unit:""},
-  ergo_encounters:{label:"Ergo Encounters",value:"0",sub:"Discomfort interventions",unit:""},
-  msd_cases:{label:"MSD Cases",value:"0",sub:"YTD musculoskeletal",unit:""},
-  days_no_injury:{label:"Days Without Injury",value:"0",sub:"Current streak",unit:"days"},
-  open_actions:{label:"Open Gensuite Actions",value:"0",sub:"Past due = 0 goal",unit:""},
+  ii_rate:{label:"I&I Rate (YTD)",value:"0.0",sub:"Incidence & Injury Rate"},
+  recordable_rate:{label:"Recordable Injury Rate",value:"0.0",sub:"Per 200k hrs worked"},
+  near_miss:{label:"Near Miss Reports",value:"0",sub:"YTD total reported"},
+  first_aid:{label:"First Aid Cases",value:"0",sub:"YTD non-recordable"},
+  jsa_completed:{label:"JSA Audits Completed",value:"0",sub:"This month"},
+  ppe_compliance:{label:"PPE Compliance",value:"0",sub:"% audit score"},
+  loto_compliance:{label:"LOTO Compliance",value:"0",sub:"% audit score"},
+  contractor_audits:{label:"Contractor Audits",value:"0",sub:"This month"},
+  ergo_encounters:{label:"Ergo Encounters",value:"0",sub:"Discomfort interventions"},
+  msd_cases:{label:"MSD Cases",value:"0",sub:"YTD musculoskeletal"},
+  days_no_injury:{label:"Days Without Injury",value:"0",sub:"Current streak"},
+  open_actions:{label:"Open Gensuite Actions",value:"0",sub:"Past due = 0 goal"},
 };
 
 const DEFAULT_LINKS=[
-  {name:"Gensuite EHS",url:"https://gehscloud.com",desc:"Compliance & action tracking",icon:"📋",color:"#1D4ED8"},
-  {name:"Spotfire Bowler",url:"https://ge.com",desc:"EHS & Security dashboard metrics",icon:"📊",color:"#059669"},
-  {name:"TAVS WOR",url:"https://ge.com",desc:"Plant health pulse reports",icon:"🏭",color:"#7C3AED"},
-  {name:"OnGuard",url:"https://ge.com",desc:"Badge & access control system",icon:"🔒",color:"#D97706"},
-  {name:"Right Crowd",url:"https://ge.com",desc:"Visitor & contractor management",icon:"👥",color:"#0891B2"},
-  {name:"Box / GE Docs",url:"https://box.com",desc:"EHS document storage & sharing",icon:"📁",color:"#374151"},
-  {name:"GE Aerospace Hub",url:"https://gehub.ge.com",desc:"Internal GE portal",icon:"✈️",color:"#1D4ED8"},
-  {name:"Enhesa",url:"https://enhesa.com",desc:"Regulatory intelligence platform",icon:"⚖️",color:"#DC2626"},
-  {name:"OSHA Resources",url:"https://osha.gov",desc:"Standards, regulations, VPP info",icon:"🛡️",color:"#059669"},
-  {name:"EPA Compliance",url:"https://epa.gov",desc:"Environmental regulations",icon:"🌱",color:"#065F46"},
-  {name:"ATI / Ergo Portal",url:"https://ati.com",desc:"Ergonomics contractor portal",icon:"🤝",color:"#7C3AED"},
-  {name:"GE Muskegon EHS Shared Drive",url:"https://box.com",desc:"Site-specific EHS files",icon:"🗂️",color:"#0891B2"},
+  {name:"Gensuite EHS",url:"https://gehscloud.com",desc:"Compliance & action tracking",icon:"📋",color:"#0A84FF"},
+  {name:"Spotfire Bowler",url:"https://ge.com",desc:"EHS & Security dashboard metrics",icon:"📊",color:"#30D158"},
+  {name:"TAVS WOR",url:"https://ge.com",desc:"Plant health pulse reports",icon:"🏭",color:"#BF5AF2"},
+  {name:"OnGuard",url:"https://ge.com",desc:"Badge & access control system",icon:"🔒",color:"#FF9F0A"},
+  {name:"Right Crowd",url:"https://ge.com",desc:"Visitor & contractor management",icon:"👥",color:"#64D2FF"},
+  {name:"Box / GE Docs",url:"https://box.com",desc:"EHS document storage & sharing",icon:"📁",color:"#8E8E93"},
+  {name:"GE Aerospace Hub",url:"https://gehub.ge.com",desc:"Internal GE portal",icon:"✈️",color:"#0A84FF"},
+  {name:"Enhesa",url:"https://enhesa.com",desc:"Regulatory intelligence platform",icon:"⚖️",color:"#FF453A"},
+  {name:"OSHA Resources",url:"https://osha.gov",desc:"Standards, regulations, VPP info",icon:"🛡️",color:"#30D158"},
+  {name:"EPA Compliance",url:"https://epa.gov",desc:"Environmental regulations",icon:"🌱",color:"#1B5E20"},
+  {name:"ATI / Ergo Portal",url:"https://ati.com",desc:"Ergonomics contractor portal",icon:"🤝",color:"#BF5AF2"},
+  {name:"GE Muskegon EHS Drive",url:"https://box.com",desc:"Site-specific EHS files",icon:"🗂️",color:"#64D2FF"},
 ];
 
-const SCHED_DATA={
+// SCHEDULE — now stored mutable; defaults below
+const DEFAULT_SCHED={
   VP:[
-    {day:1,time:"8:00",label:"Update Weekly Pulse",bg:"#DBEAFE",color:"#1E40AF"},
-    {day:1,time:"8:30",label:"Floor Genba / Tier 4-5",bg:"#D1FAE5",color:"#065F46"},
-    {day:1,time:"9:00",label:"Review Gensuite Calendar",bg:"#EDE9FE",color:"#4C1D95"},
-    {day:2,time:"8:30",label:"Floor Genba / Tier 4-5",bg:"#D1FAE5",color:"#065F46"},
-    {day:2,time:"9:30",label:"W. Hoshin",bg:"#EDE9FE",color:"#4C1D95"},
-    {day:3,time:"8:30",label:"Floor Genba / Tier 4-5",bg:"#D1FAE5",color:"#065F46"},
-    {day:3,time:"10:00",label:"LOTO / Safety Training",bg:"#FEF3C7",color:"#92400E"},
-    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",bg:"#FCE7F3",color:"#831843"},
-    {day:4,time:"10:00",label:"SQDIP Staff Mtg",bg:"#DBEAFE",color:"#1E40AF"},
-    {day:5,time:"8:30",label:"Floor Genba / Tier 4-5",bg:"#D1FAE5",color:"#065F46"},
-    {day:5,time:"12:00",label:"Safe Start Monday Prep",bg:"#FEF3C7",color:"#92400E"},
+    {id:1,day:1,time:"8:00",label:"Update Weekly Pulse",color:"#0A84FF"},
+    {id:2,day:1,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#30D158"},
+    {id:3,day:1,time:"9:00",label:"Review Gensuite Calendar",color:"#BF5AF2"},
+    {id:4,day:2,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#30D158"},
+    {id:5,day:2,time:"9:30",label:"W. Hoshin",color:"#BF5AF2"},
+    {id:6,day:3,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#30D158"},
+    {id:7,day:3,time:"10:00",label:"LOTO / Safety Training",color:"#FF9F0A"},
+    {id:8,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#FF375F"},
+    {id:9,day:4,time:"10:00",label:"SQDIP Staff Mtg",color:"#0A84FF"},
+    {id:10,day:5,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#30D158"},
+    {id:11,day:5,time:"12:00",label:"Safe Start Monday Prep",color:"#FF9F0A"},
   ],
   SW:[
-    {day:1,time:"7:30",label:"Cell Inspection Rounds",bg:"#D1FAE5",color:"#065F46"},
-    {day:1,time:"9:00",label:"Gensuite Calendar Review",bg:"#EDE9FE",color:"#4C1D95"},
-    {day:1,time:"10:00",label:"PPE Audits",bg:"#FEF3C7",color:"#92400E"},
-    {day:2,time:"7:30",label:"Cell Inspection Rounds",bg:"#D1FAE5",color:"#065F46"},
-    {day:2,time:"10:00",label:"JSA Audits",bg:"#FEF3C7",color:"#92400E"},
-    {day:3,time:"7:30",label:"Cell Inspection Rounds",bg:"#D1FAE5",color:"#065F46"},
-    {day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",bg:"#D1FAE5",color:"#065F46"},
-    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",bg:"#FCE7F3",color:"#831843"},
-    {day:4,time:"10:00",label:"LOTO Annual Review Docs",bg:"#FEF3C7",color:"#92400E"},
-    {day:5,time:"7:30",label:"Cell Inspection Rounds",bg:"#D1FAE5",color:"#065F46"},
-    {day:5,time:"12:00",label:"Safe Start Monday Delivery",bg:"#FEF3C7",color:"#92400E"},
+    {id:1,day:1,time:"7:30",label:"Cell Inspection Rounds",color:"#30D158"},
+    {id:2,day:1,time:"9:00",label:"Gensuite Calendar Review",color:"#BF5AF2"},
+    {id:3,day:1,time:"10:00",label:"PPE Audits",color:"#FF9F0A"},
+    {id:4,day:2,time:"7:30",label:"Cell Inspection Rounds",color:"#30D158"},
+    {id:5,day:2,time:"10:00",label:"JSA Audits",color:"#FF9F0A"},
+    {id:6,day:3,time:"7:30",label:"Cell Inspection Rounds",color:"#30D158"},
+    {id:7,day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",color:"#30D158"},
+    {id:8,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#FF375F"},
+    {id:9,day:4,time:"10:00",label:"LOTO Annual Review Docs",color:"#FF9F0A"},
+    {id:10,day:5,time:"7:30",label:"Cell Inspection Rounds",color:"#30D158"},
+    {id:11,day:5,time:"12:00",label:"Safe Start Monday Delivery",color:"#FF9F0A"},
   ],
   MS:[
-    {day:1,time:"7:30",label:"AT Floor Time / EI",bg:"#EDE9FE",color:"#4C1D95"},
-    {day:1,time:"10:00",label:"Ergo Projects",bg:"#EDE9FE",color:"#4C1D95"},
-    {day:2,time:"7:30",label:"AT Floor / Occ Cases",bg:"#EDE9FE",color:"#4C1D95"},
-    {day:2,time:"10:00",label:"HEAT MAP Analysis",bg:"#EDE9FE",color:"#4C1D95"},
-    {day:3,time:"7:30",label:"AT Floor / Non-Occ",bg:"#EDE9FE",color:"#4C1D95"},
-    {day:3,time:"9:00",label:"Ergo Dashboard Update",bg:"#DBEAFE",color:"#1E40AF"},
-    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",bg:"#FCE7F3",color:"#831843"},
-    {day:4,time:"9:00",label:"EIP / Ergo Pulse",bg:"#EDE9FE",color:"#4C1D95"},
-    {day:5,time:"7:30",label:"AT Floor / Coaching",bg:"#EDE9FE",color:"#4C1D95"},
-    {day:5,time:"9:00",label:"Recognize Teams",bg:"#D1FAE5",color:"#065F46"},
+    {id:1,day:1,time:"7:30",label:"AT Floor Time / EI",color:"#BF5AF2"},
+    {id:2,day:1,time:"10:00",label:"Ergo Projects",color:"#BF5AF2"},
+    {id:3,day:2,time:"7:30",label:"AT Floor / Occ Cases",color:"#BF5AF2"},
+    {id:4,day:2,time:"10:00",label:"HEAT MAP Analysis",color:"#BF5AF2"},
+    {id:5,day:3,time:"7:30",label:"AT Floor / Non-Occ",color:"#BF5AF2"},
+    {id:6,day:3,time:"9:00",label:"Ergo Dashboard Update",color:"#0A84FF"},
+    {id:7,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#FF375F"},
+    {id:8,day:4,time:"9:00",label:"EIP / Ergo Pulse",color:"#BF5AF2"},
+    {id:9,day:5,time:"7:30",label:"AT Floor / Coaching",color:"#BF5AF2"},
+    {id:10,day:5,time:"9:00",label:"Recognize Teams",color:"#30D158"},
   ],
   RD:[
-    {day:1,time:"7:00",label:"Contractor JSA Audit",bg:"#FEF3C7",color:"#92400E"},
-    {day:1,time:"7:30",label:"Aerial/Scissor Lift Insp.",bg:"#FEF3C7",color:"#92400E"},
-    {day:2,time:"7:00",label:"Contractor JSA Audit",bg:"#FEF3C7",color:"#92400E"},
-    {day:2,time:"7:30",label:"Aerial/Scissor Lift Insp.",bg:"#FEF3C7",color:"#92400E"},
-    {day:3,time:"7:00",label:"Contractor JSA Audit",bg:"#FEF3C7",color:"#92400E"},
-    {day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",bg:"#D1FAE5",color:"#065F46"},
-    {day:4,time:"7:00",label:"Contractor JSA Audit",bg:"#FEF3C7",color:"#92400E"},
-    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",bg:"#FCE7F3",color:"#831843"},
-    {day:5,time:"7:00",label:"Contractor JSA Audit",bg:"#FEF3C7",color:"#92400E"},
-    {day:5,time:"10:00",label:"Gensuite ATS Closures",bg:"#DBEAFE",color:"#1E40AF"},
+    {id:1,day:1,time:"7:00",label:"Contractor JSA Audit",color:"#FF9F0A"},
+    {id:2,day:1,time:"7:30",label:"Aerial/Scissor Lift Insp.",color:"#FF9F0A"},
+    {id:3,day:2,time:"7:00",label:"Contractor JSA Audit",color:"#FF9F0A"},
+    {id:4,day:2,time:"7:30",label:"Aerial/Scissor Lift Insp.",color:"#FF9F0A"},
+    {id:5,day:3,time:"7:00",label:"Contractor JSA Audit",color:"#FF9F0A"},
+    {id:6,day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",color:"#30D158"},
+    {id:7,day:4,time:"7:00",label:"Contractor JSA Audit",color:"#FF9F0A"},
+    {id:8,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#FF375F"},
+    {id:9,day:5,time:"7:00",label:"Contractor JSA Audit",color:"#FF9F0A"},
+    {id:10,day:5,time:"10:00",label:"Gensuite ATS Closures",color:"#0A84FF"},
   ],
   ZT:[
-    {day:1,time:"7:00",label:"Badge Audit + Sign-in",bg:"#EEF2FF",color:"#3730A3"},
-    {day:1,time:"9:00",label:"Perimeter Inspection",bg:"#EEF2FF",color:"#3730A3"},
-    {day:1,time:"10:00",label:"Camera Inspection",bg:"#EEF2FF",color:"#3730A3"},
-    {day:2,time:"7:00",label:"Badge Audit + Sign-in",bg:"#EEF2FF",color:"#3730A3"},
-    {day:2,time:"9:00",label:"Lighting Inspection",bg:"#EEF2FF",color:"#3730A3"},
-    {day:3,time:"7:00",label:"Badge Audit + Sign-in",bg:"#EEF2FF",color:"#3730A3"},
-    {day:3,time:"9:00",label:"Eyewash / Spill Kit",bg:"#D1FAE5",color:"#065F46"},
-    {day:4,time:"7:00",label:"Badge Audit + Sign-in",bg:"#EEF2FF",color:"#3730A3"},
-    {day:4,time:"7:45",label:"⭐ EHS Team Meeting",bg:"#FCE7F3",color:"#831843"},
-    {day:4,time:"9:00",label:"Emergency Exit Testing",bg:"#FEF3C7",color:"#92400E"},
-    {day:5,time:"7:00",label:"Badge Audit + Sign-in",bg:"#EEF2FF",color:"#3730A3"},
-    {day:5,time:"8:30",label:"NEO Security Module",bg:"#EEF2FF",color:"#3730A3"},
+    {id:1,day:1,time:"7:00",label:"Badge Audit + Sign-in",color:"#5856D6"},
+    {id:2,day:1,time:"9:00",label:"Perimeter Inspection",color:"#5856D6"},
+    {id:3,day:1,time:"10:00",label:"Camera Inspection",color:"#5856D6"},
+    {id:4,day:2,time:"7:00",label:"Badge Audit + Sign-in",color:"#5856D6"},
+    {id:5,day:2,time:"9:00",label:"Lighting Inspection",color:"#5856D6"},
+    {id:6,day:3,time:"7:00",label:"Badge Audit + Sign-in",color:"#5856D6"},
+    {id:7,day:3,time:"9:00",label:"Eyewash / Spill Kit",color:"#30D158"},
+    {id:8,day:4,time:"7:00",label:"Badge Audit + Sign-in",color:"#5856D6"},
+    {id:9,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#FF375F"},
+    {id:10,day:4,time:"9:00",label:"Emergency Exit Testing",color:"#FF9F0A"},
+    {id:11,day:5,time:"7:00",label:"Badge Audit + Sign-in",color:"#5856D6"},
+    {id:12,day:5,time:"8:30",label:"NEO Security Module",color:"#5856D6"},
   ],
 };
 
-const REC_TASKS={
+const DEFAULT_REC={
   VP:{DAILY:["Floor Genba — Tier 4/5","Review team comms & day priority","Check Gensuite open items"],WEEKLY:["EHS Team Meeting Thu 7:45","TAVS WOR Pulse Tue 2PM","Update EHS Pulse Wed 8AM","SQDIP Action Plan update","Safe Start Monday prep","Bi-Weekly Safety Walks"],MONTHLY:["EHS Bowler Review","TAVS MOR Bowler + Safety Moment","Muskegon EHS Staff Mtg","Security MOR","IM Sustainability Review","Check Spotfire Bowlers"],ONGOING:["VPP Re-Certification prep","Profiler Updates","Framework Compliance","Environmental Permit Review"]},
   SW:{DAILY:["Cell inspection rounds","Eyewash station check","Spill kit check"],WEEKLY:["EHS Team Meeting Thu 7:45","PPE Audits — 38/wk","JSA Audits — 26/mo","STF Audits — 88/wk","LOTO Audits","EHS Cell Inspection (17/wk)","Labor Hours verify","Clear Desk Audit","Safe Start Monday delivery"],MONTHLY:["EHS Monthly Cell Inspection","LOTO Annual Reviews","SPCC Audits","EHS Training Compliance","EHS Committee Mtgs"],ONGOING:["MVPP prep","LOTO Procedures — decision tree","JSA Training Course","Update training materials","Enhesa Review"]},
   MS:{DAILY:["AT floor time / coaching","Early intervention check-ins","Monitor stretching participation"],WEEKLY:["EHS Team Meeting Thu 7:45","Structured AT floor time","Early Intervention rounds","Recognize AT engagement teams","Ergo project work"],MONTHLY:["EIP / Ergonomic Pulse","Ergo Committee Review","Ergo Dashboard metrics","Leading indicators tracking","Biometric tracking"],ONGOING:["Ergo HEAT MAP finalize","CR2031/TS2031 Gap Assessment","Ergo training delivery","MSD metric","TWP Plans","Refresh HEAT MAP — 2027"]},
@@ -530,30 +723,384 @@ const REC_TASKS={
 };
 
 // ════════════════════════════════════════════════════
-// STATE
+// EHS METRICS — pulled from 2026 Action Plans workbook
 // ════════════════════════════════════════════════════
-function loadS(){try{return JSON.parse(localStorage.getItem('ehsv4')||'{}')}catch(e){return {}}}
-function saveS(){try{localStorage.setItem('ehsv4',JSON.stringify(S))}catch(e){}}
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-let S=loadS();
-if(!S.actions)  S.actions=JSON.parse(JSON.stringify(DEFAULT_ACTIONS));
-if(!S.vpp)      S.vpp=JSON.parse(JSON.stringify(DEFAULT_VPP));
-if(!S.metrics)  S.metrics=JSON.parse(JSON.stringify(DEFAULT_METRICS));
-if(!S.links)    S.links=JSON.parse(JSON.stringify(DEFAULT_LINKS));
-if(!S.comments) S.comments={};
-if(!S.chat)     S.chat=[];
-if(!S.nextId)   S.nextId=200;
+// Annual scorecard (TAVS MKG Plant Health Pulse)
+const ANNUAL_METRICS=[
+  {label:"Rolling I&I Rate", target:1.13, actual:1.16, goal:"JOP 1.38", fmt:"rate"},
+  {label:"OSHA Recordable Injuries (YTD)", target:9, actual:2, goal:"≤9 / yr", fmt:"num"},
+  {label:"Near Misses (past week)", target:0, actual:0, goal:"0", fmt:"num"},
+  {label:"NOVs (past week)", target:0, actual:0, goal:"0", fmt:"num"},
+  {label:"Safety Training Completion", target:0.99, actual:1.00, goal:"≥99%", fmt:"pct"},
+  {label:"Compliance Calendar", target:1.00, actual:1.00, goal:"100%", fmt:"pct"},
+];
+
+// ════════════════════════════════════════════════════
+// ROLLING I&I RATE TABLE — fully editable, line by line
+// Formula: I&I Rate = (Recordable Injuries × 200,000) / Hours Worked
+// ════════════════════════════════════════════════════
+const DEFAULT_ROLLING_TABLE=[
+  {month:"Jan", hours:200000, injuries:0, goal:1.38},
+  {month:"Feb", hours:200000, injuries:0, goal:1.36},
+  {month:"Mar", hours:200000, injuries:1, goal:1.34},
+  {month:"Apr", hours:200000, injuries:1, goal:1.31},
+  {month:"May", hours:200000, injuries:0, goal:1.29},
+  {month:"Jun", hours:null,   injuries:null, goal:1.27},
+  {month:"Jul", hours:null,   injuries:null, goal:1.24},
+  {month:"Aug", hours:null,   injuries:null, goal:1.22},
+  {month:"Sep", hours:null,   injuries:null, goal:1.20},
+  {month:"Oct", hours:null,   injuries:null, goal:1.18},
+  {month:"Nov", hours:null,   injuries:null, goal:1.15},
+  {month:"Dec", hours:null,   injuries:null, goal:1.13},
+];
+// Reference rolling I&I rate actuals (pre-2026 calc) for chart continuity if hours not yet entered
+const II_RATE_ACTUAL_REF=[1.22,0.96,0.94,1.16,0.93,null,null,null,null,null,null,null];
+
+// Rolling 12-Month Recordable Injuries — goal vs actual (still editable per-month)
+const REC_INJ_GOAL  =[10.58,10.17,9.75,9.33,8.92,8.50,8.08,7.67,7.25,6.83,6.42,6.00];
+const DEFAULT_REC_INJ_ACTUAL=[10,8,9,10,8,7,6,4,4,3,3,2];
+
+// Weekly/monthly audit completion — goal vs YTD actual totals (Jan-Sep snapshot)
+const AUDIT_METRICS=[
+  {label:"PPE Audits", cadence:"38/week goal", monthly:[315,242,265,281,269,411,424,335,352], weeklyGoal:38, ytdGoal:144},
+  {label:"JSA Audits", cadence:"26/month goal", monthly:[155,148,162,186,147,240,277,207,222], weeklyGoal:26, ytdGoal:630},
+  {label:"Slip/Trip/Fall Audits", cadence:"88/week goal", monthly:[536,434,467,471,491,650,667,583,577], weeklyGoal:88, ytdGoal:312},
+  {label:"LOTO Audits", cadence:"varies monthly", monthly:[20,7,8,14,14,15,12,8,12], weeklyGoal:null, ytdGoal:42},
+  {label:"EHS Cell Inspection (Paper)", cadence:"17/month goal", monthly:[null,21,14,8,7,23,22,22,22], weeklyGoal:null, ytdGoal:null},
+  {label:"EHS Electronic Cell Inspection", cadence:"17/week → 68/mo", monthly:[72,47,74,81,94,124,133,37,34], weeklyGoal:17, ytdGoal:180},
+];
+
+// Recurring meeting cadence trackers — actual/goal counts per month
+const MEETING_METRICS=[
+  {label:"Safe Start Mondays", cadence:"4/week", monthly:["4/4","4/4","4/4","4/4","4/4","4/4","4/4","4/4","4/4"]},
+  {label:"Weekly EHS 7:45 Leader Review", cadence:"4/week", monthly:["3/4","4/4","4/4","4/4","3/4","3/4","2/4","3/4","3/4"]},
+  {label:"EHS Committee — Norton", cadence:"bi-weekly", monthly:["0/0","1/1","1/1","1/1","0/1","0/1","0/0","0/0","2/2"]},
+  {label:"EHS Committee — Latimer", cadence:"bi-weekly", monthly:["0/2","0/2","0/2","0/2","0/2","0/1","0/0","0/0","2/2"]},
+  {label:"EIP / Ergo Pulse", cadence:"bi-weekly", monthly:["2/2","2/2","2/2","2/2","2/2","1/1","1/1","1/1","1/1"]},
+  {label:"Bi-Weekly EHS Leadership Pulse", cadence:"bi-weekly", monthly:["2/2","1/2","1/2","1/2","1/2","1/2","1/2","1/2","2/2"]},
+];
+
+// EHS ATS Closure (always at 100% per source — track separately)
+const ATS_CLOSURE_GOAL=100; // %
+const ATS_CLOSURE_ACTUAL=[100,100,100,100,100,100,100,100,100];
+
+// Ergo pulse weekly metrics
+const ERGO_METRICS=[
+  {label:"Ergo Task Tracker (At-Risk/Past Due)", target:0, actual:0},
+  {label:"Encounters (previous week)", target:"?", actual:"-"},
+  {label:"Team/Associate Positive Recognitions", target:"?", actual:"-"},
+  {label:"Gensuite I&I Cases (Occ. First Aid/Recordable)", target:0, actual:0},
+  {label:"Ergonomic Assessments Completed", target:2, actual:2},
+];
+
+// 2025 vs 2026 monthly injury comparison
+const INJURIES_2025=[1,2,0,0,2,1,1,2,0,1,0,1]; // total 11
+const INJURIES_2026_YTD=[0,0,1,1]; // total 2 through April
+
+// I&I case summaries (counts by year, top body parts) are now computed
+// dynamically at runtime from the full DEFAULT_II_CASES list below.
+
+// Missed audits / training notes (rotating log)
+const METRIC_NOTES_LOG=[
+  "JUNE — EHS Monthly Cell Inspection: 8081, 8181, and 7012 failed to turn in a monthly paper cell inspection (March).",
+  "JUNE — LOTO Audits: 2 operators in Utility at Latimer past due on Annual LOTO audits (due March).",
+  "JULY — EHS Monthly Cell Inspections: 7037, 8081, 8181 did not complete a monthly cell inspection.",
+  "AUG/SEP — Weekly Electronic Cell Inspections: IT ticket open — department data submitted but not recorded.",
+  "J-Train 2.0 — All EHS training items added. New combustible dust training created (graphite/maintenance, annual). Forklift & LOTO lecture+exam added.",
+];
+
+// ════════════════════════════════════════════════════
+// ROLES & RESPONSIBILITIES (EHS Roles Rev2026)
+// ════════════════════════════════════════════════════
+const ROLE_RESPONSIBILITIES={
+  "Victor Pizarro":{
+    title:"EHS Leader — Project Work & Continuous Improvement",
+    items:[
+      "Manage and execute EHS-related projects",
+      "Support proper operations leader initial injury investigations & short-term corrective actions, incl. field verification",
+      "Problem Solving — analyze/resolve safety issues, evaluate cell inspection data trends, at-point problem solving, PS reports, corrective action closure",
+      "EHS&S Metrics — track, update, maintain, and communicate all metrics for bowler reporting and Tier meetings; populate weekly scorecards",
+      "Continuous Improvement — drive initiatives to improve workplace safety, process mapping & trend analysis",
+      "EHS Committees — lead, support, coach effective safety committees",
+      "Incident Root Cause & Corrective Action tracking/follow-up",
+      "Injury Reduction — investigate accidents/incidents, recommend & implement corrective actions",
+    ]
+  },
+  "Steve Wolbrink":{
+    title:"EHS Compliance Specialist",
+    items:[
+      "Environmental Compliance — lead implementation & maintenance of environmental compliance programs",
+      "Environmental Program Management — air inventory, ODS, solid waste, recycling, wastewater",
+      "Management of Change (MOC) — maintain and support EHS MOC processes & requirements",
+      "Worker Compensation Management — manage work comp cases, assist HR with STD/LTD, liaison to clinics/corporate/insurer",
+      "Oversight to Contract Help — Contractor, Risk Assessment, Safety Compliance, Training & Emergency Planning",
+      "EHS Committees — lead/support effective safety committees",
+    ]
+  },
+  "Mike Shuster":{
+    title:"Ergonomic Specialist (ATI Contract)",
+    items:[
+      "Early Injury Prevention — coaching, ergonomic support, workstation assessments to reduce risk",
+      "Gensuite I&I — update injury cases with root cause & corrective actions; finalize assigned cases",
+      "Ergonomics Assessment — evaluate all workstations with feedback into JSAs",
+    ]
+  },
+  "Rich DeLeau":{
+    title:"EHS Specialist (Contract)",
+    items:[
+      "Contractor Safety — day-to-day oversight: onboarding, training verification, field audits, documentation, coaching",
+      "Risk Assessment — support development & application of site-level risk controls, heat mapping, JSA maintenance",
+      "Safety Compliance — maintain & update safety policies, SOPs, and site documentation for accuracy/compliance",
+      "Training Execution — deliver in-person training (forklift, aerial lift); prepare/maintain J-Train materials",
+      "Emergency Planning — drill planning & execution; emergency response plans; maintain ENS",
+    ]
+  },
+  "Zach Tindall":{
+    title:"Security Specialist — Physical Security Only",
+    items:[
+      "Contractor Safety — lead day-to-day contractor safety oversight on the ground",
+      "Work forward in Gensuite annual reviews regardless of due date (two at a time)",
+      "Work forward in required maintenance/technical training; re-write training programs; schedule & conduct in-person, up to one year forward",
+      "Monthly training topic materials — review for accuracy, revise as needed (with Steve/Victor support)",
+    ]
+  },
+};
+
+// RACI matrix (Responsibility Area → role assignments)
+const RACI_MATRIX=[
+  {area:"Safety compliance: maintain/update policies, SOPs, site documentation", steve:"Primary", victor:"Support", mike:"Consult"},
+  {area:"EHS safety inspections/audits (JSAs, spot audits), noise surveys, equipment calibration", steve:"Support", victor:"Support", mike:"Consult"},
+  {area:"Environmental compliance programs: implementation, reviews, updates", steve:"Primary", victor:"Support", mike:"Consult"},
+  {area:"Environmental program mgmt: air inventory, ODS, solid waste, recycling, wastewater", steve:"Primary", victor:"Support", mike:"Consult"},
+  {area:"Contractor safety: onboarding, training, field audits, documentation, coaching", steve:"Primary", victor:"Support", mike:"Consult"},
+  {area:"Risk assessment: site-level controls, heat mapping, JSA maintenance", steve:"Primary", victor:"Support", mike:"Consult"},
+  {area:"Training execution: in-person, J-Train content", steve:"Primary", victor:"Support", mike:"Consult"},
+  {area:"EHS&S metrics: bowler/Tier updates, scorecards, inspection metrics, training tracking", steve:"Primary", victor:"Support", mike:"Not involved"},
+  {area:"EHS committees: lead/support/coach; employee engagement", steve:"Primary", victor:"Primary", mike:"Consult"},
+  {area:"Management of Change (MOC)", steve:"Primary", victor:"Support", mike:"Consult"},
+  {area:"Project work: EHS projects, injury investigation support", steve:"Support", victor:"Primary", mike:"Consult"},
+  {area:"Problem solving: safety issues, cell inspection trends, PS reports, corrective action closure", steve:"Support", victor:"Primary", mike:"Consult"},
+  {area:"Incident root cause & corrective action tracking/follow-up", steve:"Support", victor:"Primary", mike:"Consult"},
+  {area:"Injury reduction: investigate, recommend/implement corrective actions", steve:"Support", victor:"Primary", mike:"Consult"},
+  {area:"Gensuite I&I: update injury cases, root cause, corrective actions", steve:"Support", victor:"Primary", mike:"Not involved"},
+  {area:"Early injury prevention: coaching, ergo support, workstation assessments", steve:"Consult", victor:"Support", mike:"Primary"},
+  {area:"Ergonomics assessments: evaluate workstations, feedback into JSAs", steve:"Consult", victor:"Support", mike:"Primary"},
+  {area:"Worker compensation: case mgmt, HR STD/LTD support, clinic/insurer liaison", steve:"Primary", victor:"Support", mike:"Consult"},
+  {area:"Continuous improvement: process mapping, trend analysis, propose solutions", steve:"Support", victor:"Primary", mike:"Consult"},
+];
+
+const DEFAULT_II_CASES=[
+  {id:1, date:"2026-04-13", caseType:"Recordable", desc:"EE while he was changing tooling, he made a contact with a sharp edge of aluminum part. Employee received laceration on two knuckles of right hand. Laceration occurred as hand struck a work piece during a non-standard tool change in a Haas Grinder.", occupation:"Toolmaker", dept:"Norton", accidentType:"Struck Against", injuryType:"Laceration, Cut, Open Wound", bodyPart:"Hand", detailBodyPart:"Right", notes:""},
+  {id:2, date:"2026-03-31", caseType:"Recordable", desc:"Associate was using a reamer hand tool to work on a part and punctured their left index finger with the tip of the tool resulting in a preventative prescription for antibiotics.", occupation:"Machine Operator", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Puncture", bodyPart:"Finger", detailBodyPart:"Left Index", notes:""},
+  {id:3, date:"2025-12-03", caseType:"Recordable", desc:"Associate had experienced discomfort in their eye for a day. This associate works 2nd shift and woke up and had someone else look in their eye, they said they could see something so the associate made an appointment and went and saw an eye doctor. At this appointment the eye doctor removed a small b", occupation:"Machine Operator", dept:"Norton", accidentType:"Foreign Body", injuryType:"Foreign Body", bodyPart:"Eye", detailBodyPart:"", notes:"Rubbed burr in eye from clothing after work at home"},
+  {id:4, date:"2025-10-29", caseType:"Recordable", desc:"Foreign Body in the Eye", occupation:"Machine Operator", dept:"Norton", accidentType:"Foreign Body", injuryType:"Foreign Body", bodyPart:"Eye", detailBodyPart:"Both", notes:"E-Gauge, 3D printed tip failure"},
+  {id:5, date:"2025-08-04", caseType:"Recordable", desc:"Head Laceration", occupation:"Machine Operator", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Laceration, Cut, Open Wound", bodyPart:"Head", detailBodyPart:"Forehead", notes:"Walked into a pallet in the parking lot that was protruding from a pickup truck. Eyes were on path."},
+  {id:6, date:"2025-08-04", caseType:"Recordable", desc:"Wrist tendonitis ", occupation:"Machine Operator", dept:"Norton", accidentType:"Repetition", injuryType:"Strain", bodyPart:"Wrist", detailBodyPart:"Right", notes:"Not sure \"must be from tack weld\". New hire, 3 months experience."},
+  {id:7, date:"2025-07-09", caseType:"Recordable", desc:"The injury occurred when an associate bumped their elbow on a sharp edge of the grinder door while removing a part from the right-side fixture. This resulted in a 3-suture laceration.", occupation:"Machine Operator", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Laceration, Cut, Open Wound", bodyPart:"Arm", detailBodyPart:"Right Upper Arm", notes:"Bumped elbow while removing part from machine, rough edge on inside of door."},
+  {id:8, date:"2025-06-13", caseType:"Recordable", desc:"EE was walking when his foot slipped on a spot of oil. EE attempted to catch himself but injured his left middle finger has he reached towards and contacted the ground.", occupation:"Machine Operator", dept:"Latimer", accidentType:"Falls, same level", injuryType:"Contusion, Bruise", bodyPart:"Finger", detailBodyPart:"Left Middle Finger", notes:"TPM Transfer Cart"},
+  {id:9, date:"2025-05-25", caseType:"Recordable", desc:"The Maintenance employee aggravated pre-existing lower back health conditions while performing general, non-routine, maintenance work.      The work including carrying tools and supplies such as a fiberglass step ladder and a 30-pound roll of hose. The associate noticed the pain while feeding the ho", occupation:"Maintenance", dept:"Latimer", accidentType:"Body position/posture", injuryType:"Strain", bodyPart:"Back", detailBodyPart:"Lower Back", notes:"Feeding Hose up to co-worker in a lift. Severe degenerative back issues."},
+  {id:10, date:"2025-05-14", caseType:"Recordable", desc:"While describing safety and ergonomic concerns about the part washer lid, the operator closed the lid on their hand to demonstrate a concern. The act resulted in a self inflicted fractured hand.  The lid includes two safety features: a tension rod or hinge control for slow closure and a physical lat", occupation:"Machine Operator", dept:"Latimer", accidentType:"Struck by", injuryType:"Fracture", bodyPart:"Hand", detailBodyPart:"Right Hand", notes:"Slammed washer lid down on own hand intentionally to demonstrate"},
+  {id:11, date:"2025-02-26", caseType:"Recordable", desc:"Employee states they are constantly lifting totes while turning and loading carts resulting in low back and hip discomfort.", occupation:"Shipping/receiving", dept:"Latimer", accidentType:"Lifting, lowering, carrying, pushing, or pulling", injuryType:"Strain", bodyPart:"Back", detailBodyPart:"Lower Back", notes:"Degenerative, very low risk ergonomics (under investigation, surveillance, and IME)"},
+  {id:12, date:"2025-02-18", caseType:"Recordable", desc:"Associate has a burr in left index finger. This Happened around 2 weeks ago and the associate and coach thought the burr was out but it is not. Tonight the associate dropped a part when the part pushed on the area of the burr.", occupation:"Production machine operator", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Foreign Body", bodyPart:"Finger", detailBodyPart:"Left Index Finger", notes:"Sliver, Rx for Arthritis Cream"},
+  {id:13, date:"2025-01-08", caseType:"Recordable", desc:"slipped on black ice in parking lot; fell on right knee. Vehicle pulled away leaving bare spot in parking lot without salt.", occupation:"Inspection", dept:"Norton", accidentType:"Falls, same level", injuryType:"Contusion, Bruise", bodyPart:"Knee", detailBodyPart:"Right Knee", notes:"Snow storm, significant personal knee history, IME confirmed work related (hard to understand decision from IME)"},
+  {id:14, date:"2024-10-29", caseType:"Recordable", desc:"Maintenance was in the process of releasing the stored argon under full LOTO preparing an argon pressure vessel for disposition of the equipment.  The stored energy release of compressed argon gas resulted in an extreme high pitch sound causing ear ringing and pain (Otitic Barotrauma).", occupation:"Manufacturing", dept:"Latimer", accidentType:"Exposure to", injuryType:"Hearing Loss, or Impairment", bodyPart:"Ear", detailBodyPart:"Right Ear", notes:""},
+  {id:15, date:"2024-10-29", caseType:"Recordable", desc:"Maintenance was in the process of releasing the stored argon under full LOTO preparing an argon pressure vessel for disposition of the equipment. The stored energy release of compressed argon gas resulted in an extreme high pitch sound causing ear ringing and pain (noise effects on inner ear, bilate", occupation:"Engineer", dept:"Latimer", accidentType:"Exposure to", injuryType:"Hearing Loss, or Impairment", bodyPart:"Ear", detailBodyPart:"Left Ear,Right Ear", notes:""},
+  {id:16, date:"2024-10-22", caseType:"Recordable", desc:"Associate was wiping oil off of their gloved hands and was stuck with a burr that was in a rag in the left index finger. Burr did not come out when taking off glove and was unable to be removed by associate. EHS was consulted and associate was directed to Work Place Health.", occupation:"Machine Operator", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Puncture", bodyPart:"Finger", detailBodyPart:"Left Index Finger", notes:""},
+  {id:17, date:"2024-08-27", caseType:"Recordable", desc:"Removal of small fixture off Riser Block. Sliding small riser block from Haas table, it was stuck a little, then broke loose.  Pinched skin between block and T slot.", occupation:"Machinist", dept:"Norton", accidentType:"Lifting, lowering, carrying, pushing, or pulling", injuryType:"Laceration, Cut, Open Wound", bodyPart:"Hand", detailBodyPart:"Left Hand", notes:""},
+  {id:18, date:"2024-05-28", caseType:"Recordable", desc:"EE Stated: hit my elbow while doing TPM on an MKG on the passport line. Hit my right elbow while changing the high pressure filter.  Elbow and forearm pain.", occupation:"Machine Operator", dept:"Norton", accidentType:"", injuryType:"Epicondylitis", bodyPart:"Elbow", detailBodyPart:"Right Elbow", notes:""},
+  {id:19, date:"2024-04-09", caseType:"Recordable", desc:"The employee got a sliver in their finger while handling a part. The employee didnt report the injury or seek treatment, they felt the sliver would works its way out. After two weeks, the finger became infected requiring an incision to remove, two sutures, and prescription antibiotics. The machine p", occupation:"Machine Operator", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Foreign Body", bodyPart:"Finger", detailBodyPart:"Left Middle Finger", notes:""},
+  {id:20, date:"2024-03-18", caseType:"Non-Recordable", desc:"Associate hit their head on the corner of a table after bending down to retrieve an object that fell to the floor and received a short and shallow scratch on the crown of their head.", occupation:"Machine Operator", dept:"Latimer", accidentType:"Struck against", injuryType:"Abrasion, Scratches (superficial)", bodyPart:"Head other than face", detailBodyPart:"Skull", notes:""},
+  {id:21, date:"2024-03-14", caseType:"Non-Recordable", desc:"Associate was closing the lid on the cardboard Genx Stage 2 spare boxes and felt a pop in the shoulder.", occupation:"Machine Operator", dept:"Latimer", accidentType:"Repetition", injuryType:"Strain", bodyPart:"Shoulder", detailBodyPart:"Right Shoulder", notes:""},
+  {id:22, date:"2024-03-14", caseType:"Non-Recordable", desc:"Sore shoulder/inflammation", occupation:"Machine Operator", dept:"Latimer", accidentType:"Body position/posture", injuryType:"Strain", bodyPart:"Shoulder", detailBodyPart:"Right Shoulder", notes:""},
+  {id:23, date:"2024-03-13", caseType:"Non-Recordable", desc:"Inspector/operator was showing engineer where to look for burrs on GE90LPT and got a sliver/burr in index finger left hand.", occupation:"Inspection", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Puncture", bodyPart:"Finger", detailBodyPart:"Left Index Finger", notes:""},
+  {id:24, date:"2024-03-13", caseType:"Non-Recordable", desc:"Braze operator was handling GE90 LPT and got a burr/sliver in left thumb. antiseptic/ointment was used and burr was partially removed. operator did not want to seek medical attention. Stated they would remove the rest of the burr/sliver once they got home.", occupation:"Machine Operator", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Puncture", bodyPart:"Finger", detailBodyPart:"Left Thumb", notes:""},
+  {id:25, date:"2024-02-12", caseType:"Non-Recordable", desc:"Operating on the tackweld fixture, tacking on parts, started to feel discomfort from wrist to inner elbow. Using tack gun.", occupation:"Machine Operator", dept:"Norton", accidentType:"Repetition", injuryType:"Strain", bodyPart:"Wrist", detailBodyPart:"Right Wrist", notes:""},
+  {id:26, date:"2024-01-26", caseType:"Non-Recordable", desc:"Loading a grinder and putting parts in the washer on Genx Shrouds line, EE went to open the washer door without pressing button, causing discomfort in their L elbow.", occupation:"Machine Operator", dept:"Norton", accidentType:"Forceful exertion of arm, hand, wrist or fingers", injuryType:"Strain", bodyPart:"Elbow", detailBodyPart:"Left Elbow", notes:""},
+  {id:27, date:"2024-01-23", caseType:"Non-Recordable", desc:"Associate slipped on ice exiting vehicle this morning, falling and striking their elbow. Associate notified coach at 12:58pm. EHS was contacted and spoke to associate. Associate said they had a small bruise and a little soreness in elbow. Parking lot was checked at that time as well.", occupation:"Shipping/receiving", dept:"Norton", accidentType:"Falls, different level", injuryType:"Contusion, Bruise", bodyPart:"Elbow", detailBodyPart:"Left Elbow", notes:""},
+  {id:28, date:"2024-01-23", caseType:"Non-Recordable", desc:"Associate slipped and fell in the parking lot today, landing on their back.", occupation:"Inspection", dept:"Latimer", accidentType:"Falls, different level", injuryType:"Contusion, Bruise", bodyPart:"Back", detailBodyPart:"Lower Back", notes:""},
+  {id:29, date:"2024-01-10", caseType:"Non-Recordable", desc:"Running and deburring parts, using file to remove long burr on 34-8 2nd. Tendon in thumb and wrist area started to get sore and just got worse.", occupation:"Machine Operator", dept:"Norton", accidentType:"Repetition", injuryType:"Strain", bodyPart:"Finger", detailBodyPart:"Right Thumb", notes:""},
+  {id:30, date:"2024-01-09", caseType:"Non-Recordable", desc:"Associate stepped out of their truck and slipped on the snow and ice in the parking lot falling on their back. Associate did not not need any assistance they have no pain at this time, will continue to monitor.", occupation:"Office", dept:"Latimer", accidentType:"Falls, same level", injuryType:"Contusion, Bruise", bodyPart:"Back", detailBodyPart:"Lower Back", notes:""},
+  {id:31, date:"2024-01-08", caseType:"Non-Recordable", desc:"Associate was removing a detail from a fixture and came in contact with a sharp edge of the fixture. This caused a small laceration to the index finger", occupation:"Machine Operator", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Laceration, Cut, Open Wound", bodyPart:"Finger", detailBodyPart:"Right Index Finger", notes:""},
+  {id:32, date:"2024-01-05", caseType:"Non-Recordable", desc:"Repetitive Motion - soreness in right elbow area, computer mouse movement working from home without wrist support.", occupation:"Office", dept:"Latimer", accidentType:"Repetition", injuryType:"Strain", bodyPart:"Elbow", detailBodyPart:"Right Elbow", notes:""},
+  {id:33, date:"2024-01-05", caseType:"Non-Recordable", desc:"Set up person was trying to get grind wheel to the docking station. Wheel was hanging from the carousel at a angle loosely. Set up grabbed the wheel with 2 hands. When the weight of the wheel released from carousel the wheel dropped and their middle finger on right hand struck the fixture. Pinching ", occupation:"Machine Operator", dept:"Norton", accidentType:"Struck by", injuryType:"Laceration, Cut, Open Wound", bodyPart:"Finger", detailBodyPart:"Right Middle Finger", notes:""},
+  {id:34, date:"2023-10-25", caseType:"Recordable", desc:"The employee was reinstalling a guard on a piece of equipment. The weight of the object causes a strain to their bicep", occupation:"Maintenance", dept:"Latimer", accidentType:"Lifting, lowering, carrying, pushing, or pulling", injuryType:"Strain", bodyPart:"Arm", detailBodyPart:"Left Upper Arm", notes:""},
+  {id:35, date:"2023-10-10", caseType:"Recordable", desc:"Doing routine TPM on an evaporator. It consists of using a scraper to clean the heater pan and side walls. Constant long period of time scraping the heater core caused shoulder pain.", occupation:"Janitorial", dept:"Latimer", accidentType:"Forceful exertion of arm, hand, wrist or fingers", injuryType:"Strain", bodyPart:"Shoulder", detailBodyPart:"Right Shoulder", notes:""},
+  {id:36, date:"2023-08-01", caseType:"Recordable", desc:"a tool room associate working to set up and horizontal bandsaw for tool room work walked around the back of the machine and tripped on a small pallet left there by shipping with tool room supplies on it", occupation:"Machinist/Toolmaker", dept:"Norton", accidentType:"Falls, same level", injuryType:"Strain", bodyPart:"Knee", detailBodyPart:"Left Knee", notes:""},
+  {id:37, date:"2023-05-18", caseType:"Recordable", desc:"Operator was reaming a hole on the part when they went to remove the drill from the hole, the part caught in the reamer and spun the part in their hand causing a cut in their palm.", occupation:"Equipment Operator", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Laceration, Cut, Open Wound", bodyPart:"Hand", detailBodyPart:"Right Hand", notes:""},
+  {id:38, date:"2023-05-03", caseType:"Recordable", desc:"Associate received sliver in finger from a burr while handling the part removing it from the grinder.", occupation:"Equipment Operator", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Foreign Body", bodyPart:"Finger", detailBodyPart:"Right Index Finger", notes:""},
+  {id:39, date:"2023-04-04", caseType:"Non-Recordable", desc:"Moving part from grinder and received a metal sliver.", occupation:"Equipment Operator", dept:"Norton", accidentType:"Contact with sharp object", injuryType:"Foreign Body", bodyPart:"Finger", detailBodyPart:"Left Index Finger", notes:""},
+  {id:40, date:"2023-02-28", caseType:"Non-Recordable", desc:"Consistently looking up at the computer screens to monitor the Mks while running. Developed a stiff neck", occupation:"Machine Operator", dept:"Latimer", accidentType:"", injuryType:"Musculoskeletal Disorder, not otherwise specified", bodyPart:"Neck", detailBodyPart:"Neck", notes:""},
+  {id:41, date:"2023-01-31", caseType:"Recordable", desc:"The associate was running a grinder, while troubleshooting a dropped wheel issue his finger was pinched between a wheel and the fixture.", occupation:"Machine Operator", dept:"Norton", accidentType:"Hand in Machinery", injuryType:"Fracture", bodyPart:"Finger", detailBodyPart:"Left Index Finger,Left Ring Finger", notes:""},
+];
+// ════════════════════════════════════════════════════
+// STORAGE — Firebase Realtime Database (live multi-device sync)
+// ════════════════════════════════════════════════════
+const SCHEMA_VERSION=2;
+const FIREBASE_PATH='ehsCommandCenterData';
+
+// Firebase config — from console.firebase.google.com → Project Settings → Your apps
+const firebaseConfig = {
+  apiKey: "AIzaSyD499PokRVo3rwk6jSEOVsjX52kI__nTQw",
+  authDomain: "ge-aerospace-ehs-dashboard.firebaseapp.com",
+  databaseURL: "https://ge-aerospace-ehs-dashboard-default-rtdb.firebaseio.com",
+  projectId: "ge-aerospace-ehs-dashboard",
+  storageBucket: "ge-aerospace-ehs-dashboard.firebasestorage.app",
+  messagingSenderId: "180928154964",
+  appId: "1:180928154964:web:f48b6dfbdd60a7ad4c0cc1",
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const dataRef = db.ref(FIREBASE_PATH);
+
+let S = {};
+let firebaseReady = false;
+
+// Deep-merge defaults into S without overwriting existing user data.
+function mergeDefault(key,defaultVal){
+  if(S[key]===undefined){ S[key]=JSON.parse(JSON.stringify(defaultVal)); return; }
+  if(Array.isArray(defaultVal)) return; // arrays: keep user's data as-is (don't merge items)
+  if(typeof defaultVal==='object' && defaultVal!==null){
+    Object.keys(defaultVal).forEach(k=>{
+      if(S[key][k]===undefined) S[key][k]=JSON.parse(JSON.stringify(defaultVal[k]));
+    });
+  }
+}
+function applyDefaults(){
+  if(!S.actions)  S.actions=JSON.parse(JSON.stringify(DEFAULT_ACTIONS));
+  if(!S.vpp)      S.vpp=JSON.parse(JSON.stringify(DEFAULT_VPP));
+  mergeDefault('metrics',DEFAULT_METRICS);
+  if(!S.links)    S.links=JSON.parse(JSON.stringify(DEFAULT_LINKS));
+  if(!S.comments) S.comments={};
+  if(!S.sched)    S.sched=JSON.parse(JSON.stringify(DEFAULT_SCHED));
+  mergeDefault('rec',DEFAULT_REC);
+  if(!S.rollingTable) S.rollingTable=JSON.parse(JSON.stringify(DEFAULT_ROLLING_TABLE));
+  if(!S.recInjActual) S.recInjActual=JSON.parse(JSON.stringify(DEFAULT_REC_INJ_ACTUAL));
+  if(!S.iiCases)  S.iiCases=JSON.parse(JSON.stringify(DEFAULT_II_CASES));
+  if(!S.nextId)   S.nextId=200;
+  if(!S.nextCaseId) S.nextCaseId=Math.max(0,...S.iiCases.map(c=>c.id))+1;
+  if(!S.nextSchedId){S.nextSchedId={};Object.keys(TEAM).forEach(k=>{const max=Math.max(0,...(S.sched[k]||[]).map(e=>e.id));S.nextSchedId[k]=max+1;});}
+}
+
+// saveS() pushes the full current state to Firebase. All connected
+// clients (phones, browsers, anyone with the page open) receive the
+// update within a second or two via the realtime listener below.
+let saveTimer=null;
+function saveS(){
+  S.schemaVersion=SCHEMA_VERSION;
+  S.lastSaved=new Date().toISOString();
+  setSyncIndicator('syncing');
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    dataRef.set(S).then(()=>{
+      setSyncIndicator('synced');
+    }).catch((e)=>{
+      console.error(e);
+      setSyncIndicator('error');
+      toast('⚠️ Sync failed — check internet connection','#FF453A');
+    });
+  },250); // brief debounce so rapid edits (typing) don't spam writes
+}
+function setSyncIndicator(state){
+  const el=document.getElementById('sync-indicator');
+  if(!el) return;
+  if(state==='syncing'){ el.textContent='Syncing…'; el.style.color='#0A84FF'; }
+  else if(state==='synced'){ el.textContent='Live · Synced'; el.style.color='#30D158'; }
+  else if(state==='error'){ el.textContent='⚠️ Sync error'; el.style.color='#FF453A'; }
+  else if(state==='connecting'){ el.textContent='Connecting…'; el.style.color='#FF9F0A'; }
+}
+
+// ── Realtime listener: fires on initial load AND whenever ANY team
+// member's browser writes new data. This is what makes edits show up
+// live on everyone else's screen without refreshing. ──
+dataRef.on('value', (snapshot) => {
+  const remote = snapshot.val();
+  const wasReady = firebaseReady;
+  const isEmpty = !remote;
+  if(remote){
+    S = remote;
+  }
+  applyDefaults();
+  firebaseReady = true;
+  if(!wasReady){
+    // First load — boot the app UI now that we have real data
+    document.getElementById('loading-screen')?.classList.add('hidden');
+    if(isEmpty){
+      // Brand-new database with nothing in it yet — write our defaults
+      // back so they persist for the whole team going forward.
+      dataRef.set(S).catch(e=>console.error('Initial seed failed:',e));
+    }
+    rebuildAll();
+    buildVPP();
+    buildMetrics();
+    buildTeamRoles();
+    buildLinks();
+  } else {
+    // Subsequent update — could be from us or a teammate. Re-render.
+    rebuildAll();
+  }
+  setSyncIndicator('synced');
+}, (error) => {
+  console.error('Firebase read failed:', error);
+  setSyncIndicator('error');
+  toast('⚠️ Could not connect to shared database','#FF453A');
+});
+
+// ── Export full data as downloadable JSON backup (still useful as an offline safety net) ──
+function exportData(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const stamp=new Date().toISOString().slice(0,10);
+  a.href=url;
+  a.download=`ehs-command-center-backup-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('Backup downloaded','#30D158');
+}
+// ── Import a previously exported JSON backup (overwrites shared data for everyone) ──
+function importData(file){
+  const reader=new FileReader();
+  reader.onload=(e)=>{
+    try{
+      const parsed=JSON.parse(e.target.result);
+      if(!parsed.actions){toast('Invalid backup file','#FF453A');return;}
+      if(!confirm('This will replace ALL shared team data with the backup file, for everyone. Continue?')) return;
+      S=parsed;
+      saveS();
+      toast('Backup restored for the whole team','#30D158');
+    }catch(err){
+      toast('Could not read backup file','#FF453A');
+    }
+  };
+  reader.readAsText(file);
+}
+function triggerImport(){
+  document.getElementById('import-file-input').click();
+}
+function openBackupModal(){
+  const el=document.getElementById('backup-lastsaved');
+  if(el) el.textContent=S.lastSaved?`Last saved: ${new Date(S.lastSaved).toLocaleString()}`:'';
+  document.getElementById('modal-backup').classList.remove('hidden');
+}
+
+// Per-person Active/Completed view toggle (in-memory only, not persisted)
+const personView={};
 
 // ════════════════════════════════════════════════════
 // HELPERS
 // ════════════════════════════════════════════════════
-function pc(p){return p>=75?'#059669':p>=40?'#D97706':'#DC2626'}
+function pc(p){return p>=75?'#30D158':p>=40?'#FF9F0A':'#FF453A'}
 function pb(pct,h=8){const p=Math.min(pct,100);return `<div class="pt" style="height:${h}px"><div class="pf" style="width:${p}%;background:${pc(pct)};height:${h}px"></div></div>`}
 function bk(s){return 'badge s-'+(s||'Open').replace(/[\s-]/g,'')}
 function pri(p){return `<span class="p-${p||'Low'}">${p||'Low'}</span>`}
 function toast(msg,col){
   const t=document.getElementById('toast');
-  t.style.background=col||'var(--navy)';
+  t.style.background=col||'#1D1D1F';
   t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2200);
 }
@@ -564,33 +1111,162 @@ function byStatus(s){return S.actions.filter(a=>a.status===s).length}
 function totalDone(){return S.actions.filter(a=>a.status==='Complete').length}
 function totalCount(){return S.actions.length}
 
+// ── Donut chart (pure SVG, no library) ──
+const PIE_COLORS={
+  "Complete":"#30D158","On Schedule":"#64D2FF","Behind":"#FF453A","At-Risk":"#FF9F0A",
+  "Not Started":"#BF5AF2","Open":"#8E8E93","Ongoing":"#0A84FF","On Hold":"#FF9F0A"
+};
+function buildDonut(actionsList,size=160){
+  const total=actionsList.length;
+  if(!total) return '<div style="padding:24px;text-align:center;color:var(--muted);font-size:12px">No data yet.</div>';
+  const counts={};
+  actionsList.forEach(a=>{counts[a.status]=(counts[a.status]||0)+1;});
+  const r=size/2, cx=size/2, cy=size/2, stroke=size*0.22;
+  const radius=r-stroke/2;
+  const circumference=2*Math.PI*radius;
+  let offset=0;
+  let segs='';
+  Object.entries(counts).forEach(([status,cnt])=>{
+    const frac=cnt/total;
+    const len=frac*circumference;
+    const color=PIE_COLORS[status]||'#8E8E93';
+    segs+=`<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-dasharray="${len} ${circumference-len}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})" stroke-linecap="butt"/>`;
+    offset+=len;
+  });
+  const done=counts['Complete']||0;
+  const pct=Math.round(done/total*100);
+  const svg=`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="#F1F1F4" stroke-width="${stroke}"/>
+    ${segs}
+    <text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="${size*0.17}" font-weight="900" fill="var(--ink)" font-family="-apple-system,sans-serif">${pct}%</text>
+    <text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="${size*0.075}" font-weight="700" fill="#8E8E93" font-family="-apple-system,sans-serif">COMPLETE</text>
+  </svg>`;
+  const legend=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([status,cnt])=>
+    `<div class="pie-legend-item"><div class="pie-legend-dot" style="background:${PIE_COLORS[status]||'#8E8E93'}"></div>${status}: <strong>${cnt}</strong></div>`
+  ).join('');
+  return `<div class="pie-wrap">${svg}<div class="pie-legend">${legend}</div></div>`;
+}
+
+// ── Top 3 priority actions (not complete, ranked by priority+status urgency) ──
+function getTop3(actionsList){
+  const urgency={Behind:4,'At-Risk':3,'Not Started':2,Open:1,Ongoing:0,'On Schedule':0,'On Hold':0};
+  const priWeight={High:3,Medium:2,Low:1};
+  return actionsList
+    .filter(a=>a.status!=='Complete')
+    .map(a=>({...a,score:(urgency[a.status]||0)*10+(priWeight[a.pri]||0)}))
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,3);
+}
+function buildTop3(actionsList){
+  const top=getTop3(actionsList);
+  if(!top.length) return '<div style="padding:24px;text-align:center;color:var(--muted);font-size:12px">🎉 Nothing urgent — everything is complete or on track!</div>';
+  const rankColors=['#FF453A','#FF9F0A','#0A84FF'];
+  return `<div class="top3-list">`+top.map((a,i)=>`
+    <div class="top3-item">
+      <div class="top3-rank" style="background:${rankColors[i]}">${i+1}</div>
+      <div class="top3-text">
+        <div class="top3-task">${a.task}</div>
+        <div class="top3-meta">${a.owner} &middot; <span class="${bk(a.status)}">${a.status}</span> &middot; ${pri(a.pri)} &middot; Due ${a.target}</div>
+      </div>
+    </div>`).join('')+`</div>`;
+}
+
+// ── KPI card detail modal ──
+function openKpiDetail(kind){
+  let title, bodyHTML;
+  if(kind==='team'){
+    title='Team Roster';
+    bodyHTML=`<div class="top3-list">`+Object.entries(TEAM).map(([key,t])=>{
+      const acts=actionsFor(t.name);
+      const done=acts.filter(a=>a.status==='Complete').length;
+      const pct=acts.length?Math.round(done/acts.length*100):0;
+      return `<div class="top3-item" style="cursor:pointer" onclick="closeModal('modal-kpi');goPage('${key}')">
+        <div class="top3-rank" style="background:${t.color}">${t.ini}</div>
+        <div class="top3-text">
+          <div class="top3-task">${t.name} — ${t.role}</div>
+          <div class="top3-meta">${acts.length} actions · ${pct}% complete · Tap to open dashboard</div>
+        </div>
+      </div>`;
+    }).join('')+`</div>`;
+  }else if(kind==='all'){
+    title='All Actions — Quick View';
+    bodyHTML=tableShell(S.actions.map(buildRow).join(''));
+  }else if(kind==='ongoing-combined'){
+    title='Ongoing & On Schedule Actions';
+    const items=S.actions.filter(a=>['Ongoing','On Schedule'].includes(a.status));
+    bodyHTML=items.length?tableShell(items.map(buildRow).join(''))
+      :'<div style="padding:24px;text-align:center;color:var(--muted)">Nothing in progress right now.</div>';
+  }else{
+    title=kind+' Actions';
+    const items=S.actions.filter(a=>a.status===kind);
+    bodyHTML=items.length?tableShell(items.map(buildRow).join(''))
+      :`<div style="padding:24px;text-align:center;color:var(--muted)">🎉 No items with status "${kind}" right now.</div>`;
+  }
+  document.getElementById('kpi-detail-title').textContent=title;
+  document.getElementById('kpi-detail-body').innerHTML=bodyHTML;
+  document.getElementById('modal-kpi').classList.remove('hidden');
+}
+function openInsights(scope){
+  let actionsList,title;
+  if(scope==='all'){
+    actionsList=S.actions;title='Team Insights — All Actions';
+  }else{
+    const t=TEAM[scope];
+    actionsList=actionsFor(t.name);title=`${t.name.split(' ')[0]}'s Insights`;
+  }
+  document.getElementById('insights-title').textContent=title;
+  document.getElementById('insights-body').innerHTML=`
+    <div class="insights-grid">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Status Breakdown</div>
+        ${buildDonut(actionsList,160)}
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">🔥 Top 3 Actions Needing Attention</div>
+        ${buildTop3(actionsList)}
+      </div>
+    </div>`;
+  document.getElementById('modal-insights').classList.remove('hidden');
+}
+
 function upd(id,field,val){
   const a=S.actions.find(x=>x.id===id);if(a){a[field]=val;saveS();}
   rebuildAll();
-  toast(`✅ ${field} updated`,'#059669');
+  toast(`Updated`,'#30D158');
 }
-
 function del(id){
   if(!confirm('Delete this task?')) return;
   S.actions=S.actions.filter(a=>a.id!==id);
   saveS();rebuildAll();
-  toast('🗑️ Task deleted','#DC2626');
+  toast('Task deleted','#FF453A');
 }
-
 function toggleDone(id){
   const a=S.actions.find(x=>x.id===id);
   if(!a) return;
   a.status=a.status==='Complete'?'Open':'Complete';
   saveS();rebuildAll();
-  toast(a.status==='Complete'?'✅ Marked Complete!':'↩ Reopened');
+  toast(a.status==='Complete'?'Marked Complete':'Reopened');
 }
-
 function rebuildAll(){
   buildOverview();
-  // Re-render current visible page if it's actions or a person page
   const cur=Object.keys(PAGES).find(k=>!document.getElementById('pg-'+k).classList.contains('hidden'));
   if(cur==='actions') buildActions();
+  else if(cur==='vpp') buildVPP();
+  else if(cur==='metrics') buildMetrics();
+  else if(cur==='team') buildTeamRoles();
+  else if(cur==='links') buildLinks();
   else if(['VP','SW','MS','RD','ZT'].includes(cur)) buildPersonPage(cur);
+  // Keep open modals in sync
+  if(!document.getElementById('modal-kpi').classList.contains('hidden')){
+    const t=document.getElementById('kpi-detail-title').textContent;
+    const kindMap={'All Actions — Quick View':'all','Ongoing & On Schedule Actions':'ongoing-combined','Team Roster':'team'};
+    let kind=kindMap[t];
+    if(!kind){
+      const status=STATUS_OPTS.find(s=>t.startsWith(s));
+      kind=status||'all';
+    }
+    openKpiDetail(kind);
+  }
 }
 
 // ════════════════════════════════════════════════════
@@ -598,23 +1274,23 @@ function rebuildAll(){
 // ════════════════════════════════════════════════════
 function buildRow(a){
   const done=a.status==='Complete';
-  const tkey=Object.entries(TEAM).find(([k,v])=>v.name===a.owner);
-  const tc=tkey?TEAM[tkey[0]].color:'#374151';
   const cmtCount=(S.comments[a.id]||[]).length;
+  const dueVal=a.dueDate||'';
   return `<tr id="r${a.id}" class="${done?'done-row':''}">
     <td><button class="chk${done?' on':''}" onclick="toggleDone(${a.id})">${done?'✓':''}</button></td>
-    <td style="max-width:250px"><input class="etxt" value="${a.task.replace(/"/g,'&quot;')}" style="width:100%;font-weight:${done?400:500};${done?'text-decoration:line-through;color:var(--muted)':''}" onchange="upd(${a.id},'task',this.value)"/></td>
+    <td style="max-width:240px"><input class="etxt" value="${a.task.replace(/"/g,'&quot;')}" style="width:100%;font-weight:${done?400:500};${done?'text-decoration:line-through;color:var(--muted)':''}" onchange="upd(${a.id},'task',this.value)"/></td>
     <td><select class="esel" onchange="upd(${a.id},'owner',this.value)">${opts(PERSON_OPTS,a.owner)}</select></td>
     <td><select class="esel" onchange="upd(${a.id},'status',this.value)">${opts(STATUS_OPTS,a.status)}</select></td>
     <td><select class="esel" onchange="upd(${a.id},'pri',this.value)">${opts(PRI_OPTS,a.pri)}</select></td>
     <td><select class="esel" onchange="upd(${a.id},'target',this.value)">${opts(TARGET_OPTS,a.target)}</select></td>
+    <td><input type="date" class="esel" style="min-width:120px" value="${dueVal}" onchange="upd(${a.id},'dueDate',this.value)" title="Specific due date"/></td>
     <td><select class="esel" onchange="upd(${a.id},'prog',this.value)">${opts(PROG_OPTS,a.prog)}</select></td>
     <td>
       <div style="display:flex;gap:5px;align-items:center">
-        <button class="btn btn-ghost btn-sm btn-icon" onclick="openComments(${a.id})" title="Comments & Updates" style="font-size:12px">
-          💬${cmtCount>0?`<span style="font-size:9px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 5px;margin-left:2px">${cmtCount}</span>`:''}
+        <button class="btn btn-ghost btn-icon" onclick="openComments(${a.id})" title="Comments & Updates">
+          💬${cmtCount>0?`<span style="position:absolute;top:-3px;right:-3px;font-size:8px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 4px;line-height:1.3">${cmtCount}</span>`:''}
         </button>
-        <button class="btn btn-red btn-sm btn-icon" onclick="del(${a.id})" title="Delete task">🗑️</button>
+        <button class="btn btn-ghost btn-icon" onclick="del(${a.id})" title="Delete task" style="color:var(--red)">🗑️</button>
       </div>
     </td>
   </tr>`;
@@ -623,16 +1299,15 @@ function buildRow(a){
 // ════════════════════════════════════════════════════
 // ADD TASK MODAL
 // ════════════════════════════════════════════════════
-let editingId=null;
 function openAddModal(preOwner){
-  editingId=null;
-  document.getElementById('modal-add-title').textContent='➕ Add New Task';
+  document.getElementById('modal-add-title').textContent='Add New Task';
   document.getElementById('m-task').value='';
   document.getElementById('m-notes').value='';
   document.getElementById('m-status').value='Open';
   document.getElementById('m-pri').value='High';
   document.getElementById('m-target').value='Q2 2026';
   document.getElementById('m-prog').value='Core EHS';
+  document.getElementById('m-duedate').value='';
   if(preOwner) document.getElementById('m-owner').value=preOwner;
   document.getElementById('modal-add').classList.remove('hidden');
   document.getElementById('m-task').focus();
@@ -640,7 +1315,7 @@ function openAddModal(preOwner){
 function closeModal(id){document.getElementById(id).classList.add('hidden')}
 function saveNewTask(){
   const task=document.getElementById('m-task').value.trim();
-  if(!task){toast('⚠️ Task name required','#DC2626');return;}
+  if(!task){toast('Task name required','#FF453A');return;}
   const newA={
     id:S.nextId++,
     task,
@@ -648,15 +1323,14 @@ function saveNewTask(){
     status:document.getElementById('m-status').value,
     pri:document.getElementById('m-pri').value,
     target:document.getElementById('m-target').value,
+    dueDate:document.getElementById('m-duedate').value,
     prog:document.getElementById('m-prog').value,
   };
   const notes=document.getElementById('m-notes').value.trim();
-  if(notes){
-    S.comments[newA.id]=[{author:"You",text:notes,time:new Date().toLocaleString()}];
-  }
+  if(notes) S.comments[newA.id]=[{author:"You",text:notes,time:new Date().toLocaleString()}];
   S.actions.push(newA);
   saveS();closeModal('modal-add');rebuildAll();
-  toast('✅ Task added!','#059669');
+  toast('Task added','#30D158');
 }
 
 // ════════════════════════════════════════════════════
@@ -674,12 +1348,12 @@ function renderComments(){
   const list=document.getElementById('comment-list');
   const cmts=S.comments[commentTaskId]||[];
   if(!cmts.length){
-    list.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No comments yet. Add the first update below.</div>';
+    list.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No comments yet. Add the first progress update below.</div>';
     return;
   }
   list.innerHTML=cmts.map(c=>`
     <div class="comment">
-      <div class="comment-meta"><span>👤 ${c.author}</span><span>${c.time}</span></div>
+      <div class="comment-meta"><span>${c.author}</span><span>${c.time}</span></div>
       <div class="comment-text">${c.text}</div>
     </div>`).join('');
   list.scrollTop=list.scrollHeight;
@@ -691,8 +1365,95 @@ function addComment(){
   if(!S.comments[commentTaskId]) S.comments[commentTaskId]=[];
   S.comments[commentTaskId].push({author:"Team Member",text,time:new Date().toLocaleString()});
   inp.value='';
-  saveS();renderComments();rebuildAll();
-  toast('💬 Comment added');
+  saveS();renderComments();updCommentBadge(commentTaskId);
+  toast('Comment added');
+}
+function updCommentBadge(id){
+  const cnt=(S.comments[id]||[]).length;
+  const row=document.getElementById('r'+id);
+  if(!row) return;
+  const btn=row.querySelector('.btn-icon[title="Comments & Updates"]');
+  if(!btn) return;
+  const existing=btn.querySelector('span');
+  if(existing) existing.remove();
+  if(cnt>0){
+    const span=document.createElement('span');
+    span.style.cssText='position:absolute;top:-3px;right:-3px;font-size:8px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 4px;line-height:1.3';
+    span.textContent=cnt;
+    btn.appendChild(span);
+  }
+}
+
+// ════════════════════════════════════════════════════
+// SCHEDULE EVENT MODAL (add/edit/delete calendar entries)
+// ════════════════════════════════════════════════════
+let schedEditCtx=null; // {personKey, day, time, eventId}
+const EVENT_COLORS=["#0A84FF","#30D158","#BF5AF2","#FF9F0A","#FF453A","#64D2FF","#5856D6","#FF375F","#8E8E93"];
+
+function openSchedModal(personKey,day,time,eventId){
+  schedEditCtx={personKey,day,time,eventId};
+  const existing=eventId?S.sched[personKey].find(e=>e.id===eventId):null;
+  document.getElementById('sm-title').textContent=existing?'Edit Event':'Add Event';
+  document.getElementById('sm-day-time').textContent=`${DAY_NAMES[day-1]} · ${time}`;
+  document.getElementById('sm-label').value=existing?existing.label:'';
+  // build color swatches
+  const sw=document.getElementById('sm-colors');
+  sw.innerHTML=EVENT_COLORS.map(c=>`<div class="color-sw" data-color="${c}" style="background:${c};${(existing?existing.color:EVENT_COLORS[0])===c?'box-shadow:0 0 0 3px #fff,0 0 0 5px '+c+';':''}" onclick="selectColor('${c}')"></div>`).join('');
+  document.getElementById('sm-delete').style.display=existing?'inline-flex':'none';
+  document.getElementById('modal-sched').classList.remove('hidden');
+  document.getElementById('sm-label').focus();
+}
+function selectColor(c){
+  document.querySelectorAll('.color-sw').forEach(el=>{
+    el.style.boxShadow=el.dataset.color===c?`0 0 0 3px #fff,0 0 0 5px ${c}`:'none';
+  });
+}
+function saveSchedEvent(){
+  const {personKey,day,time,eventId}=schedEditCtx;
+  const label=document.getElementById('sm-label').value.trim();
+  if(!label){toast('Event name required','#FF453A');return;}
+  const selSw=document.querySelector('.color-sw[style*="box-shadow: 0"]')||document.querySelector('.color-sw');
+  const color=selSw?selSw.dataset.color:'#0A84FF';
+  if(eventId){
+    const ev=S.sched[personKey].find(e=>e.id===eventId);
+    if(ev){ev.label=label;ev.color=color;}
+  }else{
+    if(!S.nextSchedId[personKey]) S.nextSchedId[personKey]=1;
+    S.sched[personKey].push({id:S.nextSchedId[personKey]++,day,time,label,color});
+  }
+  saveS();closeModal('modal-sched');buildPersonPage(personKey);buildOverview();
+  toast('Calendar updated','#30D158');
+}
+function deleteSchedEvent(){
+  const {personKey,eventId}=schedEditCtx;
+  if(!eventId) return;
+  S.sched[personKey]=S.sched[personKey].filter(e=>e.id!==eventId);
+  saveS();closeModal('modal-sched');buildPersonPage(personKey);buildOverview();
+  toast('Event removed','#FF453A');
+}
+
+// ════════════════════════════════════════════════════
+// RECURRING TASKS — edit/add/delete
+// ════════════════════════════════════════════════════
+function updRecItem(personKey,freq,idx,val){
+  S.rec[personKey][freq][idx]=val;
+  saveS();
+  toast('Saved','#30D158');
+}
+function delRecItem(personKey,freq,idx){
+  S.rec[personKey][freq].splice(idx,1);
+  saveS();buildPersonPage(personKey);
+  toast('Removed','#FF453A');
+}
+function addRecItem(personKey,freq){
+  S.rec[personKey][freq].push('New task...');
+  saveS();buildPersonPage(personKey);
+  // focus the new input
+  setTimeout(()=>{
+    const inputs=document.querySelectorAll(`[data-rec="${personKey}-${freq}"]`);
+    const last=inputs[inputs.length-1];
+    if(last){last.focus();last.select();}
+  },50);
 }
 
 // ════════════════════════════════════════════════════
@@ -703,31 +1464,31 @@ function buildOverview(){
   const beh=byStatus('Behind'),atr=byStatus('At-Risk'),open=byStatus('Open');
 
   const KS=[
-    {l:"TOTAL",v:total,s:"All programs",c:"#1D4ED8",bc:"#BFDBFE",bg:"#EFF6FF"},
-    {l:"COMPLETE",v:done,s:pct+"% done",c:"#059669",bc:"#6EE7B7",bg:"#D1FAE5"},
-    {l:"BEHIND",v:beh,s:"Needs action",c:"#DC2626",bc:"#FCA5A5",bg:"#FEE2E2"},
-    {l:"AT-RISK",v:atr,s:"Monitor",c:"#D97706",bc:"#FCD34D",bg:"#FEF3C7"},
-    {l:"OPEN",v:open,s:"Not started",c:"#6B7280",bc:"#D1D5DB",bg:"#F9FAFB"},
-    {l:"ONGOING",v:byStatus('Ongoing')+byStatus('On Schedule'),s:"In progress",c:"#0891B2",bc:"#67E8F9",bg:"#CFFAFE"},
-    {l:"TEAM",v:"5",s:"Members",c:"#7C3AED",bc:"#C4B5FD",bg:"#EDE9FE"},
-    {l:"% DONE",v:pct+"%",s:"Live calc",c:"#D97706",bc:"#FCD34D",bg:"#FEF3C7"},
+    {l:"TOTAL ACTIONS",v:total,s:"All programs · Tap for details",c:"#0A84FF",bg:"#E8F2FF",ic:"📊",click:"openKpiDetail('all')"},
+    {l:"COMPLETE",v:done,s:pct+"% done · Tap to view",c:"#30D158",bg:"#E3FCEA",ic:"✅",click:"openKpiDetail('Complete')"},
+    {l:"BEHIND",v:beh,s:"Needs action · Tap to view",c:"#FF453A",bg:"#FFEBEA",ic:"🔴",click:"openKpiDetail('Behind')"},
+    {l:"AT-RISK",v:atr,s:"Monitor · Tap to view",c:"#FF9F0A",bg:"#FFF4E5",ic:"🟡",click:"openKpiDetail('At-Risk')"},
+    {l:"OPEN",v:open,s:"Not started · Tap to view",c:"#8E8E93",bg:"#F1F1F4",ic:"📋",click:"openKpiDetail('Open')"},
+    {l:"ONGOING",v:byStatus('Ongoing')+byStatus('On Schedule'),s:"In progress · Tap to view",c:"#64D2FF",bg:"#E5F8FF",ic:"🔵",click:"openKpiDetail('ongoing-combined')"},
+    {l:"TEAM",v:"5",s:"Members · Tap to view",c:"#BF5AF2",bg:"#F6E9FE",ic:"👥",click:"openKpiDetail('team')"},
+    {l:"% DONE",v:pct+"%",s:"Live calc · Tap for breakdown",c:"#FF9F0A",bg:"#FFF4E5",ic:"⭐",click:"openInsights('all')"},
   ];
 
-  const kHTML=`<div class="kgrid">`+KS.map(k=>`<div class="kcard" style="border-color:${k.bc};background:${k.bg}"><div class="ktop" style="background:${k.c}"></div><div class="kval" style="color:${k.c}">${k.v}</div><div class="klbl">${k.l}</div><div class="ksub">${k.s}</div></div>`).join('')+'</div>';
+  const kHTML=`<div class="kgrid">`+KS.map(k=>`<div class="kcard" onclick="${k.click}" style="cursor:pointer"><div class="kicon" style="background:${k.bg}">${k.ic}</div><div class="kval" style="color:${k.c}">${k.v}</div><div class="klbl">${k.l}</div><div class="ksub">${k.s}</div></div>`).join('')+'</div>';
 
   const TILE_CFG=[
-    {s:"Complete",dot:"#059669",text:"#065F46",bg:"#D1FAE5",bc:"#6EE7B7"},
-    {s:"On Schedule",dot:"#0891B2",text:"#164E63",bg:"#CFFAFE",bc:"#67E8F9"},
-    {s:"Behind",dot:"#DC2626",text:"#991B1B",bg:"#FEE2E2",bc:"#FCA5A5"},
-    {s:"At-Risk",dot:"#D97706",text:"#92400E",bg:"#FEF3C7",bc:"#FCD34D"},
-    {s:"Not Started",dot:"#7C3AED",text:"#4C1D95",bg:"#EDE9FE",bc:"#C4B5FD"},
-    {s:"Open",dot:"#6B7280",text:"#374151",bg:"#F1F5F9",bc:"#CBD5E1"},
-    {s:"Ongoing",dot:"#059669",text:"#065F46",bg:"#D1FAE5",bc:"#6EE7B7"},
-    {s:"On Hold",dot:"#D97706",text:"#92400E",bg:"#FEF3C7",bc:"#FCD34D"},
+    {s:"Complete",dot:"#30D158",text:"#1B5E20",bg:"#E3FCEA"},
+    {s:"On Schedule",dot:"#64D2FF",text:"#0E5C73",bg:"#E5F8FF"},
+    {s:"Behind",dot:"#FF453A",text:"#A6271E",bg:"#FFEBEA"},
+    {s:"At-Risk",dot:"#FF9F0A",text:"#8A4A00",bg:"#FFF4E5"},
+    {s:"Not Started",dot:"#BF5AF2",text:"#5E2A8C",bg:"#F6E9FE"},
+    {s:"Open",dot:"#8E8E93",text:"#48484A",bg:"#F1F1F4"},
+    {s:"Ongoing",dot:"#30D158",text:"#1B5E20",bg:"#E3FCEA"},
+    {s:"On Hold",dot:"#FF9F0A",text:"#8A4A00",bg:"#FFF4E5"},
   ];
   const tilesHTML=`<div class="stiles">`+TILE_CFG.map(t=>{
     const cnt=S.actions.filter(a=>a.status===t.s).length;
-    return `<div class="stile" style="background:${t.bg};border-color:${t.bc}" onclick="filterJump('${t.s}')"><div class="stv" style="color:${t.dot}">${cnt}</div><div class="stl" style="color:${t.text}">${t.s}</div><div class="stp">${total?Math.round(cnt/total*100):0}%</div></div>`;
+    return `<div class="stile" style="background:${t.bg};border-color:${t.dot}33" onclick="filterJump('${t.s}')"><div class="stv" style="color:${t.dot}">${cnt}</div><div class="stl" style="color:${t.text}">${t.s}</div><div class="stp">${total?Math.round(cnt/total*100):0}%</div></div>`;
   }).join('')+'</div>';
 
   const scoreHTML=Object.entries(TEAM).map(([k,t])=>{
@@ -739,9 +1500,9 @@ function buildOverview(){
     return `<tr onclick="goPage('${k}')" style="cursor:pointer" title="Open ${t.name} dashboard">
       <td><span style="font-weight:800;color:${t.color}">${t.name}</span><span style="font-size:9px;color:var(--muted);margin-left:6px">${t.role}</span></td>
       <td style="text-align:center">${acts.length}</td>
-      <td style="text-align:center;font-weight:800;color:#059669">${d}</td>
-      <td style="text-align:center;font-weight:800;color:${b>0?'#DC2626':'#059669'}">${b}</td>
-      <td style="text-align:center;font-weight:800;color:${r>0?'#D97706':'#059669'}">${r}</td>
+      <td style="text-align:center;font-weight:800;color:#1B5E20">${d}</td>
+      <td style="text-align:center;font-weight:800;color:${b>0?'#A6271E':'#1B5E20'}">${b}</td>
+      <td style="text-align:center;font-weight:800;color:${r>0?'#8A4A00':'#1B5E20'}">${r}</td>
       <td style="text-align:center;font-weight:900;color:${pc(p)}">${p}%</td>
       <td style="min-width:110px">${pb(p)}</td>
       <td><span style="font-size:10px;color:var(--blue);font-weight:700">Open →</span></td>
@@ -750,24 +1511,66 @@ function buildOverview(){
 
   const nonGoal=S.vpp.slice(0,-1);
   const avg=nonGoal.length?Math.round(nonGoal.reduce((s,m)=>s+m.pct,0)/nonGoal.length):0;
-  const vppMini=S.vpp.slice(0,5).map(m=>`<div class="ms-row"><div class="ms-num">${m.id}</div><div class="ms-text"><div class="ms-title">${m.ms}</div><div class="ms-meta">${m.owner} · ${m.target}</div></div><div class="ms-prog">${pb(m.pct)}<div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);margin-top:3px"><span>Progress</span><span style="color:${pc(m.pct)}">${m.pct}%</span></div></div><span class="${bk(m.status)}">${m.status}</span></div>`).join('')+`<div style="padding:8px 16px;border-top:1px solid #EEF2FF"><a class="lnk" href="#" onclick="goPage('vpp');return false">View all 13 milestones →</a></div>`;
+  const vppMini=S.vpp.slice(0,5).map(m=>`<div class="ms-row" style="display:flex;align-items:center;gap:13px;padding:11px 18px;border-bottom:1px solid #F2F2F5;flex-wrap:wrap"><div style="width:28px;height:28px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0">${m.id}</div><div style="flex:1;min-width:150px"><div style="font-size:12px;font-weight:600">${m.ms}</div><div style="font-size:10px;color:var(--muted);margin-top:1px">${m.owner} · ${m.target}</div></div><div style="min-width:150px"><div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);margin-bottom:3px"><span>Progress</span><span style="color:${pc(m.pct)}">${m.pct}%</span></div>${pb(m.pct)}</div><span class="${bk(m.status)}">${m.status}</span></div>`).join('')+`<div style="padding:10px 18px"><a class="lnk" href="#" onclick="goPage('vpp');return false">View all 13 milestones →</a></div>`;
+
+  // ── COMBINED TEAM CALENDAR ──
+  const combinedHTML=buildCombinedCalendar();
 
   document.getElementById('pg-overview').innerHTML=`
+    <div class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="hero-title">Welcome back, Team 👋</div>
+          <div class="hero-sub">GE Aerospace Muskegon · EHS+S Strategic Action Plan · ${total} active items tracked</div>
+        </div>
+        <div class="hero-badge">⭐ VPP Star Target — October 2026</div>
+      </div>
+    </div>
     ${kHTML}
     <div class="g2">
       <div class="card">
-        <div class="ch"><span class="ct">👥 Team Scorecard — Click to open personal dashboard</span><span class="cs">Live counts</span></div>
+        <div class="ch"><span class="ct">👥 Team Scorecard</span><span class="cs">Tap a row to open their dashboard</span></div>
         <div class="twrap"><table><thead><tr><th>Member</th><th>Total</th><th>✅</th><th>🔴</th><th>🟡</th><th>%</th><th style="min-width:100px">Progress</th><th></th></tr></thead><tbody>${scoreHTML}</tbody></table></div>
       </div>
       <div class="card">
-        <div class="ch"><span class="ct">📊 Status Breakdown — Click tile to filter</span></div>
+        <div class="ch"><span class="ct">📊 Status Breakdown</span><button class="btn btn-ghost btn-sm" onclick="openInsights('all')">📈 Insights</button></div>
         ${tilesHTML}
       </div>
     </div>
     <div class="card">
-      <div class="ch"><span class="ct">⭐ VPP Milestones — Top 5</span><span class="cs">Avg: ${avg}%</span></div>
+      <div class="ch"><span class="ct">⭐ VPP Path — Top 5 Milestones</span><span class="cs">Avg: ${avg}%</span></div>
       ${vppMini}
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">📅 Combined Team Calendar — This Week</span><span class="cs">All 5 schedules merged</span></div>
+      ${combinedHTML}
     </div>`;
+}
+
+function buildCombinedCalendar(){
+  let rows='';
+  TIMES.forEach(time=>{
+    let events=[];
+    Object.entries(TEAM).forEach(([key,t])=>{
+      (S.sched[key]||[]).forEach(ev=>{
+        if(ev.time===time){
+          events.push({...ev,person:t.name.split(' ')[0],personColor:t.color});
+        }
+      });
+    });
+    if(!events.length) return;
+    // group by day
+    const byDay={};
+    events.forEach(e=>{ (byDay[e.day]=byDay[e.day]||[]).push(e); });
+    Object.entries(byDay).forEach(([day,evs])=>{
+      rows+=`<div class="combined-row">
+        <div class="combined-label">${DAY_NAMES[day-1].slice(0,3)} · ${time}</div>
+        <div class="combined-events">${evs.map(e=>`<span class="combined-chip" style="background:${e.color}">${e.person}: ${e.label}</span>`).join('')}</div>
+      </div>`;
+    });
+  });
+  if(!rows) return '<div style="padding:24px;text-align:center;color:var(--muted);font-size:12px">No scheduled events yet.</div>';
+  return `<div style="max-height:420px;overflow-y:auto">${rows}</div>`;
 }
 
 function filterJump(s){document.getElementById('fa-status').value=s;goPage('actions');applyF();}
@@ -778,6 +1581,23 @@ function filterJump(s){document.getElementById('fa-status').value=s;goPage('acti
 function buildActions(){
   document.getElementById('pg-actions').innerHTML=`
     <div class="card">
+      <div class="ch"><span class="ct">📅 Team Action Plan View</span><span class="cs">Outlook-style grouped view — pick a time window and grouping</span></div>
+      <div style="padding:14px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <div class="seg-toggle">
+          <button class="seg-btn${timePeriod==='day'?' active':''}" id="seg-day" onclick="setTimePeriod('day')">Day</button>
+          <button class="seg-btn${timePeriod==='week'?' active':''}" id="seg-week" onclick="setTimePeriod('week')">Week</button>
+          <button class="seg-btn${timePeriod==='month'?' active':''}" id="seg-month" onclick="setTimePeriod('month')">Month</button>
+          <button class="seg-btn${timePeriod==='all'?' active':''}" id="seg-allp" onclick="setTimePeriod('all')">All</button>
+        </div>
+        <div class="seg-toggle">
+          <button class="seg-btn${groupBy==='owner'?' active':''}" id="seg-grp-owner" onclick="setGroupBy('owner')">By Person</button>
+          <button class="seg-btn${groupBy==='status'?' active':''}" id="seg-grp-status" onclick="setGroupBy('status')">By Status</button>
+          <button class="seg-btn${groupBy==='none'?' active':''}" id="seg-grp-none" onclick="setGroupBy('none')">Flat List</button>
+        </div>
+        <span class="cs" id="period-count" style="margin-left:auto"></span>
+      </div>
+    </div>
+    <div class="card">
       <div class="ch"><span class="ct">🔍 Filter, Search & Manage</span><span class="cs" id="fc"></span></div>
       <div class="fbar">
         <div class="fg"><label class="flbl">Person</label><select class="fsel2" id="fa-person" onchange="applyF()"><option>All</option>${PERSON_OPTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
@@ -786,16 +1606,37 @@ function buildActions(){
         <div class="fg"><label class="flbl">Priority</label><select class="fsel2" id="fa-pri" onchange="applyF()"><option>All</option>${PRI_OPTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
         <div class="fg"><label class="flbl">Search</label><input class="fsrch" type="text" id="fa-search" placeholder="Task or owner…" oninput="applyF()"/></div>
         <button class="btn btn-ghost" onclick="clearF()">Clear</button>
+        <button class="btn btn-ghost" onclick="openInsights('all')">📊 Insights</button>
         <button class="btn btn-primary" onclick="openAddModal()">➕ Add Task</button>
       </div>
     </div>
-    <div class="card">
-      <div class="info-bar">✏️ Every field is editable — click any dropdown to change. 💬 for comments. 🗑️ to delete.</div>
-      <div class="twrap"><table><thead><tr><th>✔</th><th>Task Name</th><th>Owner</th><th>Status</th><th>Priority</th><th>Target</th><th>Program</th><th>Actions</th></tr></thead><tbody id="atbody"></tbody></table></div>
-    </div>`;
+    <div id="actions-groups"></div>`;
   applyF();
 }
 
+let timePeriod='month';
+let groupBy='owner';
+function setTimePeriod(p){
+  timePeriod=p;
+  ['day','week','month','allp'].forEach(k=>document.getElementById('seg-'+k).classList.toggle('active',k===(p==='all'?'allp':p)));
+  applyF();
+}
+function setGroupBy(g){
+  groupBy=g;
+  ['owner','status','none'].forEach(k=>document.getElementById('seg-grp-'+k).classList.toggle('active',k===g));
+  applyF();
+}
+function inPeriod(a){
+  if(timePeriod==='all') return true;
+  if(!a.dueDate) return timePeriod==='month';
+  const due=new Date(a.dueDate+'T00:00:00');
+  const now=new Date();now.setHours(0,0,0,0);
+  const diffDays=Math.round((due-now)/86400000);
+  if(timePeriod==='day') return diffDays>=0 && diffDays<=1;
+  if(timePeriod==='week') return diffDays>=0 && diffDays<=7;
+  if(timePeriod==='month') return diffDays>=-3650 && diffDays<=31;
+  return true;
+}
 function applyF(){
   const p=val('fa-person'),s=val('fa-status'),g=val('fa-prog'),r=val('fa-pri'),q=(val('fa-search')||'').toLowerCase();
   const fl=S.actions.filter(a=>{
@@ -804,16 +1645,68 @@ function applyF(){
     if(g!=='All'&&a.prog!==g) return false;
     if(r!=='All'&&a.pri!==r) return false;
     if(q&&!a.task.toLowerCase().includes(q)&&!a.owner.toLowerCase().includes(q)) return false;
+    if(!inPeriod(a)) return false;
     return true;
   });
   const fc=document.getElementById('fc');
   if(fc) fc.innerHTML=`Showing <strong>${fl.length}</strong> of ${S.actions.length}`;
-  const tb=document.getElementById('atbody');
-  if(!tb) return;
-  tb.innerHTML=fl.length?fl.map(buildRow).join(''):
-    '<tr><td colspan="8" style="padding:28px;text-align:center;color:var(--muted)">No tasks match. <a class="lnk" href="#" onclick="clearF();return false">Clear filters</a></td></tr>';
+  const pcEl=document.getElementById('period-count');
+  if(pcEl){
+    const labels={day:'Today & Tomorrow',week:'Next 7 Days',month:'This Month (+ Overdue)',all:'All Time'};
+    pcEl.textContent=`${fl.length} actions · ${labels[timePeriod]}`;
+  }
+  renderGroupedActions(fl);
 }
 
+function tableShell(rows){
+  return `<div class="twrap"><table><thead><tr><th>✔</th><th>Task Name</th><th>Owner</th><th>Status</th><th>Priority</th><th>Target</th><th>Due Date</th><th>Program</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function renderGroupedActions(fl){
+  const wrap=document.getElementById('actions-groups');
+  if(!wrap) return;
+  if(!fl.length){
+    wrap.innerHTML=`<div class="card"><div style="padding:32px;text-align:center;color:var(--muted)">No tasks match this view. <a class="lnk" href="#" onclick="clearF();return false">Clear filters</a></div></div>`;
+    return;
+  }
+  if(groupBy==='none'){
+    wrap.innerHTML=`<div class="card">
+      <div class="info-bar">✏️ Tap any field to edit instantly — task name, owner, status, priority, target date, due date, or program. 💬 for comments, 🗑️ to delete.</div>
+      ${tableShell(fl.map(buildRow).join(''))}
+    </div>`;
+    return;
+  }
+  let groups={};
+  if(groupBy==='owner'){
+    PERSON_OPTS.forEach(p=>groups[p]=[]);
+    fl.forEach(a=>{(groups[a.owner]=groups[a.owner]||[]).push(a);});
+  }else{ // status
+    STATUS_OPTS.forEach(s=>groups[s]=[]);
+    fl.forEach(a=>{(groups[a.status]=groups[a.status]||[]).push(a);});
+  }
+  const colorMap=groupBy==='owner'
+    ? Object.fromEntries(Object.values(TEAM).map(t=>[t.name,t.color]))
+    : {Complete:"#30D158","On Schedule":"#64D2FF",Behind:"#FF453A","At-Risk":"#FF9F0A","Not Started":"#BF5AF2",Open:"#8E8E93",Ongoing:"#0A84FF","On Hold":"#FF9F0A"};
+
+  wrap.innerHTML='<div class="info-bar" style="border-radius:14px 14px 0 0;border:1px solid var(--border);border-bottom:none">✏️ Tap any field to edit instantly. 💬 for comments, 🗑️ to delete. Click a group header to collapse it.</div>'
+    + Object.entries(groups).filter(([k,items])=>items.length).map(([groupName,items],idx)=>{
+      const color=colorMap[groupName]||'#8E8E93';
+      const gid='grp-'+groupBy+'-'+groupName.replace(/[^a-zA-Z0-9]/g,'');
+      const collapsed=groupCollapse[gid]===true;
+      return `<div class="card" style="border-radius:0;border-top:none;${idx===Object.entries(groups).filter(([k,it])=>it.length).length-1?'border-radius:0 0 14px 14px;':''}">
+        <div class="ch" style="cursor:pointer;background:${color}10" onclick="toggleGroup('${gid}')">
+          <span class="ct"><span style="width:10px;height:10px;border-radius:50%;background:${color};display:inline-block"></span>${groupName}<span class="cs" style="margin-left:4px">(${items.length})</span></span>
+          <span style="font-size:14px;color:var(--muted)">${collapsed?'▸':'▾'}</span>
+        </div>
+        <div id="${gid}" class="${collapsed?'hidden':''}">${tableShell(items.map(buildRow).join(''))}</div>
+      </div>`;
+    }).join('');
+}
+const groupCollapse={};
+function toggleGroup(gid){
+  groupCollapse[gid]=!groupCollapse[gid];
+  applyF();
+}
 function clearF(){['fa-person','fa-status','fa-prog','fa-pri'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='All';});const e=document.getElementById('fa-search');if(e)e.value='';applyF();}
 function val(id){const e=document.getElementById(id);return e?e.value:'All';}
 
@@ -825,13 +1718,13 @@ function buildVPP(){
   const avg=ng.length?Math.round(ng.reduce((s,m)=>s+m.pct,0)/ng.length):0;
   document.getElementById('pg-vpp').innerHTML=`
     <div class="card">
-      <div class="ch ch-gold"><span class="ct" style="color:#FEF3C7">⭐ VPP Star Milestone Tracker</span><div style="text-align:right"><div style="font-size:28px;font-weight:900;color:#FEF3C7">${avg}%</div><div style="font-size:9px;color:#FCD34D;font-weight:600">AVG PROGRESS</div></div></div>
-      ${S.vpp.map(m=>`<div class="ms-row ${m.id===13?'ms-goal':''}" style="${m.id===13?'background:#FEF3C7;border-left:4px solid #D97706':''}">
-        <div class="ms-num">${m.id===13?'⭐':m.id}</div>
-        <div class="ms-text"><div class="ms-title">${m.ms}</div><div class="ms-meta">${m.owner} · ${m.target}</div></div>
-        <div class="ms-prog" style="min-width:160px">
-          <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted)"><span>Progress</span>
-            <input type="number" min="0" max="100" value="${m.pct}" style="width:50px;border:1.5px solid var(--border);border-radius:5px;padding:1px 5px;font-size:11px;font-weight:700;text-align:center;outline:none;color:${pc(m.pct)}" onchange="updVPP(${m.id},+this.value)"/>%
+      <div class="ch" style="background:linear-gradient(135deg,#8A4A00,#FF9F0A)"><span class="ct" style="color:#fff">⭐ VPP Star Milestone Tracker</span><div style="text-align:right"><div style="font-size:26px;font-weight:900;color:#fff">${avg}%</div><div style="font-size:9px;color:rgba(255,255,255,.8);font-weight:700">AVG PROGRESS</div></div></div>
+      ${S.vpp.map(m=>`<div class="ms-row ${m.id===13?'':''}" style="display:flex;align-items:center;gap:13px;padding:12px 18px;border-bottom:1px solid #F2F2F5;flex-wrap:wrap;${m.id===13?'background:#FFF4E5;border-left:4px solid #FF9F0A':''}">
+        <div style="width:28px;height:28px;border-radius:50%;background:${m.id===13?'linear-gradient(135deg,#8A4A00,#FF9F0A)':'var(--ink)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0">${m.id===13?'⭐':m.id}</div>
+        <div style="flex:1;min-width:150px"><div style="font-size:${m.id===13?'13px':'12px'};font-weight:${m.id===13?900:600};color:${m.id===13?'#8A4A00':'var(--ink)'}">${m.ms}</div><div style="font-size:10px;color:var(--muted);margin-top:1px">${m.owner} · ${m.target}</div></div>
+        <div style="min-width:150px">
+          <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);margin-bottom:3px"><span>Progress</span>
+            <input type="number" min="0" max="100" value="${m.pct}" style="width:48px;border:1px solid var(--border2);border-radius:6px;padding:1px 4px;font-size:11px;font-weight:700;text-align:center;outline:none;color:${pc(m.pct)}" onchange="updVPP(${m.id},+this.value)"/>%
           </div>
           ${pb(m.pct,7)}
         </div>
@@ -839,216 +1732,417 @@ function buildVPP(){
       </div>`).join('')}
     </div>`;
 }
-function updVPP(id,v){const m=S.vpp.find(x=>x.id===id);if(m){m.pct=Math.max(0,Math.min(100,v));saveS();buildVPP();toast('✅ Progress updated','#059669');}}
-function updVPPStatus(id,v){const m=S.vpp.find(x=>x.id===id);if(m){m.status=v;saveS();buildVPP();toast('✅ Status updated','#059669');}}
+function updVPP(id,v){const m=S.vpp.find(x=>x.id===id);if(m){m.pct=Math.max(0,Math.min(100,v));saveS();buildVPP();toast('Progress updated','#30D158');}}
+function updVPPStatus(id,v){const m=S.vpp.find(x=>x.id===id);if(m){m.status=v;saveS();buildVPP();toast('Status updated','#30D158');}}
 
 // ════════════════════════════════════════════════════
-// METRICS PAGE
+// METRICS PAGE — comprehensive, matching 2026 Action Plan workbook
 // ════════════════════════════════════════════════════
+function fmtVal(v,fmt){
+  if(v===null||v===undefined) return '—';
+  if(fmt==='pct') return Math.round(v*100)+'%';
+  if(fmt==='rate') return v.toFixed(2);
+  return v;
+}
 function buildMetrics(){
+  // ── 1. Annual scorecard (editable, top of mind) ──
   const mkeys=Object.keys(S.metrics);
   const cardsHTML=mkeys.map(k=>{
     const m=S.metrics[k];
     return `<div class="mcard">
       <div class="mcard-label">${m.label}</div>
       <input class="mcard-input" type="text" value="${m.value}" onchange="updMetric('${k}',this.value)" placeholder="Enter value…"/>
-      <div class="mcard-sub">${m.sub}${m.unit?' ('+m.unit+')':''}</div>
+      <div class="mcard-sub">${m.sub}</div>
     </div>`;
   }).join('');
 
+  // ── 2. TAVS MKG Plant Health Pulse — annual targets vs actuals ──
+  const annualHTML=`<div class="twrap"><table><thead><tr><th>Metric</th><th>Annual Target</th><th>Annual Actual</th><th>Goal / Note</th></tr></thead><tbody>
+    ${ANNUAL_METRICS.map(m=>{
+      const onTarget = (m.fmt==='rate') ? m.actual<=m.target : m.actual>=m.target;
+      return `<tr>
+        <td style="font-weight:700">${m.label}</td>
+        <td>${fmtVal(m.target,m.fmt)}</td>
+        <td style="font-weight:800;color:${onTarget?'#1B5E20':'#A6271E'}">${fmtVal(m.actual,m.fmt)}</td>
+        <td style="color:var(--muted);font-size:11px">${m.goal}</td>
+      </tr>`;
+    }).join('')}
+  </tbody></table></div>`;
+
+  // ── 3. ROLLING I&I RATE TABLE — fully editable: hours worked + injuries → computed rate vs goal ──
+  const rollingRows=S.rollingTable.map((m,i)=>{
+    const rate=(m.hours&&m.injuries!==null&&m.injuries!==undefined&&m.hours>0)?(m.injuries*200000/m.hours):null;
+    const onTarget=rate!==null && rate<=m.goal;
+    return `<tr>
+      <td style="font-weight:700">${m.month}</td>
+      <td><input type="number" class="esel" style="width:90px" value="${m.hours??''}" placeholder="Hours" onchange="updRolling(${i},'hours',this.value)"/></td>
+      <td><input type="number" class="esel" style="width:70px" value="${m.injuries??''}" placeholder="Inj." onchange="updRolling(${i},'injuries',this.value)"/></td>
+      <td style="font-weight:800;color:${rate===null?'var(--muted)':onTarget?'#1B5E20':'#A6271E'}">${rate===null?'—':rate.toFixed(2)}</td>
+      <td><input type="number" step="0.01" class="esel" style="width:70px" value="${m.goal}" onchange="updRolling(${i},'goal',this.value)"/></td>
+    </tr>`;
+  }).join('');
+  const rollingHTML=`<div class="twrap"><table><thead><tr><th>Month</th><th>Hours Worked</th><th>Recordable Injuries</th><th>Computed I&I Rate</th><th>Goal</th></tr></thead><tbody>${rollingRows}</tbody></table></div>`;
+
+  // Build chart data from rolling table (fallback to reference actuals if no hours entered yet)
+  const iiActualSeries=S.rollingTable.map((m,i)=>{
+    if(m.hours&&m.injuries!==null&&m.injuries!==undefined&&m.hours>0) return m.injuries*200000/m.hours;
+    return II_RATE_ACTUAL_REF[i];
+  });
+  const iiGoalSeries=S.rollingTable.map(m=>m.goal);
+  const iiMaxVal=Math.max(...iiGoalSeries,...iiActualSeries.filter(v=>v!==null));
+  const iiChart=buildLineChart(MONTHS,[
+    {name:"Goal",data:iiGoalSeries,color:"#8E8E93"},
+    {name:"Actual",data:iiActualSeries,color:"#0A84FF"},
+  ],iiMaxVal,2);
+
+  // ── 4. Rolling 12-Month Recordable Injuries chart — editable actuals ──
+  const recInjRows=MONTHS.map((mo,i)=>`<tr>
+    <td style="font-weight:700">${mo}</td>
+    <td style="color:var(--muted)">${REC_INJ_GOAL[i].toFixed(2)}</td>
+    <td><input type="number" step="1" class="esel" style="width:70px" value="${S.recInjActual[i]??''}" onchange="updRecInj(${i},this.value)"/></td>
+  </tr>`).join('');
+  const recInjTableHTML=`<div class="twrap"><table><thead><tr><th>Month</th><th>Rolling Goal</th><th>Rolling Actual</th></tr></thead><tbody>${recInjRows}</tbody></table></div>`;
+  const injMaxVal=Math.max(...REC_INJ_GOAL,...S.recInjActual.filter(v=>v!==null));
+  const injChart=buildLineChart(MONTHS,[
+    {name:"Rolling Goal",data:REC_INJ_GOAL,color:"#8E8E93"},
+    {name:"Rolling Actual",data:S.recInjActual,color:"#FF453A"},
+  ],injMaxVal,0);
+
+  // ── 5. Audit completion table (PPE/JSA/STF/LOTO/Cell Inspections) ──
+  const auditMonths=MONTHS.slice(0,9); // Jan-Sep snapshot
+  const auditHTML=`<div class="twrap"><table><thead><tr><th>Audit Type</th><th>Cadence Goal</th>${auditMonths.map(m=>`<th>${m}</th>`).join('')}<th>YTD Goal</th></tr></thead><tbody>
+    ${AUDIT_METRICS.map(a=>`<tr>
+      <td style="font-weight:700;min-width:200px">${a.label}</td>
+      <td style="color:var(--muted);font-size:11px;white-space:nowrap">${a.cadence}</td>
+      ${a.monthly.map(v=>`<td style="text-align:center">${v===null?'—':v}</td>`).join('')}
+      <td style="text-align:center;font-weight:700;color:var(--blue)">${a.ytdGoal||'—'}</td>
+    </tr>`).join('')}
+  </tbody></table></div>`;
+
+  // ── 6. Recurring meeting cadence ──
+  const meetingHTML=`<div class="twrap"><table><thead><tr><th>Meeting / Cadence Item</th><th>Frequency</th>${auditMonths.map(m=>`<th>${m}</th>`).join('')}</tr></thead><tbody>
+    ${MEETING_METRICS.map(m=>`<tr>
+      <td style="font-weight:700;min-width:200px">${m.label}</td>
+      <td style="color:var(--muted);font-size:11px">${m.cadence}</td>
+      ${m.monthly.map(v=>{
+        const [a,g]=v.split('/').map(Number);
+        const ok=a>=g;
+        return `<td style="text-align:center;font-weight:700;color:${ok?'#1B5E20':'#A6271E'}">${v}</td>`;
+      }).join('')}
+    </tr>`).join('')}
+  </tbody></table></div>`;
+
+  // ── 7. I&I Cases — computed summaries + full editable case log ──
+  const caseYearCounts={};
+  S.iiCases.forEach(c=>{
+    if(c.caseType!=='Recordable') return;
+    const yr=c.date.slice(0,4);
+    caseYearCounts[yr]=(caseYearCounts[yr]||0)+1;
+  });
+  const sortedYears=Object.keys(caseYearCounts).sort();
+  const yearChips=sortedYears.map(y=>
+    `<div class="mcard" style="text-align:center"><div class="mcard-label">${y}</div><div style="font-size:24px;font-weight:900;color:${y==='2026'?'#FF453A':'var(--ink)'}">${caseYearCounts[y]}</div><div class="mcard-sub">Recordable cases</div></div>`
+  ).join('');
+
+  const bodyPartCounts={};
+  S.iiCases.forEach(c=>{
+    if(!c.bodyPart) return;
+    bodyPartCounts[c.bodyPart]=(bodyPartCounts[c.bodyPart]||0)+1;
+  });
+  const topBodyParts=Object.entries(bodyPartCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const maxBP=topBodyParts.length?topBodyParts[0][1]:1;
+  const bodyPartHTML=`<div style="display:flex;flex-direction:column;gap:6px;padding:0 18px 18px">
+    ${topBodyParts.map(([part,count])=>`<div style="display:flex;align-items:center;gap:10px">
+      <div style="width:70px;font-size:11px;font-weight:700;color:var(--ink2)">${part}</div>
+      <div class="pt" style="flex:1;height:10px"><div class="pf" style="width:${count/maxBP*100}%;height:10px;background:#FF9F0A"></div></div>
+      <div style="width:24px;text-align:right;font-size:11px;font-weight:800">${count}</div>
+    </div>`).join('')}
+  </div>`;
+
+  // Full editable I&I case log
+  const caseRows=S.iiCases.map(c=>`<tr id="case-${c.id}">
+    <td><input type="date" class="esel" style="min-width:110px" value="${c.date}" onchange="updCase(${c.id},'date',this.value)"/></td>
+    <td><select class="esel" onchange="updCase(${c.id},'caseType',this.value)">${opts(["Recordable","Non-Recordable","First Aid","Near Miss"],c.caseType)}</select></td>
+    <td><select class="esel" onchange="updCase(${c.id},'dept',this.value)">${opts(["Norton","Latimer"],c.dept)}</select></td>
+    <td><input class="etxt" style="min-width:110px" value="${(c.occupation||'').replace(/"/g,'&quot;')}" onchange="updCase(${c.id},'occupation',this.value)"/></td>
+    <td><input class="etxt" style="min-width:130px" value="${(c.accidentType||'').replace(/"/g,'&quot;')}" onchange="updCase(${c.id},'accidentType',this.value)"/></td>
+    <td><input class="etxt" style="min-width:130px" value="${(c.injuryType||'').replace(/"/g,'&quot;')}" onchange="updCase(${c.id},'injuryType',this.value)"/></td>
+    <td><input class="etxt" style="min-width:90px" value="${(c.bodyPart||'').replace(/"/g,'&quot;')}" onchange="updCase(${c.id},'bodyPart',this.value)"/></td>
+    <td><input class="etxt" style="min-width:200px" value="${(c.desc||'').replace(/"/g,'&quot;')}" onchange="updCase(${c.id},'desc',this.value)"/></td>
+    <td><button class="btn btn-ghost btn-icon" onclick="delCase(${c.id})" style="color:var(--red)" title="Remove case">🗑️</button></td>
+  </tr>`).join('');
+  const caseLogHTML=`<div class="twrap"><table><thead><tr><th>Date</th><th>Type</th><th>Dept</th><th>Occupation</th><th>Accident Type</th><th>Injury Type</th><th>Body Part</th><th>Description / Notes</th><th></th></tr></thead><tbody id="case-log-body">${caseRows}</tbody></table></div>`;
+
+  // ── 8. Ergo pulse weekly metrics ──
+  const ergoHTML=`<div class="metric-grid">
+    ${ERGO_METRICS.map(m=>`<div class="mcard">
+      <div class="mcard-label">${m.label}</div>
+      <div style="font-size:20px;font-weight:900;color:var(--ink)">${m.actual} <span style="font-size:12px;color:var(--muted);font-weight:600">/ ${m.target} target</span></div>
+    </div>`).join('')}
+  </div>`;
+
+  // ── 9. Notes log ──
+  const notesHTML=METRIC_NOTES_LOG.map(n=>`<div class="top3-item" style="cursor:default"><div class="top3-rank" style="background:#FF9F0A;font-size:11px">!</div><div class="top3-text"><div class="top3-task" style="font-weight:500">${n}</div></div></div>`).join('');
+
   document.getElementById('pg-metrics').innerHTML=`
     <div class="card">
-      <div class="ch ch-green"><span class="ct">📈 Plant Safety & Health Metrics — Click any value to edit</span><span class="cs">All fields manually entered · Saves automatically</span></div>
-      <div class="info-bar">📝 Click any metric value to update it. All changes save automatically. Add notes in the comment fields below.</div>
+      <div class="ch" style="background:linear-gradient(135deg,#1B5E20,#30D158)"><span class="ct" style="color:#fff">📈 EHS&S Plant Pulse — Annual Scorecard</span><span class="cs" style="color:rgba(255,255,255,.85)">Editable fields · Saves automatically</span></div>
+      <div class="info-bar">📝 Click any value below to update it. These stay front-and-center for daily pulse.</div>
       <div class="metric-grid">${cardsHTML}</div>
     </div>
+
     <div class="card">
-      <div class="ch"><span class="ct">📝 Metric Notes & Context</span></div>
-      <div style="padding:16px">
-        <textarea id="metric-notes" style="width:100%;min-height:120px;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;font-family:'Inter',sans-serif;outline:none;resize:vertical;color:var(--text2)" placeholder="Add context, trends, or notes about the current metrics here…" onchange="updMetricNotes(this.value)">${S.metricNotes||''}</textarea>
-        <button class="btn btn-primary" style="margin-top:8px" onclick="toast('✅ Notes saved','#059669');saveS()">Save Notes</button>
+      <div class="ch"><span class="ct">🎯 TAVS MKG Plant Health Pulse — Annual Targets vs Actuals</span></div>
+      ${annualHTML}
+    </div>
+
+    <div class="card">
+      <div class="ch" style="background:linear-gradient(135deg,#0E5C73,#0A84FF)"><span class="ct" style="color:#fff">📉 Rolling I&I Rate — Hours Worked & Recordable Injuries (Editable)</span><span class="cs" style="color:rgba(255,255,255,.85)">Rate auto-calculated: Injuries × 200,000 ÷ Hours</span></div>
+      <div class="info-bar">📝 Enter hours worked and recordable injuries for each month — the I&I rate calculates automatically and feeds the chart below.</div>
+      ${rollingHTML}
+      <div style="padding:18px;border-top:1px solid var(--border)">${iiChart}</div>
+    </div>
+
+    <div class="card">
+      <div class="ch" style="background:linear-gradient(135deg,#8A2426,#FF453A)"><span class="ct" style="color:#fff">📊 Rolling 12-Month Recordable Injuries — Editable Actuals</span></div>
+      <div class="g2" style="padding:18px">
+        <div>${recInjTableHTML}</div>
+        <div>${injChart}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><span class="ct">✅ Audit & Inspection Completion — Monthly Totals vs Goals</span><span class="cs">PPE · JSA · STF · LOTO · Cell Inspections</span></div>
+      ${auditHTML}
+    </div>
+
+    <div class="card">
+      <div class="ch"><span class="ct">📅 Recurring Meeting Cadence — Actual / Goal</span></div>
+      ${meetingHTML}
+    </div>
+
+    <div class="g2">
+      <div class="card">
+        <div class="ch"><span class="ct">🩹 Recordable Cases by Year</span><span class="cs">Computed from case log below</span></div>
+        <div class="metric-grid">${yearChips}</div>
+      </div>
+      <div class="card">
+        <div class="ch"><span class="ct">🦴 Top Body Parts Affected (All-Time)</span><span class="cs">Computed from case log below</span></div>
+        ${bodyPartHTML}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><span class="ct">📋 I&I Case Log — Full Detail, Fully Editable</span><button class="btn btn-primary btn-sm" onclick="addCase()">➕ Add Case</button></div>
+      <div class="info-bar">✏️ Every field here is editable — date, type, department, occupation, accident/injury type, body part, and description. Add new cases as they occur; the summaries above update automatically.</div>
+      ${caseLogHTML}
+    </div>
+
+    <div class="card">
+      <div class="ch" style="background:linear-gradient(135deg,#4C1D95,#BF5AF2)"><span class="ct" style="color:#fff">🧘 Weekly Ergonomics Pulse</span></div>
+      ${ergoHTML}
+    </div>
+
+    <div class="card">
+      <div class="ch" style="background:linear-gradient(135deg,#8A4A00,#FF9F0A)"><span class="ct" style="color:#fff">⚠️ Missed Audits / Training Notes — Rotating Log</span></div>
+      <div class="top3-list" style="padding:14px 18px">${notesHTML}</div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><span class="ct">📝 Additional Notes & Context</span></div>
+      <div style="padding:18px">
+        <textarea id="metric-notes" style="width:100%;min-height:120px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:12px;font-family:inherit;outline:none;resize:vertical;color:var(--ink2)" placeholder="Add context, trends, or notes about current metrics here…" onchange="updMetricNotes(this.value)">${S.metricNotes||''}</textarea>
       </div>
     </div>`;
 }
-function updMetric(k,v){S.metrics[k].value=v;saveS();toast('✅ Metric saved','#059669');}
-function updMetricNotes(v){S.metricNotes=v;saveS();}
+function updMetric(k,v){S.metrics[k].value=v;saveS();toast('Metric saved','#30D158');}
+function updMetricNotes(v){S.metricNotes=v;saveS();toast('Notes saved','#30D158');}
+
+// ── Rolling I&I rate table edits ──
+function updRolling(idx,field,val){
+  const m=S.rollingTable[idx];
+  if(field==='goal') m.goal=parseFloat(val)||0;
+  else m[field]=val===''?null:parseInt(val);
+  saveS();buildMetrics();
+  toast('Saved','#30D158');
+}
+function updRecInj(idx,val){
+  S.recInjActual[idx]=val===''?null:parseFloat(val);
+  saveS();buildMetrics();
+  toast('Saved','#30D158');
+}
+
+// ── I&I case log edits ──
+function updCase(id,field,val){
+  const c=S.iiCases.find(x=>x.id===id);
+  if(c){c[field]=val;saveS();}
+  buildMetrics();
+}
+function delCase(id){
+  if(!confirm('Remove this case from the log?')) return;
+  S.iiCases=S.iiCases.filter(c=>c.id!==id);
+  saveS();buildMetrics();
+  toast('Case removed','#FF453A');
+}
+function addCase(){
+  const today=new Date().toISOString().slice(0,10);
+  S.iiCases.unshift({
+    id:S.nextCaseId++,
+    date:today,caseType:"Recordable",dept:"Norton",occupation:"",
+    accidentType:"",injuryType:"",bodyPart:"",detailBodyPart:"",desc:"",notes:""
+  });
+  saveS();buildMetrics();
+  toast('New case added — fill in details','#30D158');
+}
+
+// ── Simple SVG line chart for goal vs actual series ──
+function buildLineChart(labels,series,maxVal,decimals=1){
+  const w=560,h=200,padL=40,padR=16,padT=16,padB=28;
+  const plotW=w-padL-padR, plotH=h-padT-padB;
+  const n=labels.length;
+  const xStep=plotW/(n-1);
+  const yMax=maxVal*1.1;
+  function pt(i,v){
+    const x=padL+i*xStep;
+    const y=padT+plotH-(v/yMax)*plotH;
+    return [x,y];
+  }
+  let svg=`<svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" style="font-family:-apple-system,sans-serif">`;
+  // gridlines
+  for(let g=0;g<=4;g++){
+    const y=padT+plotH-(g/4)*plotH;
+    const val=(yMax*g/4).toFixed(decimals);
+    svg+=`<line x1="${padL}" y1="${y}" x2="${w-padR}" y2="${y}" stroke="#F0F0F2" stroke-width="1"/>`;
+    svg+=`<text x="${padL-6}" y="${y+3}" text-anchor="end" font-size="9" fill="#8E8E93">${val}</text>`;
+  }
+  // x labels
+  labels.forEach((lab,i)=>{
+    const [x]=pt(i,0);
+    svg+=`<text x="${x}" y="${h-6}" text-anchor="middle" font-size="9" fill="#8E8E93">${lab}</text>`;
+  });
+  // lines
+  series.forEach(s=>{
+    let path='';
+    s.data.forEach((v,i)=>{
+      if(v===null||v===undefined) return;
+      const [x,y]=pt(i,v);
+      path+=(path?' L':'M')+x+' '+y;
+    });
+    svg+=`<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    s.data.forEach((v,i)=>{
+      if(v===null||v===undefined) return;
+      const [x,y]=pt(i,v);
+      svg+=`<circle cx="${x}" cy="${y}" r="3" fill="${s.color}"/>`;
+    });
+  });
+  svg+='</svg>';
+  const legend=series.map(s=>`<div class="pie-legend-item"><div class="pie-legend-dot" style="background:${s.color}"></div>${s.name}</div>`).join('');
+  return svg+`<div class="pie-legend" style="flex-direction:row;gap:16px;margin-top:8px;justify-content:center">${legend}</div>`;
+}
 
 // ════════════════════════════════════════════════════
-// LINKS PAGE
+// TEAM ROLES & RESPONSIBILITIES PAGE
 // ════════════════════════════════════════════════════
+function buildTeamRoles(){
+  const roleCards=Object.entries(TEAM).map(([key,t])=>{
+    const role=ROLE_RESPONSIBILITIES[t.name];
+    if(!role) return '';
+    return `<div class="card">
+      <div class="ch" style="background:${t.bg}">
+        <span class="ct" style="color:#fff">${t.name} — ${role.title}</span>
+        <button class="btn btn-ghost btn-sm" onclick="goPage('${key}')" style="background:rgba(255,255,255,.2);color:#fff">View Dashboard →</button>
+      </div>
+      <div style="padding:14px 18px">
+        <div class="top3-list">
+          ${role.items.map(item=>`<div class="top3-item" style="cursor:default">
+            <div class="top3-rank" style="background:${t.color};font-size:10px">●</div>
+            <div class="top3-text"><div class="top3-task" style="font-weight:500;font-size:12px">${item}</div></div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // RACI matrix table
+  const raciLevelColor={Primary:"#30D158",Support:"#0A84FF",Consult:"#FF9F0A","Not involved":"#8E8E93"};
+  const raciCell=(v)=>`<span class="badge" style="background:${raciLevelColor[v]}1A;color:${raciLevelColor[v]};border:1px solid ${raciLevelColor[v]}33">${v}</span>`;
+  const raciHTML=`<div class="twrap"><table><thead><tr><th style="min-width:280px">Responsibility Area</th><th>Steve (Compliance)</th><th>Victor (CI/Leader)</th><th>Mike (Ergo)</th></tr></thead><tbody>
+    ${RACI_MATRIX.map(r=>`<tr>
+      <td style="font-weight:600">${r.area}</td>
+      <td>${raciCell(r.steve)}</td>
+      <td>${raciCell(r.victor)}</td>
+      <td>${raciCell(r.mike)}</td>
+    </tr>`).join('')}
+  </tbody></table></div>`;
+
+  document.getElementById('pg-team').innerHTML=`
+    <div class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="hero-title">Team Roles & Responsibilities</div>
+          <div class="hero-sub">GE Aerospace Muskegon EHS+S Organizational Structure · Rev 2026</div>
+        </div>
+        <div class="hero-badge">Org chart from EHS Roles Rev2026</div>
+      </div>
+    </div>
+    ${roleCards}
+    <div class="card">
+      <div class="ch"><span class="ct">📋 RACI Matrix — Responsibility Assignments</span><span class="cs">Primary · Support · Consult · Not involved</span></div>
+      ${raciHTML}
+    </div>`;
+}
 function buildLinks(){
   document.getElementById('pg-links').innerHTML=`
     <div class="card">
-      <div class="ch"><span class="ct">🔗 Important Links & Resources</span><button class="btn btn-primary btn-sm" onclick="addLink()">➕ Add Link</button></div>
+      <div class="ch"><span class="ct">🔗 Important Links & Resources</span><button class="btn btn-primary btn-sm" onclick="openLinkModal()">➕ Add Link</button></div>
       <div class="link-grid" id="link-grid">
         ${S.links.map((l,i)=>`
           <a class="link-card" href="${l.url}" target="_blank">
-            <div class="link-icon" style="background:${l.color}22;border:2px solid ${l.color}33"><span>${l.icon}</span></div>
+            <div class="link-icon" style="background:${l.color}1A">${l.icon}</div>
             <div style="flex:1;min-width:0">
               <div class="link-name">${l.name}</div>
               <div class="link-desc">${l.desc}</div>
             </div>
-            <button onclick="event.preventDefault();delLink(${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;flex-shrink:0" title="Remove">✕</button>
+            <button onclick="event.preventDefault();delLink(${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;flex-shrink:0">✕</button>
           </a>`).join('')}
       </div>
     </div>`;
 }
-function addLink(){
-  const name=prompt('Link name (e.g. "Gensuite"):');if(!name) return;
-  const url=prompt('URL (include https://):');if(!url) return;
-  const desc=prompt('Short description:')||'';
-  S.links.push({name,url,desc,icon:'🔗',color:'#1D4ED8'});
-  saveS();buildLinks();toast('✅ Link added','#059669');
+const LINK_ICONS=["🔗","📋","📊","🏭","🔒","👥","📁","✈️","⚖️","🌱","🤝","🗂️","📈","🛡️","💬","📅","🧰","🚨"];
+const LINK_COLORS=["#0A84FF","#30D158","#BF5AF2","#FF9F0A","#FF453A","#64D2FF","#5856D6","#8E8E93"];
+function openLinkModal(){
+  document.getElementById('lm-name').value='';
+  document.getElementById('lm-url').value='';
+  document.getElementById('lm-desc').value='';
+  const iconRow=document.getElementById('lm-icons');
+  iconRow.innerHTML=LINK_ICONS.map((ic,i)=>`<div class="icon-sw${i===0?' sel':''}" data-icon="${ic}" onclick="selectLinkIcon('${ic}')">${ic}</div>`).join('');
+  const colorRow=document.getElementById('lm-colors');
+  colorRow.innerHTML=LINK_COLORS.map((c,i)=>`<div class="color-sw${i===0?' sel':''}" data-color="${c}" style="background:${c}" onclick="selectLinkColor('${c}')"></div>`).join('');
+  document.getElementById('modal-link').classList.remove('hidden');
+  document.getElementById('lm-name').focus();
+}
+function selectLinkIcon(ic){
+  document.querySelectorAll('.icon-sw').forEach(el=>el.classList.toggle('sel',el.dataset.icon===ic));
+}
+function selectLinkColor(c){
+  document.querySelectorAll('#lm-colors .color-sw').forEach(el=>el.classList.toggle('sel',el.dataset.color===c));
+}
+function saveNewLink(){
+  const name=document.getElementById('lm-name').value.trim();
+  const url=document.getElementById('lm-url').value.trim();
+  const desc=document.getElementById('lm-desc').value.trim();
+  if(!name||!url){toast('Name and URL required','#FF453A');return;}
+  const fullUrl=url.startsWith('http')?url:'https://'+url;
+  const icon=(document.querySelector('#lm-icons .icon-sw.sel')||{}).dataset?.icon||'🔗';
+  const color=(document.querySelector('#lm-colors .color-sw.sel')||{}).dataset?.color||'#0A84FF';
+  S.links.push({name,url:fullUrl,desc:desc||'Team resource',icon,color});
+  saveS();closeModal('modal-link');buildLinks();
+  toast('Link added','#30D158');
 }
 function delLink(i){if(!confirm('Remove this link?')) return;S.links.splice(i,1);saveS();buildLinks();}
 
 // ════════════════════════════════════════════════════
-// CHAT + AI PAGE
-// ════════════════════════════════════════════════════
-function buildChat(){
-  document.getElementById('pg-chat').innerHTML=`
-    <div class="card" style="height:calc(100vh - 160px);min-height:500px;display:flex;flex-direction:column">
-      <div class="ch">
-        <span class="ct">🤖 EHS AI Assistant + Team Chat</span>
-        <div style="display:flex;gap:8px;align-items:center">
-          <span class="cs">Ask about tasks, due dates, metrics, or request changes</span>
-          <button class="btn btn-ghost btn-sm" onclick="clearChat()">Clear</button>
-        </div>
-      </div>
-      <div style="padding:8px 14px;background:#EFF6FF;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--navy)">
-        💡 Try: "What's behind?" · "Add a task for Steve: LOTO review by Q3" · "How many open actions?" · "Who has the most behind?" · "Mark task 5 complete"
-      </div>
-      <div class="chat-msgs" id="chat-msgs"></div>
-      <div class="chat-input-area">
-        <textarea id="chat-input" placeholder="Ask anything about the EHS team or request a task change…" rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
-        <button class="btn btn-primary" onclick="sendChat()">Send ➤</button>
-      </div>
-    </div>`;
-  renderChat();
-  if(S.chat.length===0) addSysMsg("👋 Hi! I'm your EHS AI assistant. I can answer questions about tasks, update statuses, add new tasks, or chat with the team. What do you need?");
-}
-function addSysMsg(text){S.chat.push({role:'system',text,time:now()});saveS();renderChat();}
-function now(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
-function renderChat(){
-  const el=document.getElementById('chat-msgs');if(!el) return;
-  el.innerHTML=S.chat.map(m=>`
-    <div class="msg ${m.role==='user'?'msg-user':m.role==='system'?'msg-system':'msg-ai'}">
-      ${m.text}
-      ${m.role!=='system'?`<div class="msg-meta">${m.role==='user'?'You':'🤖 AI'} · ${m.time}</div>`:''}
-    </div>`).join('');
-  el.scrollTop=el.scrollHeight;
-}
-function clearChat(){S.chat=[];saveS();buildChat();}
-
-async function sendChat(){
-  const inp=document.getElementById('chat-input');
-  const text=inp.value.trim();if(!text) return;
-  inp.value='';
-  S.chat.push({role:'user',text,time:now()});
-  saveS();renderChat();
-
-  // Show typing indicator
-  const msgs=document.getElementById('chat-msgs');
-  const typDiv=document.createElement('div');
-  typDiv.className='ai-thinking';typDiv.id='typing';
-  typDiv.innerHTML='<span></span><span></span><span></span>';
-  msgs.appendChild(typDiv);msgs.scrollTop=msgs.scrollHeight;
-
-  // Try to handle locally first
-  const localReply=handleLocally(text);
-  if(localReply){
-    setTimeout(()=>{
-      const t=document.getElementById('typing');if(t)t.remove();
-      S.chat.push({role:'ai',text:localReply,time:now()});
-      saveS();renderChat();rebuildAll();
-    },600);
-    return;
-  }
-
-  // Call Anthropic API
-  const systemPrompt=`You are an EHS AI assistant for GE Aerospace Muskegon's EHS department. 
-The team is: Victor Pizarro (EHS Leader), Steve Wolbrink (EHS Compliance Specialist), Mike Shuster (Ergonomic Specialist ATI), Rich DeLeau (EHS Specialist Contract), Zach Tindall (Security Specialist).
-Current action items count: ${S.actions.length}. Complete: ${totalDone()}. Behind: ${byStatus('Behind')}. At-Risk: ${byStatus('At-Risk')}.
-Behind items: ${S.actions.filter(a=>a.status==='Behind').slice(0,5).map(a=>a.task+' ('+a.owner+')').join(', ')}.
-VPP Star target: October 2026.
-Answer questions about the team, EHS best practices, safety regulations, or ergonomics. Be concise, helpful, and professional. Use bullet points when listing things. If asked to create or modify tasks, explain what you would do.`;
-
-  try{
-    const res=await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        model:"claude-sonnet-4-6",
-        max_tokens:400,
-        system:systemPrompt,
-        messages:[{role:"user",content:text}]
-      })
-    });
-    const data=await res.json();
-    const reply=data.content?data.content.map(b=>b.text||'').join(''):'I had trouble responding. Please try again.';
-    const t=document.getElementById('typing');if(t)t.remove();
-    S.chat.push({role:'ai',text:reply,time:now()});
-    saveS();renderChat();
-  }catch(e){
-    const t=document.getElementById('typing');if(t)t.remove();
-    S.chat.push({role:'ai',text:"⚠️ I couldn't connect right now. But I'm still here to help with local queries — try asking what's behind or how many tasks are open!",time:now()});
-    saveS();renderChat();
-  }
-}
-
-function handleLocally(text){
-  const t=text.toLowerCase();
-  const behind=S.actions.filter(a=>a.status==='Behind');
-  const open=S.actions.filter(a=>a.status==='Open'||a.status==='Not Started');
-  const done=S.actions.filter(a=>a.status==='Complete');
-
-  if(t.includes("what's behind")||t.includes("whats behind")||t.includes("what is behind")){
-    if(!behind.length) return "✅ Nothing is behind! Great work.";
-    return `🔴 <strong>${behind.length} items are Behind:</strong><br>`+behind.slice(0,8).map(a=>`• ${a.task} — <em>${a.owner}</em>`).join('<br>');
-  }
-  if(t.includes("how many open")){return `📋 There are <strong>${open.length} open/not-started</strong> tasks.`}
-  if(t.includes("how many complete")||t.includes("how many done")){return `✅ <strong>${done.length} of ${S.actions.length}</strong> tasks are complete (${Math.round(done.length/S.actions.length*100)}%).`}
-  if(t.includes("who has the most behind")){
-    const counts={};behind.forEach(a=>{counts[a.owner]=(counts[a.owner]||0)+1;});
-    const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-    if(!sorted.length) return "✅ Nobody is behind right now!";
-    return `🔴 Most behind: <strong>${sorted[0][0]}</strong> with ${sorted[0][1]} items. Full breakdown:<br>`+sorted.map(([n,c])=>`• ${n}: ${c}`).join('<br>');
-  }
-  if(t.includes("at-risk")||t.includes("at risk")){
-    const ar=S.actions.filter(a=>a.status==='At-Risk');
-    if(!ar.length) return "✅ No at-risk items right now!";
-    return `🟡 <strong>${ar.length} At-Risk items:</strong><br>`+ar.slice(0,6).map(a=>`• ${a.task} — <em>${a.owner}</em>`).join('<br>');
-  }
-  if(t.includes("add task")&&t.includes("for ")){
-    openAddModal();
-    return "Sure! I've opened the Add Task dialog for you. Fill in the details and click Add Task.";
-  }
-  if(t.includes("mark task")&&t.includes("complete")){
-    const match=t.match(/task\s+(\d+)/);
-    if(match){
-      const id=parseInt(match[1]);
-      const a=S.actions.find(x=>x.id===id);
-      if(a){a.status='Complete';saveS();return `✅ Task #${id} "${a.task}" marked complete!`;}
-    }
-    return "I couldn't find that task. Try: 'mark task 5 complete'";
-  }
-  if(t.includes("vpp")){
-    const ng=S.vpp.slice(0,-1);
-    const avg=ng.length?Math.round(ng.reduce((s,m)=>s+m.pct,0)/ng.length):0;
-    const behind=S.vpp.filter(m=>m.status==='Behind');
-    return `⭐ VPP Star target: October 2026. Average milestone progress: <strong>${avg}%</strong>. ${behind.length} milestones are Behind: ${behind.map(m=>m.ms).slice(0,3).join(', ')}.`;
-  }
-  if(t.includes("how many task")||t.includes("total task")){
-    return `📊 Total tasks: <strong>${S.actions.length}</strong>. Complete: ${done.length}. Behind: ${behind.length}. Open: ${open.length}.`;
-  }
-  if(t.includes("hello")||t.includes("hi ")||t.includes("hey ")){
-    return "👋 Hey! I'm your EHS assistant. I can tell you what's behind, who has the most open items, your VPP progress, or help add/update tasks. What do you need?";
-  }
-  return null; // fall through to API
-}
-
-// ════════════════════════════════════════════════════
-// PERSON PAGE
+// PERSON PAGE — editable calendar + recurring tasks + actions
 // ════════════════════════════════════════════════════
 function buildPersonPage(key){
   const t=TEAM[key];
@@ -1058,63 +2152,94 @@ function buildPersonPage(key){
   const atr=acts.filter(a=>a.status==='At-Risk').length;
   const open=acts.filter(a=>['Open','Not Started'].includes(a.status)).length;
   const pct=acts.length?Math.round(done/acts.length*100):0;
-  const rec=REC_TASKS[key]||{};
+  const rec=S.rec[key]||{};
   const schedMap={};
-  (SCHED_DATA[key]||[]).forEach(e=>{schedMap[e.day+'-'+e.time]=e;});
-  const TIMES=["7:00","7:30","8:00","8:30","9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","1:00","1:30","2:00","2:30","3:00","3:30","4:00","4:30"];
-  const DAYS=["MON","TUE","WED","THU","FRI"];
+  (S.sched[key]||[]).forEach(e=>{schedMap[e.day+'-'+e.time]=e;});
 
-  const mkpis=[["TOTAL",acts.length],["✅",done],["🔴",beh],["🟡",atr],["📋",open],["% ",pct+"%"]];
-  const bannerHTML=`<div style="background:${t.bg};border-radius:var(--r) var(--r) 0 0">
+  const mkpis=[["TOTAL",acts.length],["DONE",done],["BEHIND",beh],["AT-RISK",atr],["OPEN",open],["% DONE",pct+"%"]];
+  const bannerHTML=`<div style="background:${t.bg};border-radius:14px 14px 0 0">
     <div class="pbanner">
       <div class="pavatar">${t.ini}</div>
       <div><div class="pname">${t.name}</div><div class="prole">${t.role}</div></div>
       <div class="pmkpis">${mkpis.map(([l,v])=>`<div class="pmk"><div class="pmkv">${v}</div><div class="pmkl">${l}</div></div>`).join('')}</div>
     </div>
-    <div style="padding:0 22px 14px">${pb(pct,10)}</div>
+    <div style="padding:0 26px 16px">${pb(pct,10)}</div>
   </div>`;
 
-  const RBGS={DAILY:"#1D4ED8",WEEKLY:"#059669",MONTHLY:"#7C3AED",ONGOING:"#374151"};
+  const RBGS={DAILY:"#0A84FF",WEEKLY:"#30D158",MONTHLY:"#BF5AF2",ONGOING:"#48484A"};
   const recHTML=Object.entries(rec).map(([freq,items])=>`
-    <div class="rec-hdr" style="background:${RBGS[freq]||'#374151'}">${freq}</div>
-    ${items.map(item=>`<div class="rec-item"><div class="rec-dot" style="background:${RBGS[freq]||'#374151'}"></div>${item}</div>`).join('')}`).join('');
+    <div class="rec-section">
+      <div class="rec-hdr" style="background:${RBGS[freq]||'#48484A'}">
+        <span>${freq}</span>
+        <button class="rec-add-btn" onclick="addRecItem('${key}','${freq}')" title="Add task">+</button>
+      </div>
+      ${items.map((item,idx)=>`<div class="rec-item">
+        <div class="rec-dot" style="background:${RBGS[freq]||'#48484A'}"></div>
+        <input class="rec-text" data-rec="${key}-${freq}" value="${item.replace(/"/g,'&quot;')}" onchange="updRecItem('${key}','${freq}',${idx},this.value)"/>
+        <button class="rec-del" onclick="delRecItem('${key}','${freq}',${idx})" title="Remove">✕</button>
+      </div>`).join('')}
+    </div>`).join('');
 
-  const calHTML=`<div style="overflow-x:auto"><table style="border-collapse:collapse;min-width:480px;width:100%">
-    <thead><tr>
-      <th style="width:55px;padding:7px;background:var(--bg);font-size:9px;font-weight:800;color:var(--navy);border-right:1px solid var(--border);border-bottom:2px solid var(--border2)">TIME</th>
-      ${DAYS.map(d=>`<th style="padding:7px;background:var(--bg);font-size:9px;font-weight:800;color:var(--navy);text-align:center;border-right:1px solid var(--border);border-bottom:2px solid var(--border2)">${d}</th>`).join('')}
-    </tr></thead>
-    <tbody>${TIMES.map(time=>`<tr>${[0,1,2,3,4,5].map(di=>{
-      if(di===0) return `<td style="padding:2px 6px;font-size:9px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;background:var(--surface2);height:26px;text-align:right;vertical-align:middle">${time}</td>`;
-      const ev=schedMap[di+'-'+time];
-      return `<td style="border-right:1px solid var(--border);border-bottom:1px solid #EEF2FF;height:26px;padding:2px;vertical-align:top">
-        ${ev?`<div style="font-size:9px;font-weight:700;color:${ev.color};background:${ev.bg};border-left:2px solid ${ev.color};padding:0 4px;height:20px;line-height:20px;border-radius:3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${ev.label}</div>`:''}
-      </td>`;
-    }).join('')}</tr>`).join('')}</tbody>
-  </table></div>`;
+  // Editable calendar grid
+  let calHTML=`<div class="sg-wrap"><table class="sg"><thead><tr><th></th>${DAY_NAMES.map(d=>`<th>${d.slice(0,3)}</th>`).join('')}</tr></thead><tbody>`;
+  TIMES.forEach(time=>{
+    calHTML+=`<tr><td class="sg-time">${time}</td>`;
+    for(let day=1;day<=5;day++){
+      const ev=schedMap[day+'-'+time];
+      if(ev){
+        calHTML+=`<td class="sg-cell has-event" onclick="openSchedModal('${key}',${day},'${time}',${ev.id})"><div class="sg-ev" style="background:${ev.color};border-left-color:${ev.color}">${ev.label}</div></td>`;
+      }else{
+        calHTML+=`<td class="sg-cell" onclick="openSchedModal('${key}',${day},'${time}')"><div class="sg-add-hint">+</div></td>`;
+      }
+    }
+    calHTML+='</tr>';
+  });
+  calHTML+='</tbody></table></div>';
 
-  const rowsHTML=acts.map(buildRow).join('');
+  const rowsActive=acts.filter(a=>a.status!=='Complete').map(buildRow).join('')||'<tr><td colspan="9" style="padding:24px;text-align:center;color:var(--muted)">🎉 No active tasks — all caught up!</td></tr>';
+  const rowsDone=acts.filter(a=>a.status==='Complete').map(buildRow).join('')||'<tr><td colspan="9" style="padding:24px;text-align:center;color:var(--muted)">No completed tasks yet.</td></tr>';
+  const doneCount=acts.filter(a=>a.status==='Complete').length;
 
   document.getElementById('pg-'+key).innerHTML=`
     <div class="card">${bannerHTML}</div>
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="openInsights('${key}')">📊 View Insights</button>
+    </div>
     <div class="g2">
       <div class="card">
-        <div class="ch"><span class="ct">📅 Weekly Schedule</span></div>
+        <div class="ch"><span class="ct">📅 Weekly Schedule</span><span class="cs">Tap any cell to add or edit</span></div>
         ${calHTML}
       </div>
       <div class="card">
-        <div class="ch"><span class="ct">🔁 Recurring Tasks</span></div>
+        <div class="ch"><span class="ct">🔁 Recurring Tasks</span><span class="cs">Tap + to add, ✕ to remove</span></div>
         ${recHTML}
       </div>
     </div>
     <div class="card">
       <div class="ch">
-        <span class="ct">✅ My Action Items — All Editable</span>
-        <button class="btn btn-primary btn-sm" onclick="openAddModal('${t.name}')">➕ Add Task</button>
+        <span class="ct">✅ My Action Items</span>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="seg-toggle">
+            <button class="seg-btn${(personView[key]||'active')==='active'?' active':''}" id="seg-active-${key}" onclick="setActionView('${key}','active')">Active</button>
+            <button class="seg-btn${personView[key]==='done'?' active':''}" id="seg-done-${key}" onclick="setActionView('${key}','done')">Completed (${doneCount})</button>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddModal('${t.name}')">➕ Add Task</button>
+        </div>
       </div>
       <div class="info-bar">✏️ Edit any field inline. 💬 Add comments. 🗑️ Delete tasks.</div>
-      <div class="twrap"><table><thead><tr><th>✔</th><th>Task</th><th>Owner</th><th>Status</th><th>Priority</th><th>Target</th><th>Program</th><th>Actions</th></tr></thead><tbody>${rowsHTML}</tbody></table></div>
+      <div class="twrap"><table><thead><tr><th>✔</th><th>Task</th><th>Owner</th><th>Status</th><th>Priority</th><th>Target</th><th>Due Date</th><th>Program</th><th>Actions</th></tr></thead>
+        <tbody id="atbody-active-${key}" class="${(personView[key]||'active')==='active'?'':'hidden'}">${rowsActive}</tbody>
+        <tbody id="atbody-done-${key}" class="${personView[key]==='done'?'':'hidden'}">${rowsDone}</tbody>
+      </table></div>
     </div>`;
+}
+
+function setActionView(key,view){
+  personView[key]=view;
+  document.getElementById(`seg-active-${key}`).classList.toggle('active',view==='active');
+  document.getElementById(`seg-done-${key}`).classList.toggle('active',view==='done');
+  document.getElementById(`atbody-active-${key}`).classList.toggle('hidden',view!=='active');
+  document.getElementById(`atbody-done-${key}`).classList.toggle('hidden',view!=='done');
 }
 
 // ════════════════════════════════════════════════════
@@ -1125,22 +2250,21 @@ const PAGES={
   actions: {label:"✅ Actions"},
   vpp:     {label:"⭐ VPP"},
   metrics: {label:"📈 Metrics"},
+  team:    {label:"👥 Team Roles"},
   links:   {label:"🔗 Links"},
-  chat:    {label:"🤖 AI Chat"},
-  VP:      {label:"🔵 Victor"},
-  SW:      {label:"🟢 Steve"},
-  MS:      {label:"🟣 Mike"},
-  RD:      {label:"🩵 Rich"},
-  ZT:      {label:"🟡 Zach"},
+  VP:      {label:"Victor"},
+  SW:      {label:"Steve"},
+  MS:      {label:"Mike"},
+  RD:      {label:"Rich"},
+  ZT:      {label:"Zach"},
 };
 let curPage='overview';
 const pageBuilders={
   overview:buildOverview,actions:buildActions,vpp:buildVPP,
-  metrics:buildMetrics,links:buildLinks,chat:buildChat,
+  metrics:buildMetrics,team:buildTeamRoles,links:buildLinks,
   VP:()=>buildPersonPage('VP'),SW:()=>buildPersonPage('SW'),
   MS:()=>buildPersonPage('MS'),RD:()=>buildPersonPage('RD'),ZT:()=>buildPersonPage('ZT'),
 };
-
 function buildNav(){
   document.getElementById('nav').innerHTML=Object.entries(PAGES).map(([k,v])=>
     `<button class="nb${k===curPage?' active':''}" id="nb-${k}" onclick="goPage('${k}')">${v.label}</button>`
@@ -1161,12 +2285,75 @@ function goPage(id){
 }
 
 // ════════════════════════════════════════════════════
+// PIN LOCK — required every visit, PIN stored as hash
+// ════════════════════════════════════════════════════
+// SHA-256 of "6060" (not stored in plaintext to deter casual viewing of source)
+const PIN_HASH="060e33205a731400c2eb92bc12cf921a4e44cf1851d216f144337dd6ec5350a7";
+async function sha256(msg){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+let pinEntry="";
+function pinPress(d){
+  if(pinEntry.length>=4) return;
+  pinEntry+=d;
+  updatePinDots();
+  if(pinEntry.length===4){
+    setTimeout(checkPin,150);
+  }
+}
+function pinBackspace(){
+  pinEntry=pinEntry.slice(0,-1);
+  updatePinDots();
+}
+function updatePinDots(){
+  document.querySelectorAll('.pin-dot').forEach((d,i)=>{
+    d.classList.toggle('filled',i<pinEntry.length);
+    d.classList.remove('error');
+  });
+  document.getElementById('pin-err').textContent='';
+}
+async function checkPin(){
+  const hash=await sha256(pinEntry);
+  if(hash===PIN_HASH){
+    document.getElementById('pinscreen').classList.add('hidden');
+  }else{
+    document.querySelectorAll('.pin-dot').forEach(d=>d.classList.add('error'));
+    document.getElementById('pin-err').textContent='Incorrect PIN. Try again.';
+    setTimeout(()=>{pinEntry='';updatePinDots();},400);
+  }
+}
+function initPinLock(){
+  // PIN required every time the page loads — no session bypass
+  const pad=document.getElementById('pin-pad');
+  const keys=['1','2','3','4','5','6','7','8','9','','0','⌫'];
+  pad.innerHTML=keys.map(k=>{
+    if(k===''){return '<div></div>';}
+    if(k==='⌫'){return `<button class="pin-key wide" onclick="pinBackspace()">⌫</button>`;}
+    return `<button class="pin-key" onclick="pinPress('${k}')">${k}</button>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════════
+initPinLock();
 buildNav();
-buildOverview();
-buildActions();
-buildVPP();
+setSyncIndicator('connecting');
+// If Firebase hasn't responded within 12s, something's wrong (offline,
+// blocked network, or bad config) — let the user know instead of a forever-spinner.
+setTimeout(()=>{
+  if(!firebaseReady){
+    const el=document.getElementById('loading-screen');
+    if(el){
+      el.innerHTML='<div style="font-size:14px;color:#FF453A;font-weight:700;text-align:center;padding:0 24px">⚠️ Could not connect to the shared database.<br/><span style="font-size:12px;color:#8E8E93;font-weight:500">Check your internet connection and reload the page. If this keeps happening, the Firebase configuration may need attention.</span></div>';
+    }
+    setSyncIndicator('error');
+  }
+},12000);
+// Note: buildOverview/buildActions/buildVPP/etc. are triggered by the
+// Firebase listener above once the shared team data has loaded.
+
 </script>
 </body>
 </html>
