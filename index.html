@@ -268,15 +268,16 @@ select.fsel2:focus,input.fsrch:focus{border-color:var(--blue)}
 /* ═══ CALENDAR / SCHEDULE ═══ */
 .sg-wrap{overflow-x:auto}
 .sg{border-collapse:collapse;min-width:560px;width:100%}
-.sg th{padding:8px 4px;background:var(--surface2);font-size:9px;font-weight:800;color:var(--ink2);text-align:center;border-bottom:1.5px solid var(--border2);border-right:1px solid var(--border)}
+.sg th{padding:8px 4px;background:var(--surface3);font-size:9px;font-weight:800;color:var(--ink2);text-align:center;border-bottom:1.5px solid var(--border2);border-right:1px solid var(--border)}
 .sg th:first-child{width:54px}
-.sg-time{padding:2px 7px;font-size:9px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid #F2F2F5;background:var(--surface2);text-align:right;height:36px;vertical-align:middle;white-space:nowrap}
-.sg-cell{border-right:1px solid var(--border);border-bottom:1px solid #F2F2F5;height:36px;padding:2px;cursor:pointer;transition:background .1s;position:relative}
+.sg-time{padding:2px 7px;font-size:9px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);border-bottom:1px solid #EFF0F3;background:var(--surface3);text-align:right;height:36px;vertical-align:top;white-space:nowrap}
+.sg-cell{border-right:1px solid var(--border);border-bottom:1px solid #EFF0F3;height:36px;padding:2px;cursor:pointer;transition:background .1s;position:relative;vertical-align:top}
 .sg-cell:hover{background:var(--blue-lt)}
-.sg-cell.has-event:hover .sg-ev{box-shadow:var(--shadow-md)}
-.sg-ev{border-radius:5px;padding:3px 6px;font-size:9px;font-weight:700;min-height:30px;max-height:54px;display:flex;align-items:center;white-space:normal;overflow:hidden;line-height:1.25;word-wrap:break-word;border-left:3px solid;color:#fff;cursor:pointer;transition:all .12s}
-.sg-ev:hover{transform:scale(1.02)}
-.sg-add-hint{opacity:0;font-size:14px;color:var(--blue);text-align:center;line-height:26px;transition:opacity .1s}
+.sg-cell.has-event:hover .sg-ev{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.sg-ev{border-radius:6px;padding:5px 8px;font-size:10px;font-weight:700;display:flex;flex-direction:column;justify-content:flex-start;gap:2px;overflow:hidden;line-height:1.2;word-wrap:break-word;border-left:3px solid;color:#fff;cursor:pointer;transition:all .12s;height:100%;box-sizing:border-box}
+.sg-ev-label{font-weight:800;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.sg-ev-time{font-size:8.5px;font-weight:600;opacity:.85}
+.sg-add-hint{opacity:0;font-size:14px;color:var(--blue);text-align:center;line-height:30px;transition:opacity .1s}
 .sg-cell:hover .sg-add-hint{opacity:1}
 
 /* ═══ REC TASKS ═══ */
@@ -284,7 +285,8 @@ select.fsel2:focus,input.fsrch:focus{border-color:var(--blue)}
 .rec-hdr{padding:7px 16px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;justify-content:space-between}
 .rec-add-btn{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .rec-add-btn:hover{background:rgba(255,255,255,.35)}
-.rec-item{display:flex;align-items:flex-start;gap:9px;padding:7px 16px;border-bottom:1px solid #F2F2F5;font-size:11px;color:var(--ink2);font-weight:500;transition:background .1s}
+.rec-item{display:flex;align-items:flex-start;gap:8px;padding:7px 16px;border-bottom:1px solid #EFF0F3;font-size:11px;color:var(--ink2);font-weight:500;transition:background .1s}
+.rec-item .drag-handle{margin-top:5px}
 .rec-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:7px}
 .rec-text{flex:1;display:block;background:transparent;border:1px solid transparent;border-radius:6px;padding:4px 5px;font-size:11px;font-family:inherit;color:var(--ink2);outline:none;transition:all .15s;line-height:1.5;white-space:pre-wrap;word-wrap:break-word;resize:none;overflow:hidden;box-sizing:border-box;min-height:22px}
 .rec-text:hover{border-color:var(--border2);background:#fff}
@@ -331,6 +333,16 @@ select.fsel2:focus,input.fsrch:focus{border-color:var(--blue)}
 .icon-sw:hover{background:var(--border)}
 .icon-sw.sel{border-color:var(--blue);background:var(--blue-lt)}
 .color-sw.sel{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--ink)}
+
+/* ═══ DRAG & DROP ═══ */
+.drag-handle{cursor:grab;color:var(--muted2);font-size:14px;line-height:1;user-select:none;padding:2px 1px;flex-shrink:0;transition:color .15s;letter-spacing:-2px}
+.drag-handle:hover{color:var(--ink2)}
+.drag-handle:active{cursor:grabbing}
+tr[draggable="true"]{cursor:default}
+tr.drag-over-row{box-shadow:inset 0 2px 0 var(--blue)}
+tr.drag-over-row td{background:var(--blue-lt)}
+.rec-item.drag-over{box-shadow:inset 0 2px 0 var(--blue);background:var(--blue-lt)}
+.rec-items{display:flex;flex-direction:column}
 
 /* ═══ MISC ═══ */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -484,6 +496,7 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
     <div class="modal-body">
       <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:12px" id="sm-day-time"></div>
       <div class="mfield"><label>Event Name</label><input id="sm-label" placeholder="e.g. Team Huddle, Cell Inspection..."/></div>
+      <div class="mfield"><label>Duration</label><select id="sm-duration"></select></div>
       <div class="mfield"><label>Color</label><div id="sm-colors" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"></div></div>
     </div>
     <div class="modal-foot">
@@ -1184,6 +1197,24 @@ function esc(s){
   if(s===null||s===undefined) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+// Convert a slot count (30-min units) into a human label like "1h 30m".
+function slotsToLabel(slots){
+  const mins=slots*30;
+  const h=Math.floor(mins/60), m=mins%60;
+  if(h===0) return m+'m';
+  if(m===0) return h+'h';
+  return h+'h '+m+'m';
+}
+// Darken a hex color slightly for the event's left border accent.
+function shade(hex){
+  try{
+    const c=hex.replace('#','');
+    const n=parseInt(c.length===3?c.split('').map(x=>x+x).join(''):c,16);
+    let r=(n>>16)&255,g=(n>>8)&255,b=n&255;
+    r=Math.max(0,Math.floor(r*0.75));g=Math.max(0,Math.floor(g*0.75));b=Math.max(0,Math.floor(b*0.75));
+    return `rgb(${r},${g},${b})`;
+  }catch(e){return hex;}
+}
 
 function autoGrow(el){
   el.style.height='auto';
@@ -1191,6 +1222,56 @@ function autoGrow(el){
 }
 function autoGrowAll(){
   document.querySelectorAll('textarea.etxt, textarea.rec-text').forEach(autoGrow);
+}
+
+// ── Generic drag-and-drop reordering for lists. Works on both the
+// recurring-task lists (data-reclist) and action rows (data-actlist).
+// Each draggable item carries its index; on drop we compute the new
+// order and call the matching reorder handler. ──
+let _dragSrc=null;
+function initDragLists(){
+  // Recurring task items
+  document.querySelectorAll('.rec-item[draggable="true"]').forEach(el=>{
+    el.addEventListener('dragstart',e=>{
+      _dragSrc={type:'rec',key:el.dataset.reckey,freq:el.dataset.recfreq,idx:+el.dataset.recidx};
+      el.style.opacity='0.4';
+      e.dataTransfer.effectAllowed='move';
+    });
+    el.addEventListener('dragend',()=>{el.style.opacity='';document.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'));});
+    el.addEventListener('dragover',e=>{
+      if(!_dragSrc||_dragSrc.type!=='rec'||_dragSrc.key!==el.dataset.reckey||_dragSrc.freq!==el.dataset.recfreq) return;
+      e.preventDefault();el.classList.add('drag-over');
+    });
+    el.addEventListener('dragleave',()=>el.classList.remove('drag-over'));
+    el.addEventListener('drop',e=>{
+      e.preventDefault();el.classList.remove('drag-over');
+      if(!_dragSrc||_dragSrc.type!=='rec') return;
+      const toIdx=+el.dataset.recidx;
+      reorderRecItem(_dragSrc.key,_dragSrc.freq,_dragSrc.idx,toIdx);
+      _dragSrc=null;
+    });
+  });
+  // Action rows
+  document.querySelectorAll('tr[draggable="true"][data-actid]').forEach(el=>{
+    el.addEventListener('dragstart',e=>{
+      _dragSrc={type:'act',id:+el.dataset.actid};
+      el.style.opacity='0.4';
+      e.dataTransfer.effectAllowed='move';
+    });
+    el.addEventListener('dragend',()=>{el.style.opacity='';document.querySelectorAll('.drag-over-row').forEach(x=>x.classList.remove('drag-over-row'));});
+    el.addEventListener('dragover',e=>{
+      if(!_dragSrc||_dragSrc.type!=='act') return;
+      e.preventDefault();el.classList.add('drag-over-row');
+    });
+    el.addEventListener('dragleave',()=>el.classList.remove('drag-over-row'));
+    el.addEventListener('drop',e=>{
+      e.preventDefault();el.classList.remove('drag-over-row');
+      if(!_dragSrc||_dragSrc.type!=='act') return;
+      const toId=+el.dataset.actid;
+      reorderAction(_dragSrc.id,toId);
+      _dragSrc=null;
+    });
+  });
 }
 
 function toast(msg,col){
@@ -1453,6 +1534,18 @@ function del(id){
   saveS();rebuildAll();
   toast('Task deleted','#FF453A');
 }
+// Reorder an action by moving it to the position of the target row.
+// Operates on the master S.actions order so it persists for everyone.
+function reorderAction(fromId,toId){
+  if(fromId===toId) return;
+  const fromIdx=S.actions.findIndex(a=>a.id===fromId);
+  const toIdx=S.actions.findIndex(a=>a.id===toId);
+  if(fromIdx<0||toIdx<0) return;
+  const [moved]=S.actions.splice(fromIdx,1);
+  S.actions.splice(toIdx,0,moved);
+  saveS();rebuildAll();
+  toast('Reordered','#1FB55B');
+}
 function toggleDone(id){
   const a=S.actions.find(x=>x.id===id);
   if(!a) return;
@@ -1469,15 +1562,15 @@ function buildRow(a){
   const cmtCount=(S.comments[a.id]||[]).length;
   const dueVal=a.dueDate||'';
   // contenteditable renders full text immediately (no autoGrow needed), word-wraps naturally
-  const taskStyle=`min-width:180px;max-width:280px;font-size:12px;font-weight:${done?400:500};${done?'text-decoration:line-through;color:var(--muted)':'color:var(--ink)'};outline:none;border:1.5px solid transparent;border-radius:7px;padding:6px 8px;line-height:1.5;word-wrap:break-word;white-space:pre-wrap;cursor:text;transition:all .15s;min-height:28px`;
-  return `<tr id="r${a.id}" class="${done?'done-row':''}">
+  const taskStyle=`min-width:170px;max-width:280px;font-size:12px;font-weight:${done?400:500};${done?'text-decoration:line-through;color:var(--muted)':'color:var(--ink)'};outline:none;border:1.5px solid transparent;border-radius:7px;padding:6px 8px;line-height:1.5;word-wrap:break-word;white-space:pre-wrap;cursor:text;transition:all .15s;min-height:28px`;
+  return `<tr id="r${a.id}" class="${done?'done-row':''}" draggable="true" data-actid="${a.id}">
+    <td style="width:22px;padding-right:0"><span class="drag-handle" title="Drag to reorder">⠿</span></td>
     <td><button class="chk${done?' on':''}" onclick="toggleDone(${a.id})">${done?'✓':''}</button></td>
-    <td style="max-width:280px;min-width:180px"><div contenteditable="true" style="${taskStyle}" onfocus="_editingCell=true;this.style.borderColor='var(--blue)';this.style.background='var(--blue-lt)'" onblur="_editingCell=false;upd(${a.id},'task',this.innerText.trim());this.style.borderColor='transparent';this.style.background='transparent'" onmouseenter="if(document.activeElement!==this)this.style.borderColor='var(--border2)'" onmouseleave="if(document.activeElement!==this){this.style.borderColor='transparent';this.style.background='transparent'}">${esc(a.task)}</div></td>
+    <td style="max-width:280px;min-width:170px"><div contenteditable="true" style="${taskStyle}" onfocus="_editingCell=true;this.style.borderColor='var(--blue)';this.style.background='var(--blue-lt)'" onblur="_editingCell=false;upd(${a.id},'task',this.innerText.trim());this.style.borderColor='transparent';this.style.background='transparent'" onmouseenter="if(document.activeElement!==this)this.style.borderColor='var(--border2)'" onmouseleave="if(document.activeElement!==this){this.style.borderColor='transparent';this.style.background='transparent'}">${esc(a.task)}</div></td>
     <td><select class="esel" onchange="upd(${a.id},'owner',this.value)">${opts(PERSON_OPTS,a.owner)}</select></td>
     <td><select class="esel" onchange="upd(${a.id},'status',this.value)">${opts(STATUS_OPTS,a.status)}</select></td>
     <td><select class="esel" onchange="upd(${a.id},'pri',this.value)">${opts(PRI_OPTS,a.pri)}</select></td>
-    <td><select class="esel" onchange="upd(${a.id},'target',this.value)">${opts(TARGET_OPTS,a.target)}</select></td>
-    <td><input type="date" class="esel" style="min-width:120px" value="${dueVal}" onchange="upd(${a.id},'dueDate',this.value)" title="Specific due date"/></td>
+    <td>${dueDateCell(a)}</td>
     <td><select class="esel" onchange="upd(${a.id},'prog',this.value)">${opts(PROG_OPTS,a.prog)}</select></td>
     <td>
       <div style="display:flex;gap:5px;align-items:center">
@@ -1488,6 +1581,30 @@ function buildRow(a){
       </div>
     </td>
   </tr>`;
+}
+
+// Dual-mode due date: a dropdown for Q1/Q2/.../recurring buckets, plus
+// a "Specific date" option that reveals a date picker. Whichever the user
+// sets is stored in `target` (bucket) or `dueDate` (exact date).
+function dueDateCell(a){
+  const hasDate=!!a.dueDate;
+  const mode=hasDate?'date':'bucket';
+  return `<div style="display:flex;flex-direction:column;gap:3px;min-width:130px">
+    <select class="esel" onchange="setDueMode(${a.id},this.value)">
+      <option value="bucket"${mode==='bucket'?' selected':''}>Quarter / Period</option>
+      <option value="date"${mode==='date'?' selected':''}>Specific date</option>
+    </select>
+    ${mode==='date'
+      ? `<input type="date" class="esel" style="min-width:120px" value="${a.dueDate||''}" onchange="upd(${a.id},'dueDate',this.value)"/>`
+      : `<select class="esel" onchange="upd(${a.id},'target',this.value)">${opts(TARGET_OPTS,a.target)}</select>`}
+  </div>`;
+}
+function setDueMode(id,mode){
+  const a=S.actions.find(x=>x.id===id);
+  if(!a) return;
+  if(mode==='bucket'){ a.dueDate=''; if(!a.target||a.target==='TBD') a.target='Q1 2026'; }
+  else { /* switching to date mode; keep target as a fallback label */ if(!a.dueDate) a.dueDate=new Date().toISOString().slice(0,10); }
+  saveS();rebuildAll();
 }
 
 // ════════════════════════════════════════════════════
@@ -1589,9 +1706,19 @@ function openSchedModal(personKey,day,time,eventId){
   schedEditCtx={personKey,day,time,eventId};
   const existing=eventId?S.sched[personKey].find(e=>e.id===eventId):null;
   document.getElementById('sm-title').textContent=existing?'Edit Event':'Add Event';
-  document.getElementById('sm-day-time').textContent=`${DAY_NAMES[day-1]} · ${time}`;
+  document.getElementById('sm-day-time').textContent=`${DAY_NAMES[day-1]} · starts ${existing?existing.time:time}`;
   document.getElementById('sm-label').value=existing?existing.label:'';
   schedSelectedColor=existing?existing.color:EVENT_COLORS[0];
+  // Duration dropdown (30 min to 8 hrs). Cap so it can't run past the end of the day grid.
+  const startIdx=TIMES.indexOf(existing?existing.time:time);
+  const maxSlots=TIMES.length-startIdx;
+  const curSlots=existing?Math.max(1,existing.slots||1):2; // default 1 hour
+  const durSel=document.getElementById('sm-duration');
+  let durOpts='';
+  for(let s=1;s<=Math.min(16,maxSlots);s++){
+    durOpts+=`<option value="${s}"${s===curSlots?' selected':''}>${slotsToLabel(s)}</option>`;
+  }
+  durSel.innerHTML=durOpts;
   // build color swatches
   const sw=document.getElementById('sm-colors');
   sw.innerHTML=EVENT_COLORS.map(c=>`<div class="color-sw" data-color="${c}" style="background:${c};${schedSelectedColor===c?'box-shadow:0 0 0 3px #fff,0 0 0 5px '+c+';':''}" onclick="selectColor('${c}')"></div>`).join('');
@@ -1610,12 +1737,13 @@ function saveSchedEvent(){
   const label=document.getElementById('sm-label').value.trim();
   if(!label){toast('Event name required','#FF453A');return;}
   const color=schedSelectedColor||EVENT_COLORS[0];
+  const slots=Math.max(1,parseInt(document.getElementById('sm-duration').value)||1);
   if(eventId){
     const ev=S.sched[personKey].find(e=>e.id===eventId);
-    if(ev){ev.label=label;ev.color=color;}
+    if(ev){ev.label=label;ev.color=color;ev.slots=slots;}
   }else{
     if(!S.nextSchedId[personKey]) S.nextSchedId[personKey]=1;
-    S.sched[personKey].push({id:S.nextSchedId[personKey]++,day,time,label,color});
+    S.sched[personKey].push({id:S.nextSchedId[personKey]++,day,time,label,color,slots});
   }
   saveS();closeModal('modal-sched');buildPersonPage(personKey);buildOverview();
   toast('Calendar updated','#30D158');
@@ -1650,6 +1778,14 @@ function addRecItem(personKey,freq){
     const last=inputs[inputs.length-1];
     if(last){last.focus();last.select();}
   },50);
+}
+function reorderRecItem(personKey,freq,fromIdx,toIdx){
+  const arr=S.rec[personKey][freq];
+  if(!arr||fromIdx===toIdx||fromIdx<0||toIdx<0||fromIdx>=arr.length||toIdx>=arr.length) return;
+  const [moved]=arr.splice(fromIdx,1);
+  arr.splice(toIdx,0,moved);
+  saveS();buildPersonPage(personKey);
+  toast('Reordered','#1FB55B');
 }
 
 // ════════════════════════════════════════════════════
@@ -1887,7 +2023,7 @@ function applyF(){
 }
 
 function tableShell(rows){
-  return `<div class="twrap"><table><thead><tr><th>✔</th><th>Task Name</th><th>Owner</th><th>Status</th><th>Priority</th><th>Target</th><th>Due Date</th><th>Program</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  return `<div class="twrap"><table><thead><tr><th></th><th>✔</th><th>Task Name</th><th>Owner</th><th>Status</th><th>Priority</th><th>Due / Target</th><th>Program</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 function renderGroupedActions(fl){
@@ -1899,10 +2035,10 @@ function renderGroupedActions(fl){
   }
   if(groupBy==='none'){
     wrap.innerHTML=`<div class="card">
-      <div class="info-bar">✏️ Tap any field to edit instantly — task name, owner, status, priority, target date, due date, or program. 💬 for comments, 🗑️ to delete.</div>
+      <div class="info-bar">✏️ Tap any field to edit inline. ⠿ Drag the handle to reorder. 💬 Comments, 🗑️ delete. All changes sync live to the whole team.</div>
       ${tableShell(fl.map(buildRow).join(''))}
     </div>`;
-    autoGrowAll();
+    autoGrowAll();initDragLists();
     return;
   }
   let groups={};
@@ -1930,7 +2066,7 @@ function renderGroupedActions(fl){
         <div id="${gid}" class="${collapsed?'hidden':''}">${tableShell(items.map(buildRow).join(''))}</div>
       </div>`;
     }).join('');
-  autoGrowAll();
+  autoGrowAll();initDragLists();
 }
 const groupCollapse={};
 function toggleGroup(gid){
@@ -2323,7 +2459,7 @@ function buildMetrics(){
         <textarea id="metric-notes" style="width:100%;min-height:120px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:12px;font-family:inherit;outline:none;resize:vertical;color:var(--ink2)" placeholder="Add context, trends, or notes about current metrics here…" onchange="updMetricNotes(this.value)">${S.metricNotes||''}</textarea>
       </div>
     </div>`;
-  autoGrowAll();
+  autoGrowAll();initDragLists();
 }
 function updMetric(k,v){S.metrics[k].value=v;saveS();toast('Metric saved','#30D158');}
 function updMetricNotes(v){S.metricNotes=v;saveS();toast('Notes saved','#30D158');}
@@ -2587,28 +2723,53 @@ function buildPersonPage(key){
     <div style="padding:0 26px 16px">${pb(pct,10)}</div>
   </div>`;
 
-  const RBGS={DAILY:"#0A84FF",WEEKLY:"#30D158",MONTHLY:"#BF5AF2",ONGOING:"#48484A"};
-  const recHTML=Object.entries(rec).map(([freq,items])=>`
-    <div class="rec-section">
-      <div class="rec-hdr" style="background:${RBGS[freq]||'#48484A'}">
-        <span>${freq}</span>
+  const RBGS={DAILY:"#0A7AFF",WEEKLY:"#1FB55B",MONTHLY:"#9B5DE5",ONGOING:"#5B5BD6"};
+  const REC_LABELS={DAILY:"DAILY",WEEKLY:"WEEKLY",MONTHLY:"MONTHLY",ONGOING:"RECURRING"};
+  const REC_ORDER=['DAILY','WEEKLY','MONTHLY','ONGOING'];
+  const recHTML=REC_ORDER.filter(freq=>rec[freq]).map(freq=>{
+    const items=rec[freq];
+    return `<div class="rec-section">
+      <div class="rec-hdr" style="background:${RBGS[freq]||'#5B5BD6'}">
+        <span>${REC_LABELS[freq]||freq}</span>
         <button class="rec-add-btn" onclick="addRecItem('${key}','${freq}')" title="Add task">+</button>
       </div>
-      ${items.map((item,idx)=>`<div class="rec-item">
-        <div class="rec-dot" style="background:${RBGS[freq]||'#48484A'}"></div>
-        <textarea class="rec-text" rows="1" oninput="autoGrow(this)" data-rec="${key}-${freq}" onchange="updRecItem('${key}','${freq}',${idx},this.value)">${item.replace(/</g,'&lt;')}</textarea>
+      <div class="rec-items" data-reclist="${key}|${freq}">
+      ${items.map((item,idx)=>`<div class="rec-item" draggable="true" data-recidx="${idx}" data-reckey="${key}" data-recfreq="${freq}">
+        <span class="drag-handle" title="Drag to reorder">⠿</span>
+        <div class="rec-dot" style="background:${RBGS[freq]||'#5B5BD6'}"></div>
+        <textarea class="rec-text" rows="1" oninput="autoGrow(this)" data-rec="${key}-${freq}" onchange="updRecItem('${key}','${freq}',${idx},this.value)">${esc(item)}</textarea>
         <button class="rec-del" onclick="delRecItem('${key}','${freq}',${idx})" title="Remove">✕</button>
       </div>`).join('')}
-    </div>`).join('');
+      </div>
+    </div>`;
+  }).join('');
 
-  // Editable calendar grid
+  // Editable calendar grid with Apple-style variable-duration events.
+  // Each event has a `slots` count (1 slot = 30 min); events span multiple
+  // rows via rowspan, and cells covered by a spanning event are skipped.
+  const TIME_IDX={};TIMES.forEach((t,i)=>{TIME_IDX[t]=i;});
+  // Build an occupancy map: occupied[day][timeIndex] = true when covered by an event starting above
+  const occupied={};
+  for(let d=1;d<=5;d++){occupied[d]={};}
+  Object.values(schedMap).forEach(ev=>{
+    const startIdx=TIME_IDX[ev.time];
+    if(startIdx===undefined) return;
+    const slots=Math.max(1,ev.slots||1);
+    for(let k=1;k<slots && startIdx+k<TIMES.length;k++){
+      occupied[ev.day][startIdx+k]=true;
+    }
+  });
   let calHTML=`<div class="sg-wrap"><table class="sg"><thead><tr><th></th>${DAY_NAMES.map(d=>`<th>${d.slice(0,3)}</th>`).join('')}</tr></thead><tbody>`;
-  TIMES.forEach(time=>{
+  TIMES.forEach((time,tIdx)=>{
     calHTML+=`<tr><td class="sg-time">${time}</td>`;
     for(let day=1;day<=5;day++){
+      if(occupied[day][tIdx]) continue; // covered by a spanning event above — skip cell
       const ev=schedMap[day+'-'+time];
       if(ev){
-        calHTML+=`<td class="sg-cell has-event" onclick="openSchedModal('${key}',${day},'${time}',${ev.id})"><div class="sg-ev" style="background:${ev.color};border-left-color:${ev.color}">${esc(ev.label)}</div></td>`;
+        const slots=Math.max(1,ev.slots||1);
+        const heightPx=slots*36-6;
+        const durLabel=slotsToLabel(slots);
+        calHTML+=`<td class="sg-cell has-event" rowspan="${slots}" onclick="openSchedModal('${key}',${day},'${time}',${ev.id})"><div class="sg-ev" style="background:${ev.color};border-left-color:${shade(ev.color)};min-height:${heightPx}px"><div class="sg-ev-label">${esc(ev.label)}</div><div class="sg-ev-time">${time} · ${durLabel}</div></div></td>`;
       }else{
         calHTML+=`<td class="sg-cell" onclick="openSchedModal('${key}',${day},'${time}')"><div class="sg-add-hint">+</div></td>`;
       }
@@ -2647,13 +2808,13 @@ function buildPersonPage(key){
           <button class="btn btn-primary btn-sm" onclick="openAddModal('${t.name}')">➕ Add Task</button>
         </div>
       </div>
-      <div class="info-bar">✏️ Edit any field inline. 💬 Add comments. 🗑️ Delete tasks.</div>
-      <div class="twrap"><table><thead><tr><th>✔</th><th>Task</th><th>Owner</th><th>Status</th><th>Priority</th><th>Target</th><th>Due Date</th><th>Program</th><th>Actions</th></tr></thead>
+      <div class="info-bar">✏️ Edit any field inline. ⠿ Drag to reorder. 💬 Add comments. 🗑️ Delete tasks.</div>
+      <div class="twrap"><table><thead><tr><th></th><th>✔</th><th>Task</th><th>Owner</th><th>Status</th><th>Priority</th><th>Due / Target</th><th>Program</th><th>Actions</th></tr></thead>
         <tbody id="atbody-active-${key}" class="${(personView[key]||'active')==='active'?'':'hidden'}">${rowsActive}</tbody>
         <tbody id="atbody-done-${key}" class="${personView[key]==='done'?'':'hidden'}">${rowsDone}</tbody>
       </table></div>
     </div>`;
-  autoGrowAll();
+  autoGrowAll();initDragLists();
 }
 
 function setActionView(key,view){
@@ -2662,7 +2823,7 @@ function setActionView(key,view){
   document.getElementById(`seg-done-${key}`).classList.toggle('active',view==='done');
   document.getElementById(`atbody-active-${key}`).classList.toggle('hidden',view!=='active');
   document.getElementById(`atbody-done-${key}`).classList.toggle('hidden',view!=='done');
-  autoGrowAll();
+  autoGrowAll();initDragLists();
 }
 
 // ════════════════════════════════════════════════════
