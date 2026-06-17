@@ -334,6 +334,19 @@ select.fsel2:focus,input.fsrch:focus{border-color:var(--blue)}
 .icon-sw.sel{border-color:var(--blue);background:var(--blue-lt)}
 .color-sw.sel{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--ink)}
 
+/* ═══ SUB-ACTIONS & COMPLETED SECTIONS ═══ */
+.sub-row td{background:linear-gradient(90deg,rgba(10,122,255,.03),transparent 60%)}
+.sub-row:hover td{background:var(--surface2)}
+.sub-caret,.done-subhdr span:last-child{cursor:pointer;font-size:11px;color:var(--muted);user-select:none;flex-shrink:0;margin-top:7px}
+.sub-caret:hover{color:var(--ink)}
+.sub-indent{display:inline-block;width:18px;flex-shrink:0}
+.sub-row .sub-indent{width:26px}
+.parent-row td:nth-child(3){font-weight:700}
+.sub-count{font-size:9px;font-weight:800;color:var(--blue);background:var(--blue-lt);border:1px solid #CBE1FF;border-radius:20px;padding:1px 7px;white-space:nowrap;align-self:center;flex-shrink:0}
+.done-subsection{border-top:2px solid var(--border)}
+.done-subhdr{display:flex;align-items:center;justify-content:space-between;padding:9px 18px;background:var(--green-lt);font-size:11px;font-weight:800;color:#15803D;cursor:pointer;text-transform:uppercase;letter-spacing:.4px}
+.done-subhdr:hover{background:#D8F3E2}
+
 /* ═══ DRAG & DROP ═══ */
 .drag-handle{cursor:grab;color:var(--muted2);font-size:14px;line-height:1;user-select:none;padding:2px 1px;flex-shrink:0;transition:color .15s;letter-spacing:-2px}
 .drag-handle:hover{color:var(--ink2)}
@@ -802,18 +815,18 @@ const ANNUAL_METRICS=[
 // Formula: I&I Rate = (Recordable Injuries × 200,000) / Hours Worked
 // ════════════════════════════════════════════════════
 const DEFAULT_ROLLING_TABLE=[
-  {month:"Jan", hours:200000, injuries:0, goal:1.38},
-  {month:"Feb", hours:200000, injuries:0, goal:1.36},
-  {month:"Mar", hours:200000, injuries:1, goal:1.34},
-  {month:"Apr", hours:200000, injuries:1, goal:1.31},
-  {month:"May", hours:200000, injuries:0, goal:1.29},
-  {month:"Jun", hours:null,   injuries:null, goal:1.27},
-  {month:"Jul", hours:null,   injuries:null, goal:1.24},
-  {month:"Aug", hours:null,   injuries:null, goal:1.22},
-  {month:"Sep", hours:null,   injuries:null, goal:1.20},
-  {month:"Oct", hours:null,   injuries:null, goal:1.18},
-  {month:"Nov", hours:null,   injuries:null, goal:1.15},
-  {month:"Dec", hours:null,   injuries:null, goal:1.13},
+  {month:"Jan", hours:200000, injuries:0, goal:1.2},
+  {month:"Feb", hours:200000, injuries:0, goal:1.2},
+  {month:"Mar", hours:200000, injuries:1, goal:1.2},
+  {month:"Apr", hours:200000, injuries:1, goal:1.2},
+  {month:"May", hours:200000, injuries:0, goal:1.2},
+  {month:"Jun", hours:null,   injuries:null, goal:1.2},
+  {month:"Jul", hours:null,   injuries:null, goal:1.2},
+  {month:"Aug", hours:null,   injuries:null, goal:1.2},
+  {month:"Sep", hours:null,   injuries:null, goal:1.2},
+  {month:"Oct", hours:null,   injuries:null, goal:1.2},
+  {month:"Nov", hours:null,   injuries:null, goal:1.2},
+  {month:"Dec", hours:null,   injuries:null, goal:1.2},
 ];
 // Reference rolling I&I rate actuals (pre-2026 calc) for chart continuity if hours not yet entered
 const II_RATE_ACTUAL_REF=[1.22,0.96,0.94,1.16,0.93,null,null,null,null,null,null,null];
@@ -821,6 +834,14 @@ const II_RATE_ACTUAL_REF=[1.22,0.96,0.94,1.16,0.93,null,null,null,null,null,null
 // Rolling 12-Month Recordable Injuries — goal vs actual (still editable per-month)
 const REC_INJ_GOAL  =[10.58,10.17,9.75,9.33,8.92,8.50,8.08,7.67,7.25,6.83,6.42,6.00];
 const DEFAULT_REC_INJ_ACTUAL=[10,8,9,10,8,7,6,4,4,3,3,2];
+
+// Monthly recordable injury COUNTS per year (for year-over-year trend comparison).
+// These are editable; seeded from the I&I case log where possible on first load.
+const REC_BY_MONTH_DEFAULT={
+  2024:[2,3,1,2,0,1,2,1,0,3,0,1],
+  2025:[1,1,0,1,2,1,1,1,0,2,0,1],
+  2026:[0,0,1,1,0,null,null,null,null,null,null,null],
+};
 
 // Weekly/monthly audit completion — goal vs YTD actual totals (Jan-Sep snapshot)
 const AUDIT_METRICS=[
@@ -1045,6 +1066,11 @@ function applyDefaults(){
   if(!S.sched)    S.sched=JSON.parse(JSON.stringify(DEFAULT_SCHED));
   mergeDefault('rec',DEFAULT_REC);
   if(!S.rollingTable) S.rollingTable=JSON.parse(JSON.stringify(DEFAULT_ROLLING_TABLE));
+  // Migration: user requested a flat 1.2 I&I rate target across all months.
+  if(!S.iiGoalMigrated){
+    S.rollingTable.forEach(m=>{m.goal=1.2;});
+    S.iiGoalMigrated=true;
+  }
   if(!S.recInjActual) S.recInjActual=JSON.parse(JSON.stringify(DEFAULT_REC_INJ_ACTUAL));
   if(!S.iiCases)  S.iiCases=JSON.parse(JSON.stringify(DEFAULT_II_CASES));
   if(!S.nextId)   S.nextId=200;
@@ -1072,6 +1098,32 @@ function applyDefaults(){
     if(tm.higherIsBetter===undefined) tm.higherIsBetter='more';
     if(!tm.history) tm.history={};
   });
+  // Editable audit completion — expand each metric's monthly array to a full
+  // 12 entries so the whole calendar year can be entered/edited.
+  if(!S.auditData){
+    S.auditData=AUDIT_METRICS.map(a=>{
+      const monthly=[];for(let i=0;i<12;i++) monthly.push(a.monthly[i]!==undefined?a.monthly[i]:null);
+      return {label:a.label,cadence:a.cadence,monthly,ytdGoal:a.ytdGoal};
+    });
+  }
+  // Editable meeting cadence — store as {actual,goal} per month for 12 months.
+  if(!S.meetingData){
+    S.meetingData=MEETING_METRICS.map(m=>{
+      const monthly=[];
+      for(let i=0;i<12;i++){
+        const cell=m.monthly[i];
+        if(cell!==undefined&&typeof cell==='string'&&cell.includes('/')){
+          const [a,g]=cell.split('/').map(Number);
+          monthly.push({a:isNaN(a)?null:a,g:isNaN(g)?null:g});
+        }else monthly.push({a:null,g:null});
+      }
+      return {label:m.label,cadence:m.cadence,monthly};
+    });
+  }
+  // Multi-year recordable counts by month (for YoY trend graph). Editable.
+  if(!S.recByMonth){
+    S.recByMonth=JSON.parse(JSON.stringify(REC_BY_MONTH_DEFAULT));
+  }
 }
 
 // saveS() pushes the full current state to Firebase. All connected
@@ -1529,10 +1581,12 @@ function rebuildAll(){
   }
 }
 function del(id){
-  if(!confirm('Delete this task?')) return;
-  S.actions=S.actions.filter(a=>a.id!==id);
+  const kids=S.actions.filter(a=>a.parentId===id);
+  const msg=kids.length?`Delete this plan and its ${kids.length} sub-action${kids.length===1?'':'s'}?`:'Delete this task?';
+  if(!confirm(msg)) return;
+  S.actions=S.actions.filter(a=>a.id!==id&&a.parentId!==id);
   saveS();rebuildAll();
-  toast('Task deleted','#FF453A');
+  toast('Deleted','#FF453A');
 }
 // Reorder an action by moving it to the position of the target row.
 // Operates on the master S.actions order so it persists for everyone.
@@ -1557,30 +1611,56 @@ function toggleDone(id){
 // ════════════════════════════════════════════════════
 // ACTION ROW
 // ════════════════════════════════════════════════════
-function buildRow(a){
+function buildRow(a,isSub){
   const done=a.status==='Complete';
   const cmtCount=(S.comments[a.id]||[]).length;
-  const dueVal=a.dueDate||'';
+  const kids=S.actions.filter(x=>x.parentId===a.id);
+  const hasKids=kids.length>0;
+  const collapsed=actionCollapse[a.id]===true;
   // contenteditable renders full text immediately (no autoGrow needed), word-wraps naturally
-  const taskStyle=`min-width:170px;max-width:280px;font-size:12px;font-weight:${done?400:500};${done?'text-decoration:line-through;color:var(--muted)':'color:var(--ink)'};outline:none;border:1.5px solid transparent;border-radius:7px;padding:6px 8px;line-height:1.5;word-wrap:break-word;white-space:pre-wrap;cursor:text;transition:all .15s;min-height:28px`;
-  return `<tr id="r${a.id}" class="${done?'done-row':''}" draggable="true" data-actid="${a.id}">
+  const fw=isSub?400:(hasKids?700:500);
+  const taskStyle=`min-width:160px;max-width:280px;font-size:12px;font-weight:${done?400:fw};${done?'text-decoration:line-through;color:var(--muted)':'color:var(--ink)'};outline:none;border:1.5px solid transparent;border-radius:7px;padding:6px 8px;line-height:1.5;word-wrap:break-word;white-space:pre-wrap;cursor:text;transition:all .15s;min-height:28px`;
+  const rowCls=`${done?'done-row':''}${isSub?' sub-row':''}${hasKids?' parent-row':''}`;
+  const caret=hasKids?`<span class="sub-caret" onclick="toggleActionCollapse(${a.id})" title="${collapsed?'Expand':'Collapse'} sub-actions">${collapsed?'▸':'▾'}</span>`:(isSub?'<span class="sub-indent"></span>':'');
+  let html=`<tr id="r${a.id}" class="${rowCls}" draggable="true" data-actid="${a.id}"${isSub?` data-parent="${a.parentId}"`:''}>
     <td style="width:22px;padding-right:0"><span class="drag-handle" title="Drag to reorder">⠿</span></td>
     <td><button class="chk${done?' on':''}" onclick="toggleDone(${a.id})">${done?'✓':''}</button></td>
-    <td style="max-width:280px;min-width:170px"><div contenteditable="true" style="${taskStyle}" onfocus="_editingCell=true;this.style.borderColor='var(--blue)';this.style.background='var(--blue-lt)'" onblur="_editingCell=false;upd(${a.id},'task',this.innerText.trim());this.style.borderColor='transparent';this.style.background='transparent'" onmouseenter="if(document.activeElement!==this)this.style.borderColor='var(--border2)'" onmouseleave="if(document.activeElement!==this){this.style.borderColor='transparent';this.style.background='transparent'}">${esc(a.task)}</div></td>
+    <td style="max-width:280px;min-width:160px"><div style="display:flex;align-items:flex-start;gap:4px">${caret}<div contenteditable="true" style="${taskStyle};flex:1" onfocus="_editingCell=true;this.style.borderColor='var(--blue)';this.style.background='var(--blue-lt)'" onblur="_editingCell=false;upd(${a.id},'task',this.innerText.trim());this.style.borderColor='transparent';this.style.background='transparent'" onmouseenter="if(document.activeElement!==this)this.style.borderColor='var(--border2)'" onmouseleave="if(document.activeElement!==this){this.style.borderColor='transparent';this.style.background='transparent'}">${esc(a.task)}</div>${hasKids?`<span class="sub-count" title="${kids.length} sub-action${kids.length===1?'':'s'}">${kids.filter(k=>k.status==='Complete').length}/${kids.length}</span>`:''}</div></td>
     <td><select class="esel" onchange="upd(${a.id},'owner',this.value)">${opts(PERSON_OPTS,a.owner)}</select></td>
     <td><select class="esel" onchange="upd(${a.id},'status',this.value)">${opts(STATUS_OPTS,a.status)}</select></td>
     <td><select class="esel" onchange="upd(${a.id},'pri',this.value)">${opts(PRI_OPTS,a.pri)}</select></td>
     <td>${dueDateCell(a)}</td>
     <td><select class="esel" onchange="upd(${a.id},'prog',this.value)">${opts(PROG_OPTS,a.prog)}</select></td>
     <td>
-      <div style="display:flex;gap:5px;align-items:center">
+      <div style="display:flex;gap:4px;align-items:center">
+        ${!isSub?`<button class="btn btn-ghost btn-icon" onclick="addSubAction(${a.id})" title="Add sub-action">➕</button>`:''}
         <button class="btn btn-ghost btn-icon" onclick="openComments(${a.id})" title="Comments & Updates">
           💬${cmtCount>0?`<span style="position:absolute;top:-3px;right:-3px;font-size:8px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 4px;line-height:1.3">${cmtCount}</span>`:''}
         </button>
-        <button class="btn btn-ghost btn-icon" onclick="del(${a.id})" title="Delete task" style="color:var(--red)">🗑️</button>
+        <button class="btn btn-ghost btn-icon" onclick="del(${a.id})" title="Delete${hasKids?' (and its sub-actions)':''}" style="color:var(--red)">🗑️</button>
       </div>
     </td>
   </tr>`;
+  // Render children directly under parent (unless collapsed)
+  if(hasKids&&!collapsed){
+    html+=kids.map(k=>buildRow(k,true)).join('');
+  }
+  return html;
+}
+const actionCollapse={};
+function toggleActionCollapse(id){actionCollapse[id]=!actionCollapse[id];rebuildAll();}
+function addSubAction(parentId){
+  const parent=S.actions.find(a=>a.id===parentId);
+  if(!parent) return;
+  const id=S.nextId++;
+  // Insert the new sub-action right after the parent (and any existing children)
+  const parentIdx=S.actions.findIndex(a=>a.id===parentId);
+  let insertIdx=parentIdx+1;
+  while(insertIdx<S.actions.length&&S.actions[insertIdx].parentId===parentId) insertIdx++;
+  S.actions.splice(insertIdx,0,{id,parentId,task:'New sub-action…',owner:parent.owner,status:'Open',pri:parent.pri,target:parent.target,dueDate:'',prog:parent.prog});
+  actionCollapse[parentId]=false;
+  saveS();rebuildAll();
+  toast('Sub-action added','#1FB55B');
 }
 
 // Dual-mode due date: a dropdown for Q1/Q2/.../recurring buckets, plus
@@ -2029,48 +2109,92 @@ function tableShell(rows){
 function renderGroupedActions(fl){
   const wrap=document.getElementById('actions-groups');
   if(!wrap) return;
-  if(!fl.length){
+  // Only render top-level rows here; sub-actions render under their parents.
+  // But keep a parent visible if it OR any of its children matched the filter.
+  const matchedIds=new Set(fl.map(a=>a.id));
+  const topLevel=fl.filter(a=>!a.parentId);
+  // Also include parents whose children matched even if the parent itself didn't
+  fl.forEach(a=>{if(a.parentId){const p=S.actions.find(x=>x.id===a.parentId);if(p&&!topLevel.includes(p)) topLevel.push(p);}});
+  if(!topLevel.length){
     wrap.innerHTML=`<div class="card"><div style="padding:32px;text-align:center;color:var(--muted)">No tasks match this view. <a class="lnk" href="#" onclick="clearF();return false">Clear filters</a></div></div>`;
     return;
   }
   if(groupBy==='none'){
+    const active=topLevel.filter(a=>a.status!=='Complete');
+    const doneTop=topLevel.filter(a=>a.status==='Complete');
     wrap.innerHTML=`<div class="card">
-      <div class="info-bar">✏️ Tap any field to edit inline. ⠿ Drag the handle to reorder. 💬 Comments, 🗑️ delete. All changes sync live to the whole team.</div>
-      ${tableShell(fl.map(buildRow).join(''))}
-    </div>`;
+      <div class="info-bar">✏️ Tap any field to edit inline. ⠿ Drag to reorder. ➕ adds a sub-action under a plan. 💬 Comments, 🗑️ delete.</div>
+      ${tableShell(active.map(a=>buildRow(a)).join(''))}
+    </div>
+    ${doneTop.length?completedSection('none',doneTop):''}`;
     autoGrowAll();initDragLists();
     return;
   }
   let groups={};
   if(groupBy==='owner'){
     PERSON_OPTS.forEach(p=>groups[p]=[]);
-    fl.forEach(a=>{(groups[a.owner]=groups[a.owner]||[]).push(a);});
+    topLevel.forEach(a=>{(groups[a.owner]=groups[a.owner]||[]).push(a);});
   }else{ // status
     STATUS_OPTS.forEach(s=>groups[s]=[]);
-    fl.forEach(a=>{(groups[a.status]=groups[a.status]||[]).push(a);});
+    topLevel.forEach(a=>{(groups[a.status]=groups[a.status]||[]).push(a);});
   }
   const colorMap=groupBy==='owner'
     ? Object.fromEntries(Object.values(TEAM).map(t=>[t.name,t.color]))
-    : {Complete:"#30D158","On Schedule":"#64D2FF",Behind:"#FF453A","At-Risk":"#FF9F0A","Not Started":"#BF5AF2",Open:"#8E8E93",Ongoing:"#0A84FF","On Hold":"#FF9F0A"};
+    : {Complete:"#1FB55B","On Schedule":"#3BB8E0",Behind:"#F0453E","At-Risk":"#F5A623","Not Started":"#9B5DE5",Open:"#8A9099",Ongoing:"#0A7AFF","On Hold":"#F5A623"};
 
-  wrap.innerHTML='<div class="info-bar" style="border-radius:14px 14px 0 0;border:1px solid var(--border);border-bottom:none">✏️ Tap any field to edit instantly. 💬 for comments, 🗑️ to delete. Click a group header to collapse it.</div>'
-    + Object.entries(groups).filter(([k,items])=>items.length).map(([groupName,items],idx)=>{
-      const color=colorMap[groupName]||'#8E8E93';
+  // When grouping by person, split each person's completed items into a sub-section.
+  wrap.innerHTML='<div class="info-bar" style="border-radius:14px 14px 0 0;border:1px solid var(--border);border-bottom:none">✏️ Tap any field to edit. ⠿ Drag to reorder. ➕ sub-action. Completed items collapse into their own section. Click a group header to collapse.</div>'
+    + Object.entries(groups).filter(([k,items])=>items.length).map(([groupName,items],idx,arr)=>{
+      const color=colorMap[groupName]||'#8A9099';
       const gid='grp-'+groupBy+'-'+groupName.replace(/[^a-zA-Z0-9]/g,'');
       const collapsed=groupCollapse[gid]===true;
-      return `<div class="card" style="border-radius:0;border-top:none;${idx===Object.entries(groups).filter(([k,it])=>it.length).length-1?'border-radius:0 0 14px 14px;':''}">
+      const isLast=idx===arr.length-1;
+      const activeItems=items.filter(a=>a.status!=='Complete');
+      const doneItems=items.filter(a=>a.status==='Complete');
+      const doneId=gid+'-done';
+      const doneCollapsed=groupCollapse[doneId]!==false; // completed collapsed by default
+      let inner=tableShell(activeItems.map(a=>buildRow(a)).join('')||`<tr><td colspan="9" style="padding:18px;text-align:center;color:var(--muted)">No active items</td></tr>`);
+      if(doneItems.length){
+        inner+=`<div class="done-subsection">
+          <div class="done-subhdr" onclick="toggleGroup('${doneId}')">
+            <span>✓ Completed (${doneItems.length})</span><span>${doneCollapsed?'▸':'▾'}</span>
+          </div>
+          <div id="${doneId}" class="${doneCollapsed?'hidden':''}">${tableShell(doneItems.map(a=>buildRow(a)).join(''))}</div>
+        </div>`;
+      }
+      return `<div class="card" style="border-radius:0;border-top:none;${isLast?'border-radius:0 0 14px 14px;':''}">
         <div class="ch" style="cursor:pointer;background:${color}10" onclick="toggleGroup('${gid}')">
           <span class="ct"><span style="width:10px;height:10px;border-radius:50%;background:${color};display:inline-block"></span>${groupName}<span class="cs" style="margin-left:4px">(${items.length})</span></span>
           <span style="font-size:14px;color:var(--muted)">${collapsed?'▸':'▾'}</span>
         </div>
-        <div id="${gid}" class="${collapsed?'hidden':''}">${tableShell(items.map(buildRow).join(''))}</div>
+        <div id="${gid}" class="${collapsed?'hidden':''}">${inner}</div>
       </div>`;
     }).join('');
   autoGrowAll();initDragLists();
 }
+// Collapsed "Completed" section used in the Flat List view.
+function completedSection(scope,doneItems){
+  const id='flat-done-section';
+  const collapsed=groupCollapse[id]!==false; // collapsed by default
+  return `<div class="card">
+    <div class="done-subhdr" style="border-radius:14px 14px 0 0" onclick="toggleGroup('${id}')">
+      <span>✓ Completed (${doneItems.length})</span><span>${collapsed?'▸':'▾'}</span>
+    </div>
+    <div id="${id}" class="${collapsed?'hidden':''}">${tableShell(doneItems.map(a=>buildRow(a)).join(''))}</div>
+  </div>`;
+}
 const groupCollapse={};
 function toggleGroup(gid){
-  groupCollapse[gid]=!groupCollapse[gid];
+  // Done sub-sections default to collapsed (undefined treated as collapsed),
+  // so their first toggle must open them. Regular groups default to open.
+  const isDoneSection=gid.endsWith('-done')||gid==='flat-done-section';
+  if(isDoneSection){
+    // current visible state: visible when ===false; default(undefined)=collapsed
+    const currentlyCollapsed=groupCollapse[gid]!==false;
+    groupCollapse[gid]=currentlyCollapsed?false:true; // flip
+  }else{
+    groupCollapse[gid]=!groupCollapse[gid];
+  }
   applyF();
 }
 function clearF(){['fa-person','fa-status','fa-prog','fa-pri'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='All';});const e=document.getElementById('fa-search');if(e)e.value='';applyF();}
@@ -2111,6 +2235,9 @@ function fmtVal(v,fmt){
   return v;
 }
 function buildMetrics(){
+  const curYear=new Date().getFullYear();
+  const lastYear=curYear-1;
+  const twoYearsAgo=curYear-2;
   // ── Computed helpers ──
   const daysSinceLastRecordable=()=>{
     const recordableDates=S.iiCases.filter(c=>c.caseType==='Recordable').map(c=>new Date(c.date+'T00:00:00')).filter(d=>!isNaN(d));
@@ -2123,32 +2250,64 @@ function buildMetrics(){
     const recordable=S.iiCases.filter(c=>c.caseType==='Recordable').map(c=>c.date).filter(Boolean).sort();
     return recordable.length?recordable[recordable.length-1]:null;
   })();
-
-  // ── 1. Annual scorecard (editable, top of mind) ──
-  const mkeys=Object.keys(S.metrics);
   const daysNoInjury=daysSinceLastRecordable();
-  const enteredMonthsForRate=S.rollingTable.filter(m=>m.hours&&m.injuries!==null&&m.injuries!==undefined);
-  const ytdHoursForRate=enteredMonthsForRate.reduce((s,m)=>s+m.hours,0);
-  const ytdInjuriesForRate=enteredMonthsForRate.reduce((s,m)=>s+m.injuries,0);
-  const computedRecordableRate=ytdHoursForRate>0?(ytdInjuriesForRate*200000/ytdHoursForRate):null;
-  const cardsHTML=mkeys.map(k=>{
+
+  // ── CALENDAR-YEAR I&I RATE — cumulative YTD, recomputed each month ──
+  // For each month, take the running total of recordables and hours from
+  // January through that month, and compute the OSHA rate on those totals.
+  // This yields a single year-to-date rate that evolves month to month.
+  const ytdRateSeries=[]; // calendar-year cumulative rate per month
+  let cumHours=0,cumInj=0,lastEnteredIdx=-1;
+  S.rollingTable.forEach((m,i)=>{
+    if(m.hours&&m.injuries!==null&&m.injuries!==undefined){
+      cumHours+=m.hours;cumInj+=m.injuries;lastEnteredIdx=i;
+      ytdRateSeries.push(cumHours>0?(cumInj*200000/cumHours):null);
+    }else{
+      ytdRateSeries.push(null);
+    }
+  });
+  const ytdHours=cumHours, ytdInjuries=cumInj;
+  const calYearRate=ytdHours>0?(ytdInjuries*200000/ytdHours):null;
+  const iiGoalFlat=1.2;
+
+  // ── ROLLING 12-MONTH I&I RATE — uses the trailing 12 months of data ──
+  // (Here that's all entered months capped at 12.)
+  const entered=S.rollingTable.filter(m=>m.hours&&m.injuries!==null&&m.injuries!==undefined);
+  const trailing=entered.slice(-12);
+  const roll12Hours=trailing.reduce((s,m)=>s+m.hours,0);
+  const roll12Inj=trailing.reduce((s,m)=>s+m.injuries,0);
+  const rolling12Rate=roll12Hours>0?(roll12Inj*200000/roll12Hours):null;
+
+  const computedRecordableRate=calYearRate; // shown near Days Without Injury
+
+  // ── 1. Annual scorecard — OSHA rates FIRST, then the rest ──
+  const mkeys=Object.keys(S.metrics);
+  // Build the special OSHA cards that lead the scorecard.
+  const oshaLeadCards=`
+    <div class="mcard" style="border:1.5px solid #1FB55B;background:linear-gradient(180deg,#F2FBF5,#fff)">
+      <div class="mcard-label" style="color:#15803D">⭐ ${curYear} I&I Rate — Calendar YTD</div>
+      <div style="font-size:30px;font-weight:900;color:${calYearRate===null?'var(--muted)':calYearRate<=iiGoalFlat?'#15803D':'#A6271E'};padding:6px 0;letter-spacing:-1px">${calYearRate===null?'—':calYearRate.toFixed(2)}</div>
+      <div class="mcard-sub">Goal ≤ ${iiGoalFlat.toFixed(2)} · ${ytdInjuries} rec. ÷ ${ytdHours.toLocaleString()} hrs YTD</div>
+    </div>
+    <div class="mcard" style="border:1.5px solid #0A7AFF;background:linear-gradient(180deg,#F0F7FF,#fff)">
+      <div class="mcard-label" style="color:#0060DF">📉 Rolling 12-Month I&I Rate</div>
+      <div style="font-size:30px;font-weight:900;color:${rolling12Rate===null?'var(--muted)':rolling12Rate<=iiGoalFlat?'#15803D':'#A6271E'};padding:6px 0;letter-spacing:-1px">${rolling12Rate===null?'—':rolling12Rate.toFixed(2)}</div>
+      <div class="mcard-sub">Goal ≤ ${iiGoalFlat.toFixed(2)} · trailing 12 months</div>
+    </div>
+    <div class="mcard" style="text-align:left">
+      <div class="mcard-label">🩹 Days Without Injury</div>
+      <div style="font-size:30px;font-weight:900;color:${daysNoInjury===null?'var(--muted)':daysNoInjury>=30?'#15803D':'#A6271E'};padding:6px 0;letter-spacing:-1px">${daysNoInjury===null?'—':daysNoInjury}</div>
+      <div class="mcard-sub">${lastRecordableDate?`Since last recordable (${lastRecordableDate})`:'No recordable cases logged'}</div>
+    </div>
+    <div class="mcard">
+      <div class="mcard-label">📊 Recordable Injury Rate</div>
+      <div style="font-size:30px;font-weight:900;color:var(--ink);padding:6px 0;letter-spacing:-1px">${computedRecordableRate===null?'—':computedRecordableRate.toFixed(2)}</div>
+      <div class="mcard-sub">${ytdHours?`${ytdInjuries} rec. × 200k ÷ ${ytdHours.toLocaleString()} hrs`:'Enter hours & injuries below'}</div>
+    </div>`;
+  // The remaining manually-entered scorecard cards (skip the ones now computed above).
+  const skipKeys=new Set(['days_no_injury','recordable_rate']);
+  const cardsHTML=oshaLeadCards+mkeys.filter(k=>!skipKeys.has(k)).map(k=>{
     const m=S.metrics[k];
-    if(k==='days_no_injury'){
-      // Computed automatically from the I&I case log — not manually entered.
-      return `<div class="mcard">
-        <div class="mcard-label">${m.label}</div>
-        <div style="font-size:28px;font-weight:900;color:${daysNoInjury===null?'var(--muted)':daysNoInjury>=30?'#1B5E20':'#A6271E'};padding:7px 0">${daysNoInjury===null?'—':daysNoInjury}</div>
-        <div class="mcard-sub">${lastRecordableDate?`Since last recordable (${lastRecordableDate})`:'No recordable cases logged yet'}</div>
-      </div>`;
-    }
-    if(k==='recordable_rate'){
-      // Computed automatically from hours worked + recordable injuries (OSHA formula), not manually entered.
-      return `<div class="mcard">
-        <div class="mcard-label">${m.label}</div>
-        <div style="font-size:28px;font-weight:900;color:var(--ink);padding:7px 0">${computedRecordableRate===null?'—':computedRecordableRate.toFixed(2)}</div>
-        <div class="mcard-sub">${ytdHoursForRate?`${ytdInjuriesForRate} recordable${ytdInjuriesForRate===1?'':'s'} × 200,000 ÷ ${ytdHoursForRate.toLocaleString()} hrs`:'Enter hours & injuries below'}</div>
-      </div>`;
-    }
     return `<div class="mcard">
       <div class="mcard-label">${m.label}</div>
       <input class="mcard-input" type="text" value="${m.value}" onchange="updMetric('${k}',this.value)" placeholder="Enter value…"/>
@@ -2177,25 +2336,39 @@ function buildMetrics(){
       <td style="font-weight:700">${m.month}</td>
       <td><input type="number" class="esel" style="width:90px" value="${m.hours??''}" placeholder="Hours" onchange="updRolling(${i},'hours',this.value)"/></td>
       <td><input type="number" class="esel" style="width:70px" value="${m.injuries??''}" placeholder="Inj." onchange="updRolling(${i},'injuries',this.value)"/></td>
-      <td style="font-weight:800;color:${rate===null?'var(--muted)':onTarget?'#1B5E20':'#A6271E'}">${rate===null?'—':rate.toFixed(2)}</td>
+      <td style="font-weight:800;color:${rate===null?'var(--muted)':onTarget?'#15803D':'#A6271E'}">${rate===null?'—':rate.toFixed(2)}</td>
       <td><input type="number" step="0.01" class="esel" style="width:70px" value="${m.goal}" onchange="updRolling(${i},'goal',this.value)"/></td>
     </tr>`;
   }).join('');
-  const rollingHTML=`<div class="twrap"><table><thead><tr><th>Month</th><th>Hours Worked</th><th>Recordable Injuries</th><th>Computed I&I Rate</th><th>Goal</th></tr></thead><tbody>${rollingRows}</tbody></table></div>`;
+  const rollingHTML=`<div class="twrap"><table><thead><tr><th>Month</th><th>Hours Worked</th><th>Recordable Injuries</th><th>Monthly Rate</th><th>Goal</th></tr></thead><tbody>${rollingRows}</tbody></table></div>`;
 
-  // Build chart data from rolling table (fallback to reference actuals if no hours entered yet)
-  const iiActualSeries=S.rollingTable.map((m,i)=>{
-    if(m.hours&&m.injuries!==null&&m.injuries!==undefined&&m.hours>0) return m.injuries*200000/m.hours;
-    return II_RATE_ACTUAL_REF[i];
-  });
-  const iiGoalSeries=S.rollingTable.map(m=>m.goal);
-  const iiMaxVal=Math.max(...iiGoalSeries,...iiActualSeries.filter(v=>v!==null));
+  // Trending chart: cumulative calendar-YTD rate vs flat 1.2 goal line.
+  const iiGoalSeries=MONTHS.map(()=>iiGoalFlat);
+  const iiMaxVal=Math.max(iiGoalFlat,...ytdRateSeries.filter(v=>v!==null),0.5)*1.15;
   const iiChart=buildLineChart(MONTHS,[
-    {name:"Goal",data:iiGoalSeries,color:"#8E8E93"},
-    {name:"Actual",data:iiActualSeries,color:"#0A84FF"},
+    {name:`${curYear} Cumulative YTD Rate`,data:ytdRateSeries,color:"#0A7AFF"},
+    {name:`Goal (${iiGoalFlat.toFixed(2)})`,data:iiGoalSeries,color:"#8A9099"},
   ],iiMaxVal,2);
 
-  // ── 4. Rolling 12-Month Recordable Injuries chart — editable actuals ──
+  // ── 4. Multi-year recordable injury trend (current vs last 2 years) ──
+  const yrKeys=[twoYearsAgo,lastYear,curYear];
+  const yrColors={[twoYearsAgo]:"#C7CAD1",[lastYear]:"#F5A623",[curYear]:"#F0453E"};
+  const recSeries=yrKeys.map(y=>({
+    name:String(y),
+    data:(S.recByMonth[y]||MONTHS.map(()=>null)).map(v=>v===null||v===undefined?null:v),
+    color:yrColors[y]
+  }));
+  const recMax=Math.max(1,...recSeries.flatMap(s=>s.data.filter(v=>v!==null)))*1.2;
+  const recTrendChart=buildLineChart(MONTHS,recSeries,recMax,0);
+  // Editable multi-year table
+  const recByMonthRows=yrKeys.map(y=>`<tr>
+    <td style="font-weight:800;color:${yrColors[y]}">${y}</td>
+    ${MONTHS.map((mo,i)=>`<td style="padding:4px"><input type="number" class="esel" style="width:42px;text-align:center" value="${(S.recByMonth[y]||[])[i]??''}" onchange="updRecByMonth(${y},${i},this.value)"/></td>`).join('')}
+    <td style="font-weight:800;text-align:center">${(S.recByMonth[y]||[]).reduce((s,v)=>s+(v||0),0)}</td>
+  </tr>`).join('');
+  const recByMonthTable=`<div class="twrap"><table><thead><tr><th>Year</th>${MONTHS.map(m=>`<th style="text-align:center">${m}</th>`).join('')}<th style="text-align:center">Total</th></tr></thead><tbody>${recByMonthRows}</tbody></table></div>`;
+
+  // ── 4b. Rolling 12-Month Recordable Injuries chart — editable actuals ──
   const recInjRows=MONTHS.map((mo,i)=>`<tr>
     <td style="font-weight:700">${mo}</td>
     <td style="color:var(--muted)">${REC_INJ_GOAL[i].toFixed(2)}</td>
@@ -2204,56 +2377,37 @@ function buildMetrics(){
   const recInjTableHTML=`<div class="twrap"><table><thead><tr><th>Month</th><th>Rolling Goal</th><th>Rolling Actual</th></tr></thead><tbody>${recInjRows}</tbody></table></div>`;
   const injMaxVal=Math.max(...REC_INJ_GOAL,...S.recInjActual.filter(v=>v!==null));
   const injChart=buildLineChart(MONTHS,[
-    {name:"Rolling Goal",data:REC_INJ_GOAL,color:"#8E8E93"},
-    {name:"Rolling Actual",data:S.recInjActual,color:"#FF453A"},
+    {name:"Rolling Goal",data:REC_INJ_GOAL,color:"#8A9099"},
+    {name:"Rolling Actual",data:S.recInjActual,color:"#F0453E"},
   ],injMaxVal,0);
 
-  // ── 5. Audit completion table (PPE/JSA/STF/LOTO/Cell Inspections) ──
-  const auditMonths=MONTHS.slice(0,9); // Jan-Sep snapshot
-  const auditHTML=`<div class="twrap"><table><thead><tr><th>Audit Type</th><th>Cadence Goal</th>${auditMonths.map(m=>`<th>${m}</th>`).join('')}<th>YTD Goal</th></tr></thead><tbody>
-    ${AUDIT_METRICS.map(a=>`<tr>
-      <td style="font-weight:700;min-width:200px">${a.label}</td>
-      <td style="color:var(--muted);font-size:11px;white-space:nowrap">${a.cadence}</td>
-      ${a.monthly.map((v,i)=>{
-        if(v===null) return `<td style="text-align:center;color:var(--muted)">—</td>`;
-        const prev=i>0?a.monthly[i-1]:null;
-        let deltaHTML='';
-        if(prev!==null&&prev!==undefined&&prev!==0){
-          const delta=v-prev;
-          const deltaColor=delta>=0?'#1B5E20':'#A6271E';
-          const deltaArrow=delta>0?'↑':delta<0?'↓':'→';
-          deltaHTML=`<div style="font-size:8px;color:${deltaColor};font-weight:700;margin-top:1px">${deltaArrow}${Math.abs(delta)}</div>`;
-        }
-        return `<td style="text-align:center"><div>${v}</div>${deltaHTML}</td>`;
-      }).join('')}
-      <td style="text-align:center;font-weight:700;color:var(--blue)">${a.ytdGoal||'—'}</td>
+  // ── 5. Audit completion table — editable, full calendar year, goal column ──
+  const auditHTML=`<div class="twrap"><table><thead><tr><th style="min-width:190px">Audit Type</th><th>Goal / Cadence</th>${MONTHS.map(m=>`<th style="text-align:center">${m}</th>`).join('')}</tr></thead><tbody>
+    ${S.auditData.map((a,ai)=>`<tr>
+      <td style="font-weight:700">${a.label}</td>
+      <td style="color:var(--muted);font-size:10px;white-space:nowrap">${a.cadence}</td>
+      ${a.monthly.map((v,i)=>`<td style="padding:4px"><input type="number" class="esel" style="width:44px;text-align:center" value="${v??''}" onchange="updAudit(${ai},${i},this.value)"/></td>`).join('')}
     </tr>`).join('')}
   </tbody></table></div>`;
 
-  // ── 6. Recurring meeting cadence ──
-  const meetingHTML=`<div class="twrap"><table><thead><tr><th>Meeting / Cadence Item</th><th>Frequency</th>${auditMonths.map(m=>`<th>${m}</th>`).join('')}</tr></thead><tbody>
-    ${MEETING_METRICS.map(m=>`<tr>
-      <td style="font-weight:700;min-width:200px">${m.label}</td>
-      <td style="color:var(--muted);font-size:11px">${m.cadence}</td>
-      ${m.monthly.map(v=>{
-        const [a,g]=v.split('/').map(Number);
-        const ok=a>=g;
-        return `<td style="text-align:center;font-weight:700;color:${ok?'#1B5E20':'#A6271E'}">${v}</td>`;
+  // ── 6. Recurring meeting cadence — editable actual/goal per month ──
+  const meetingHTML=`<div class="twrap"><table><thead><tr><th style="min-width:190px">Meeting / Cadence Item</th><th>Frequency</th>${MONTHS.map(m=>`<th style="text-align:center" colspan="1">${m}</th>`).join('')}</tr></thead><tbody>
+    ${S.meetingData.map((m,mi)=>`<tr>
+      <td style="font-weight:700">${m.label}</td>
+      <td style="color:var(--muted);font-size:10px">${m.cadence}</td>
+      ${m.monthly.map((cell,i)=>{
+        const ok=cell.a!==null&&cell.g!==null&&cell.a>=cell.g;
+        const has=cell.a!==null||cell.g!==null;
+        return `<td style="padding:2px;text-align:center"><div style="display:flex;align-items:center;gap:1px;justify-content:center">
+          <input type="number" class="esel" style="width:26px;text-align:center;padding:2px;${has&&ok?'color:#15803D':has?'color:#A6271E':''}" value="${cell.a??''}" title="Actual" onchange="updMeeting(${mi},${i},'a',this.value)"/>
+          <span style="font-size:9px;color:var(--muted)">/</span>
+          <input type="number" class="esel" style="width:26px;text-align:center;padding:2px;color:var(--muted)" value="${cell.g??''}" title="Goal" onchange="updMeeting(${mi},${i},'g',this.value)"/>
+        </div></td>`;
       }).join('')}
     </tr>`).join('')}
   </tbody></table></div>`;
 
-  // ── 7a. OSHA-standard Total Case Incident Rate — computed from entered hours + recordables ──
-  // Formula: (Number of recordable cases × 200,000) ÷ Total hours worked
-  const curYear=new Date().getFullYear();
-  const lastYear=curYear-1;
-  const enteredMonths=S.rollingTable.filter(m=>m.hours&&m.injuries!==null&&m.injuries!==undefined);
-  const ytdHours=enteredMonths.reduce((s,m)=>s+m.hours,0);
-  const ytdInjuries=enteredMonths.reduce((s,m)=>s+m.injuries,0);
-  const ytdOshaRate=ytdHours>0?(ytdInjuries*200000/ytdHours):null;
-  const oshaRateGoal=S.rollingTable[S.rollingTable.length-1]?.goal ?? null;
-
-  // Year-over-year recordable case counts, computed straight from the case log
+  // ── 7a. Year-over-year recordable case summary (from case log) ──
   const recordablesByYear={};
   S.iiCases.forEach(c=>{
     if(c.caseType!=='Recordable'||!c.date) return;
@@ -2264,14 +2418,14 @@ function buildMetrics(){
   const lastYearCount=recordablesByYear[String(lastYear)]||0;
   const yoyDelta=curYearCount-lastYearCount;
   const yoyPct=lastYearCount>0?Math.round((yoyDelta/lastYearCount)*100):(curYearCount>0?100:0);
-  const yoyColor=yoyDelta<=0?'#1B5E20':'#A6271E';
+  const yoyColor=yoyDelta<=0?'#15803D':'#A6271E';
   const yoyArrow=yoyDelta<0?'↓':yoyDelta>0?'↑':'→';
 
   const oshaRateHTML=`<div class="metric-grid">
     <div class="mcard" style="text-align:center">
-      <div class="mcard-label">${curYear} OSHA Incident Rate (YTD)</div>
-      <div style="font-size:28px;font-weight:900;color:${ytdOshaRate===null?'var(--muted)':(oshaRateGoal!==null&&ytdOshaRate<=oshaRateGoal)?'#1B5E20':'#A6271E'};padding:7px 0">${ytdOshaRate===null?'—':ytdOshaRate.toFixed(2)}</div>
-      <div class="mcard-sub">${ytdHours?`${ytdInjuries} recordable${ytdInjuries===1?'':'s'} ÷ ${ytdHours.toLocaleString()} hrs × 200,000`:'Enter hours & injuries in the table below'}</div>
+      <div class="mcard-label">${curYear} I&I Rate (Calendar YTD)</div>
+      <div style="font-size:28px;font-weight:900;color:${calYearRate===null?'var(--muted)':calYearRate<=iiGoalFlat?'#15803D':'#A6271E'};padding:7px 0">${calYearRate===null?'—':calYearRate.toFixed(2)}</div>
+      <div class="mcard-sub">${ytdHours?`${ytdInjuries} rec. ÷ ${ytdHours.toLocaleString()} hrs × 200k`:'Enter hours & injuries below'}</div>
     </div>
     <div class="mcard" style="text-align:center">
       <div class="mcard-label">${curYear} Recordable Cases</div>
@@ -2281,7 +2435,7 @@ function buildMetrics(){
     <div class="mcard" style="text-align:center">
       <div class="mcard-label">${lastYear} Recordable Cases</div>
       <div style="font-size:28px;font-weight:900;color:var(--muted);padding:7px 0">${lastYearCount}</div>
-      <div class="mcard-sub">Same period prior year</div>
+      <div class="mcard-sub">Full prior year</div>
     </div>
     <div class="mcard" style="text-align:center">
       <div class="mcard-label">Year-Over-Year Change</div>
@@ -2376,18 +2530,25 @@ function buildMetrics(){
 
   document.getElementById('pg-metrics').innerHTML=`
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#1B5E20,#30D158)"><span class="ct" style="color:#fff">📈 EHS&S Plant Pulse — Annual Scorecard</span><span class="cs" style="color:rgba(255,255,255,.85)">Editable fields · Saves automatically</span></div>
-      <div class="info-bar">📝 Click any value below to update it. These stay front-and-center for daily pulse.</div>
+      <div class="ch" style="background:linear-gradient(135deg,#0A1A33,#0F2A5C 60%,#1A4DA8)"><span class="ct" style="color:#fff">📈 EHS&S Plant Pulse — ${curYear} Performance</span><span class="cs" style="color:rgba(255,255,255,.85)">Team safety performance for the year · top metrics computed live</span></div>
+      <div class="info-bar">⭐ The first four cards are computed automatically from your hours, recordables, and case log. The rest are editable — click any value to update.</div>
       <div class="metric-grid">${cardsHTML}</div>
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#0E5C73,#0A84FF)"><span class="ct" style="color:#fff">📉 Trending: Rolling I&I Rate — Current vs. History vs. Goal</span><span class="cs" style="color:rgba(255,255,255,.85)">Your current performance, at a glance</span></div>
+      <div class="ch" style="background:linear-gradient(135deg,#0E5C73,#0A7AFF)"><span class="ct" style="color:#fff">📉 Trending: ${curYear} I&I Rate — Cumulative Year-to-Date vs Goal</span><span class="cs" style="color:rgba(255,255,255,.85)">Total rate as it evolves month to month with new incidents & hours</span></div>
       <div style="padding:18px">${iiChart}</div>
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#1B5E20,#0E5C73)"><span class="ct" style="color:#fff">🧮 OSHA Incident Rate — Year-to-Date & Year-Over-Year</span><span class="cs" style="color:rgba(255,255,255,.85)">Computed from hours worked + recordables entered below</span></div>
+      <div class="ch" style="background:linear-gradient(135deg,#8A2426,#F0453E)"><span class="ct" style="color:#fff">📊 Recordable Injuries — ${twoYearsAgo} vs ${lastYear} vs ${curYear}</span><span class="cs" style="color:rgba(255,255,255,.85)">Three-year monthly trend comparison</span></div>
+      <div style="padding:18px">${recTrendChart}</div>
+      <div class="info-bar">📝 Edit any month's recordable count below — the trend chart updates automatically.</div>
+      ${recByMonthTable}
+    </div>
+
+    <div class="card">
+      <div class="ch" style="background:linear-gradient(135deg,#1B5E20,#0E5C73)"><span class="ct" style="color:#fff">🧮 Year-Over-Year Summary</span><span class="cs" style="color:rgba(255,255,255,.85)">Calendar-year rate + recordable case comparison</span></div>
       ${oshaRateHTML}
     </div>
 
@@ -2398,18 +2559,18 @@ function buildMetrics(){
 
     <div class="card">
       <div class="ch"><span class="ct">📋 Audit Compliance & Training — Goal vs. Actual</span><span class="cs">Set a goal, log this month's number, see the trend</span></div>
-      <div class="info-bar">📝 Enter a monthly goal and this month's actual for each — the bar shows how you're tracking, and the sparkline shows the last few months.</div>
+      <div class="info-bar">📝 Enter a monthly goal and this month's actual for each — the bar shows how you're tracking, and the sparkline shows recent months.</div>
       ${trackedCardsHTML}
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#0E5C73,#0A84FF)"><span class="ct" style="color:#fff">✏️ Rolling I&I Rate — Hours Worked & Recordable Injuries (Editable)</span><span class="cs" style="color:rgba(255,255,255,.85)">Rate auto-calculated: Injuries × 200,000 ÷ Hours</span></div>
-      <div class="info-bar">📝 Enter hours worked and recordable injuries for each month — the I&I rate calculates automatically and feeds the trend chart above.</div>
+      <div class="ch" style="background:linear-gradient(135deg,#0E5C73,#0A7AFF)"><span class="ct" style="color:#fff">✏️ Rolling I&I Rate — Hours Worked & Recordable Injuries (Editable)</span><span class="cs" style="color:rgba(255,255,255,.85)">Per-month rate · feeds the cumulative trend chart above</span></div>
+      <div class="info-bar">📝 Enter hours worked and recordable injuries for each month. The cumulative year-to-date rate at the top recalculates automatically.</div>
       ${rollingHTML}
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#8A2426,#FF453A)"><span class="ct" style="color:#fff">📊 Rolling 12-Month Recordable Injuries — Editable Actuals</span></div>
+      <div class="ch" style="background:linear-gradient(135deg,#8A2426,#F0453E)"><span class="ct" style="color:#fff">📊 Rolling 12-Month Recordable Injuries — Editable Actuals</span></div>
       <div class="g2" style="padding:18px">
         <div>${recInjTableHTML}</div>
         <div>${injChart}</div>
@@ -2417,12 +2578,14 @@ function buildMetrics(){
     </div>
 
     <div class="card">
-      <div class="ch"><span class="ct">✅ Audit & Inspection Completion — Monthly Totals vs Goals</span><span class="cs">PPE · JSA · STF · LOTO · Cell Inspections</span></div>
+      <div class="ch"><span class="ct">✅ Audit & Inspection Completion — Full Year (Editable)</span><span class="cs">PPE · JSA · STF · LOTO · Cell Inspections · goals at left</span></div>
+      <div class="info-bar">📝 Enter completions for any month — goals/cadence shown at the left for reference.</div>
       ${auditHTML}
     </div>
 
     <div class="card">
-      <div class="ch"><span class="ct">📅 Recurring Meeting Cadence — Actual / Goal</span></div>
+      <div class="ch"><span class="ct">📅 Recurring Meeting Cadence — Actual / Goal (Editable)</span><span class="cs">Each cell: actual on the left, goal on the right</span></div>
+      <div class="info-bar">📝 Enter actual and goal counts per month (green = goal met). Both numbers are editable per month.</div>
       ${meetingHTML}
     </div>
 
@@ -2439,17 +2602,17 @@ function buildMetrics(){
 
     <div class="card">
       <div class="ch"><span class="ct">📋 I&I Case Log — Full Detail, Fully Editable</span><button class="btn btn-primary btn-sm" onclick="addCase()">➕ Add Case</button></div>
-      <div class="info-bar">✏️ Every field here is editable — date, type, department, occupation, accident/injury type, body part, and description. Add new cases as they occur; the summaries above update automatically.</div>
+      <div class="info-bar">✏️ Every field here is editable. Add new cases as they occur; the summaries and trends above update automatically.</div>
       ${caseLogHTML}
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#4C1D95,#BF5AF2)"><span class="ct" style="color:#fff">🧘 Weekly Ergonomics Pulse</span></div>
+      <div class="ch" style="background:linear-gradient(135deg,#4C1D95,#9B5DE5)"><span class="ct" style="color:#fff">🧘 Weekly Ergonomics Pulse</span></div>
       ${ergoHTML}
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#8A4A00,#FF9F0A)"><span class="ct" style="color:#fff">⚠️ Missed Audits / Training Notes — Rotating Log</span></div>
+      <div class="ch" style="background:linear-gradient(135deg,#8A4A00,#F5A623)"><span class="ct" style="color:#fff">⚠️ Missed Audits / Training Notes — Rotating Log</span></div>
       <div class="top3-list" style="padding:14px 18px">${notesHTML}</div>
     </div>
 
@@ -2525,6 +2688,24 @@ function updRolling(idx,field,val){
 }
 function updRecInj(idx,val){
   S.recInjActual[idx]=val===''?null:parseFloat(val);
+  saveS();buildMetrics();
+  toast('Saved','#30D158');
+}
+function updAudit(ai,mi,val){
+  if(!S.auditData[ai]) return;
+  S.auditData[ai].monthly[mi]=val===''?null:parseFloat(val);
+  saveS();buildMetrics();
+  toast('Saved','#30D158');
+}
+function updMeeting(mi,monthIdx,which,val){
+  if(!S.meetingData[mi]) return;
+  S.meetingData[mi].monthly[monthIdx][which]=val===''?null:parseFloat(val);
+  saveS();buildMetrics();
+  toast('Saved','#30D158');
+}
+function updRecByMonth(year,monthIdx,val){
+  if(!S.recByMonth[year]) S.recByMonth[year]=MONTHS.map(()=>null);
+  S.recByMonth[year][monthIdx]=val===''?null:parseFloat(val);
   saveS();buildMetrics();
   toast('Saved','#30D158');
 }
@@ -2711,7 +2892,7 @@ function buildPersonPage(key){
   const pct=acts.length?Math.round(done/acts.length*100):0;
   const rec=S.rec[key]||{};
   const schedMap={};
-  (S.sched[key]||[]).forEach(e=>{schedMap[e.day+'-'+e.time]=e;});
+  (S.sched[key]||[]).forEach(e=>{const k=e.day+'-'+e.time;(schedMap[k]=schedMap[k]||[]).push(e);});
 
   const mkpis=[["TOTAL",acts.length],["DONE",done],["BEHIND",beh],["AT-RISK",atr],["OPEN",open],["% DONE",pct+"%"]];
   const bannerHTML=`<div style="background:${t.bg};border-radius:14px 14px 0 0">
@@ -2744,19 +2925,21 @@ function buildPersonPage(key){
     </div>`;
   }).join('');
 
-  // Editable calendar grid with Apple-style variable-duration events.
-  // Each event has a `slots` count (1 slot = 30 min); events span multiple
-  // rows via rowspan, and cells covered by a spanning event are skipped.
+  // Editable calendar grid with Apple-style variable-duration events plus
+  // side-by-side rendering when multiple events share the same day+time.
+  // Each event has a `slots` count (1 slot = 30 min). A cell with N events
+  // shows them as N narrower columns; the cell spans the MAX duration among
+  // those events via rowspan, and covered cells below are skipped.
   const TIME_IDX={};TIMES.forEach((t,i)=>{TIME_IDX[t]=i;});
-  // Build an occupancy map: occupied[day][timeIndex] = true when covered by an event starting above
   const occupied={};
   for(let d=1;d<=5;d++){occupied[d]={};}
-  Object.values(schedMap).forEach(ev=>{
-    const startIdx=TIME_IDX[ev.time];
+  Object.keys(schedMap).forEach(k=>{
+    const evs=schedMap[k];
+    const startIdx=TIME_IDX[evs[0].time];
     if(startIdx===undefined) return;
-    const slots=Math.max(1,ev.slots||1);
-    for(let k=1;k<slots && startIdx+k<TIMES.length;k++){
-      occupied[ev.day][startIdx+k]=true;
+    const maxSlots=Math.max(...evs.map(e=>Math.max(1,e.slots||1)));
+    for(let j=1;j<maxSlots && startIdx+j<TIMES.length;j++){
+      occupied[evs[0].day][startIdx+j]=true;
     }
   });
   let calHTML=`<div class="sg-wrap"><table class="sg"><thead><tr><th></th>${DAY_NAMES.map(d=>`<th>${d.slice(0,3)}</th>`).join('')}</tr></thead><tbody>`;
@@ -2764,12 +2947,19 @@ function buildPersonPage(key){
     calHTML+=`<tr><td class="sg-time">${time}</td>`;
     for(let day=1;day<=5;day++){
       if(occupied[day][tIdx]) continue; // covered by a spanning event above — skip cell
-      const ev=schedMap[day+'-'+time];
-      if(ev){
-        const slots=Math.max(1,ev.slots||1);
-        const heightPx=slots*36-6;
-        const durLabel=slotsToLabel(slots);
-        calHTML+=`<td class="sg-cell has-event" rowspan="${slots}" onclick="openSchedModal('${key}',${day},'${time}',${ev.id})"><div class="sg-ev" style="background:${ev.color};border-left-color:${shade(ev.color)};min-height:${heightPx}px"><div class="sg-ev-label">${esc(ev.label)}</div><div class="sg-ev-time">${time} · ${durLabel}</div></div></td>`;
+      const evs=schedMap[day+'-'+time];
+      if(evs&&evs.length){
+        const maxSlots=Math.max(...evs.map(e=>Math.max(1,e.slots||1)));
+        const heightPx=maxSlots*36-6;
+        // Render each event as a side-by-side column inside the cell.
+        const evHTML=evs.map(ev=>{
+          const slots=Math.max(1,ev.slots||1);
+          const durLabel=slotsToLabel(slots);
+          const evHeight=slots*36-6;
+          return `<div class="sg-ev" style="flex:1;min-width:0;background:${ev.color};border-left-color:${shade(ev.color)};min-height:${evHeight}px" onclick="event.stopPropagation();openSchedModal('${key}',${day},'${time}',${ev.id})"><div class="sg-ev-label">${esc(ev.label)}</div><div class="sg-ev-time">${time} · ${durLabel}</div></div>`;
+        }).join('');
+        const multi=evs.length>1;
+        calHTML+=`<td class="sg-cell has-event" rowspan="${maxSlots}" onclick="openSchedModal('${key}',${day},'${time}')" title="${multi?evs.length+' events — tap a block to edit, or empty space to add another':''}"><div style="display:flex;gap:3px;height:100%;align-items:stretch">${evHTML}</div></td>`;
       }else{
         calHTML+=`<td class="sg-cell" onclick="openSchedModal('${key}',${day},'${time}')"><div class="sg-add-hint">+</div></td>`;
       }
@@ -2778,9 +2968,11 @@ function buildPersonPage(key){
   });
   calHTML+='</tbody></table></div>';
 
-  const rowsActive=acts.filter(a=>a.status!=='Complete').map(buildRow).join('')||'<tr><td colspan="9" style="padding:24px;text-align:center;color:var(--muted)">🎉 No active tasks — all caught up!</td></tr>';
-  const rowsDone=acts.filter(a=>a.status==='Complete').map(buildRow).join('')||'<tr><td colspan="9" style="padding:24px;text-align:center;color:var(--muted)">No completed tasks yet.</td></tr>';
-  const doneCount=acts.filter(a=>a.status==='Complete').length;
+  // Top-level actions for this person; sub-actions render under their parents.
+  const topActs=acts.filter(a=>!a.parentId);
+  const rowsActive=topActs.filter(a=>a.status!=='Complete').map(a=>buildRow(a)).join('')||'<tr><td colspan="9" style="padding:24px;text-align:center;color:var(--muted)">🎉 No active tasks — all caught up!</td></tr>';
+  const rowsDone=topActs.filter(a=>a.status==='Complete').map(a=>buildRow(a)).join('')||'<tr><td colspan="9" style="padding:24px;text-align:center;color:var(--muted)">No completed tasks yet.</td></tr>';
+  const doneCount=topActs.filter(a=>a.status==='Complete').length;
 
   document.getElementById('pg-'+key).innerHTML=`
     <div class="card">${bannerHTML}</div>
