@@ -846,10 +846,9 @@ const REC_BY_MONTH_DEFAULT={
 };
 
 // Weekly/monthly audit completion — goal vs YTD actual totals (Jan-Sep snapshot)
+// PPE + JSA + Slip/Trip/Fall are consolidated into the "Daily Pre-Flight Safety Check".
 const AUDIT_METRICS=[
-  {label:"PPE Audits", cadence:"38/week goal", monthly:[315,242,265,281,269,411,424,335,352], weeklyGoal:38, ytdGoal:144},
-  {label:"JSA Audits", cadence:"26/month goal", monthly:[155,148,162,186,147,240,277,207,222], weeklyGoal:26, ytdGoal:630},
-  {label:"Slip/Trip/Fall Audits", cadence:"88/week goal", monthly:[536,434,467,471,491,650,667,583,577], weeklyGoal:88, ytdGoal:312},
+  {label:"Daily Pre-Flight Safety Check", cadence:"daily checks", monthly:[1006,824,894,938,907,1301,1368,1125,1151], weeklyGoal:152, ytdGoal:1086},
   {label:"LOTO Audits", cadence:"varies monthly", monthly:[20,7,8,14,14,15,12,8,12], weeklyGoal:null, ytdGoal:42},
   {label:"EHS Cell Inspection (Paper)", cadence:"17/month goal", monthly:[null,21,14,8,7,23,22,22,22], weeklyGoal:null, ytdGoal:null},
   {label:"EHS Electronic Cell Inspection", cadence:"17/week → 68/mo", monthly:[72,47,74,81,94,124,133,37,34], weeklyGoal:17, ytdGoal:180},
@@ -1090,9 +1089,8 @@ function applyDefaults(){
   if(!S.trackedMetrics) S.trackedMetrics={};
   const curYr=new Date().getFullYear();
   const monthKeysThisYear=MONTHS.map((m,i)=>`${curYr}-${String(i+1).padStart(2,'0')}`);
-  const jsaSeed=AUDIT_METRICS.find(a=>a.label==='JSA Audits');
-  _seedTracked('jsaAudits',jsaSeed?Math.round(jsaSeed.monthly.filter(v=>v!==null).reduce((s,v)=>s+v,0)/jsaSeed.monthly.filter(v=>v!==null).length):26,'','more',jsaSeed?jsaSeed.monthly:null,monthKeysThisYear);
-  _seedTracked('lotoCompliance',95,'%','more',null,monthKeysThisYear);
+  const preflightSeed=AUDIT_METRICS.find(a=>a.label==='Daily Pre-Flight Safety Check');
+  _seedTracked('preflightCheck',preflightSeed?Math.round(preflightSeed.monthly.filter(v=>v!==null).reduce((s,v)=>s+v,0)/preflightSeed.monthly.filter(v=>v!==null).length):1086,'','more',preflightSeed?preflightSeed.monthly:null,monthKeysThisYear);
   _seedTracked('safetyTraining',99,'%','more',null,monthKeysThisYear);
   // Migration safety: older saves might be missing the unit/higherIsBetter fields
   Object.values(S.trackedMetrics).forEach(tm=>{
@@ -1125,6 +1123,31 @@ function applyDefaults(){
   // Multi-year recordable counts by month (for YoY trend graph). Editable.
   if(!S.recByMonth){
     S.recByMonth=JSON.parse(JSON.stringify(REC_BY_MONTH_DEFAULT));
+  }
+  // ── Migrations for existing saved data ──
+  // 1) Consolidate the old PPE / JSA / Slip-Trip-Fall audit rows into a single
+  //    "Daily Pre-Flight Safety Check" row (summing them month by month).
+  if(S.auditData && !S.auditConsolidated){
+    const oldLabels=['PPE Audits','JSA Audits','Slip/Trip/Fall Audits'];
+    const oldRows=S.auditData.filter(a=>oldLabels.includes(a.label));
+    if(oldRows.length){
+      const summed=[];
+      for(let i=0;i<12;i++){
+        let v=null;
+        oldRows.forEach(r=>{const x=r.monthly[i];if(x!==null&&x!==undefined){v=(v||0)+x;}});
+        summed.push(v);
+      }
+      const others=S.auditData.filter(a=>!oldLabels.includes(a.label));
+      S.auditData=[{label:"Daily Pre-Flight Safety Check",cadence:"daily checks",monthly:summed,ytdGoal:1086},...others];
+    }
+    S.auditConsolidated=true;
+  }
+  // 2) Pad any audit/meeting rows that predate the full-year layout to 12 months.
+  if(S.auditData){
+    S.auditData.forEach(a=>{while(a.monthly.length<12) a.monthly.push(null);});
+  }
+  if(S.meetingData){
+    S.meetingData.forEach(m=>{while(m.monthly.length<12) m.monthly.push({a:null,g:null});});
   }
 }
 
@@ -2315,46 +2338,52 @@ function buildMetrics(){
   const curMonthNum=new Date().getMonth(); // 0=Jan ... 11=Dec
   const iiGoalFlat=1.2;
 
+  // ── SINGLE SOURCE OF TRUTH: recordable counts come from the case log. ──
+  // Every I&I-rate number on this page is derived from these counts, so the
+  // moment a Recordable case is added, edited, or removed, all rates, charts,
+  // and rolling windows recompute automatically and stay consistent.
+  function recordableCount(year,monthIdx){
+    // monthIdx 0-11; if monthIdx omitted, returns the whole-year total.
+    return S.iiCases.filter(c=>{
+      if(c.caseType!=='Recordable'||!c.date) return false;
+      const d=new Date(c.date+'T00:00:00');
+      if(isNaN(d)||d.getFullYear()!==year) return false;
+      return monthIdx===undefined ? true : d.getMonth()===monthIdx;
+    }).length;
+  }
+  // Recordables for the current year, by month (drives the rolling table + charts)
+  const recByMonthComputed=MONTHS.map((m,i)=>recordableCount(curYear,i));
+
   // ── CALENDAR-YEAR I&I RATE — cumulative, January → current month only ──
-  // Walk Jan through the current month. For each month, accumulate hours and
-  // recordable injuries, then compute the OSHA rate on the running totals.
-  // Months beyond "today" are left blank even if data was pre-entered.
+  // Hours are entered per month in the rolling table; recordables come from
+  // the case log. We accumulate both Jan→current month and compute the rate.
   const ytdRateSeries=MONTHS.map(()=>null);
   let cumHours=0,cumInj=0;
   for(let i=0;i<=curMonthNum && i<S.rollingTable.length;i++){
     const m=S.rollingTable[i];
-    if(m.hours&&m.injuries!==null&&m.injuries!==undefined){
-      cumHours+=m.hours;cumInj+=m.injuries;
+    const inj=recByMonthComputed[i];
+    if(m.hours){
+      cumHours+=m.hours;cumInj+=inj;
       ytdRateSeries[i]=cumHours>0?(cumInj*200000/cumHours):null;
     }
   }
   const ytdHours=cumHours, ytdInjuries=cumInj;
   const calYearRate=ytdHours>0?(ytdInjuries*200000/ytdHours):null;
 
-  // ── ROLLING 12-MONTH I&I RATE — the 12 consecutive calendar months
-  // ending with the current month. Hours come from the rolling table by
-  // month index; recordable injury counts come from S.recByMonth (which
-  // spans multiple years), so the window correctly crosses the year boundary.
+  // ── ROLLING 12-MONTH I&I RATE — the 12 consecutive calendar months ending
+  // with the current month. Recordables come from the case log (any year, so
+  // the window crosses the year boundary cleanly); hours from the rolling
+  // table by month index (prior-year hours proxy current-year staffing).
   function hoursForMonth(year,monthIdx){
-    // Hours are tracked for the current year in the rolling table. For prior
-    // years we fall back to the same month's current-year hours as a proxy
-    // (typical plant staffing is stable year to year).
     const cur=S.rollingTable[monthIdx];
     return (cur&&cur.hours)?cur.hours:null;
-  }
-  function injForMonth(year,monthIdx){
-    const arr=S.recByMonth[year];
-    if(arr&&arr[monthIdx]!==null&&arr[monthIdx]!==undefined) return arr[monthIdx];
-    // Fall back to rolling table injuries for the current year if recByMonth blank
-    if(year===curYear){const m=S.rollingTable[monthIdx];if(m&&m.injuries!==null&&m.injuries!==undefined) return m.injuries;}
-    return null;
   }
   let roll12Hours=0,roll12Inj=0,roll12Count=0;
   for(let back=0;back<12;back++){
     const d=new Date(curYear,curMonthNum-back,1);
     const y=d.getFullYear(), mi=d.getMonth();
-    const h=hoursForMonth(y,mi), inj=injForMonth(y,mi);
-    if(h&&inj!==null){roll12Hours+=h;roll12Inj+=inj;roll12Count++;}
+    const h=hoursForMonth(y,mi);
+    if(h){roll12Hours+=h;roll12Inj+=recordableCount(y,mi);roll12Count++;}
   }
   const rolling12Rate=roll12Hours>0?(roll12Inj*200000/roll12Hours):null;
 
@@ -2410,19 +2439,21 @@ function buildMetrics(){
     }).join('')}
   </tbody></table></div>`;
 
-  // ── 3. ROLLING I&I RATE TABLE — fully editable: hours worked + injuries → computed rate vs goal ──
+  // ── 3. ROLLING I&I RATE TABLE — enter hours; recordables come straight
+  // from the case log (read-only here) so the rate stays in sync automatically.
   const rollingRows=S.rollingTable.map((m,i)=>{
-    const rate=(m.hours&&m.injuries!==null&&m.injuries!==undefined&&m.hours>0)?(m.injuries*200000/m.hours):null;
+    const inj=recByMonthComputed[i];
+    const rate=(m.hours&&m.hours>0)?(inj*200000/m.hours):null;
     const onTarget=rate!==null && rate<=m.goal;
     return `<tr>
       <td style="font-weight:700">${m.month}</td>
       <td><input type="number" class="esel" style="width:90px" value="${m.hours??''}" placeholder="Hours" onchange="updRolling(${i},'hours',this.value)"/></td>
-      <td><input type="number" class="esel" style="width:70px" value="${m.injuries??''}" placeholder="Inj." onchange="updRolling(${i},'injuries',this.value)"/></td>
+      <td style="text-align:center;font-weight:700;color:${inj>0?'#A6271E':'var(--muted)'}" title="Counted from the I&I case log">${inj}</td>
       <td style="font-weight:800;color:${rate===null?'var(--muted)':onTarget?'#15803D':'#A6271E'}">${rate===null?'—':rate.toFixed(2)}</td>
       <td><input type="number" step="0.01" class="esel" style="width:70px" value="${m.goal}" onchange="updRolling(${i},'goal',this.value)"/></td>
     </tr>`;
   }).join('');
-  const rollingHTML=`<div class="twrap"><table><thead><tr><th>Month</th><th>Hours Worked</th><th>Recordable Injuries</th><th>Monthly Rate</th><th>Goal</th></tr></thead><tbody>${rollingRows}</tbody></table></div>`;
+  const rollingHTML=`<div class="twrap"><table><thead><tr><th>Month</th><th>Hours Worked</th><th>Recordables<br><span style="font-weight:600;font-size:8px;color:var(--muted)">(from case log)</span></th><th>Monthly Rate</th><th>Goal</th></tr></thead><tbody>${rollingRows}</tbody></table></div>`;
 
   // Trending chart: cumulative calendar-YTD rate vs flat 1.2 goal line.
   const iiGoalSeries=MONTHS.map(()=>iiGoalFlat);
@@ -2433,21 +2464,29 @@ function buildMetrics(){
   ],iiMaxVal,2,{trend:`${curYear} Cumulative YTD Rate`});
 
   // ── 4. Multi-year recordable injury trend (current vs last 2 years) ──
+  // Current year is computed live from the case log; prior years are the
+  // stored historical baseline (editable below for context).
   const yrKeys=[twoYearsAgo,lastYear,curYear];
   const yrColors={[twoYearsAgo]:"#C7CAD1",[lastYear]:"#F5A623",[curYear]:"#F0453E"};
-  const recSeries=yrKeys.map(y=>({
-    name:String(y),
-    data:(S.recByMonth[y]||MONTHS.map(()=>null)).map(v=>v===null||v===undefined?null:v),
-    color:yrColors[y]
-  }));
+  const recForYear=(y)=> y===curYear ? recByMonthComputed.map((v,i)=> i<=curMonthNum ? v : null)
+                                     : (S.recByMonth[y]||MONTHS.map(()=>null)).map(v=>v===null||v===undefined?null:v);
+  const recSeries=yrKeys.map(y=>({name:String(y),data:recForYear(y),color:yrColors[y]}));
   const recMax=Math.max(1,...recSeries.flatMap(s=>s.data.filter(v=>v!==null)))*1.2;
   const recTrendChart=buildLineChart(MONTHS,recSeries,recMax,0,{trend:String(curYear)});
-  // Editable multi-year table
-  const recByMonthRows=yrKeys.map(y=>`<tr>
-    <td style="font-weight:800;color:${yrColors[y]}">${y}</td>
-    ${MONTHS.map((mo,i)=>`<td style="padding:4px"><input type="number" class="esel" style="width:42px;text-align:center" value="${(S.recByMonth[y]||[])[i]??''}" onchange="updRecByMonth(${y},${i},this.value)"/></td>`).join('')}
-    <td style="font-weight:800;text-align:center">${(S.recByMonth[y]||[]).reduce((s,v)=>s+(v||0),0)}</td>
-  </tr>`).join('');
+  // Multi-year table — current year computed (read-only), prior years editable
+  const recByMonthRows=yrKeys.map(y=>{
+    const isCur=y===curYear;
+    const data=recForYear(y);
+    const total=isCur?recByMonthComputed.reduce((s,v)=>s+v,0):(S.recByMonth[y]||[]).reduce((s,v)=>s+(v||0),0);
+    return `<tr>
+      <td style="font-weight:800;color:${yrColors[y]}">${y}${isCur?' <span style="font-size:8px;color:var(--muted);font-weight:600">(live)</span>':''}</td>
+      ${MONTHS.map((mo,i)=> isCur
+        ? `<td style="padding:4px;text-align:center;font-weight:700;color:${(data[i]||0)>0?'#A6271E':'var(--muted2)'}" title="From case log">${recByMonthComputed[i]}</td>`
+        : `<td style="padding:4px"><input type="number" class="esel" style="width:42px;text-align:center" value="${(S.recByMonth[y]||[])[i]??''}" onchange="updRecByMonth(${y},${i},this.value)"/></td>`
+      ).join('')}
+      <td style="font-weight:800;text-align:center">${total}</td>
+    </tr>`;
+  }).join('');
   const recByMonthTable=`<div class="twrap"><table><thead><tr><th>Year</th>${MONTHS.map(m=>`<th style="text-align:center">${m}</th>`).join('')}<th style="text-align:center">Total</th></tr></thead><tbody>${recByMonthRows}</tbody></table></div>`;
 
   // ── 4b. Rolling 12-Month Recordable Injuries chart — editable actuals ──
@@ -2489,15 +2528,11 @@ function buildMetrics(){
     </tr>`).join('')}
   </tbody></table></div>`;
 
-  // ── 7a. Year-over-year recordable case summary (from case log) ──
-  const recordablesByYear={};
-  S.iiCases.forEach(c=>{
-    if(c.caseType!=='Recordable'||!c.date) return;
-    const yr=c.date.slice(0,4);
-    recordablesByYear[yr]=(recordablesByYear[yr]||0)+1;
-  });
-  const curYearCount=recordablesByYear[String(curYear)]||0;
-  const lastYearCount=recordablesByYear[String(lastYear)]||0;
+  // ── 7a. Year-over-year recordable summary ──
+  // Current year is live from the case log; the prior year uses the stored
+  // historical baseline (so it matches the multi-year chart above).
+  const curYearCount=recordableCount(curYear);
+  const lastYearCount=(S.recByMonth[lastYear]||[]).reduce((s,v)=>s+(v||0),0) || recordableCount(lastYear);
   const yoyDelta=curYearCount-lastYearCount;
   const yoyPct=lastYearCount>0?Math.round((yoyDelta/lastYearCount)*100):(curYearCount>0?100:0);
   const yoyColor=yoyDelta<=0?'#15803D':'#A6271E';
@@ -2599,7 +2634,7 @@ function buildMetrics(){
 
   // ── Goal-tracked cards: JSA Audits, LOTO Compliance, Safety Training ──
   const trackedCardsHTML=`<div class="metric-grid">
-    ${trackedMetricCard('jsaAudits','JSA Audits Completed','📋')}
+    ${trackedMetricCard('preflightCheck','Daily Pre-Flight Safety Checks','✈️')}
     ${trackedMetricCard('safetyTraining','Safety Training Completion','🎓')}
   </div>`;
 
@@ -2639,8 +2674,8 @@ function buildMetrics(){
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#0E5C73,#0A7AFF)"><span class="ct" style="color:#fff">✏️ Rolling I&I Rate — Hours Worked & Recordable Injuries (Editable)</span><span class="cs" style="color:rgba(255,255,255,.85)">Per-month rate · feeds the cumulative trend chart above</span></div>
-      <div class="info-bar">📝 Enter hours worked and recordable injuries for each month. The cumulative year-to-date rate at the top recalculates automatically.</div>
+      <div class="ch" style="background:linear-gradient(135deg,#0E5C73,#0A7AFF)"><span class="ct" style="color:#fff">✏️ Rolling I&I Rate — Enter Hours Worked</span><span class="cs" style="color:rgba(255,255,255,.85)">Recordables auto-count from the case log · rate updates live</span></div>
+      <div class="info-bar">📝 Enter hours worked per month. Recordable injuries are counted automatically from the I&I case log below — add a Recordable case there and every rate on this page updates instantly.</div>
       ${rollingHTML}
     </div>
 
@@ -2785,17 +2820,19 @@ function updRecByMonth(year,monthIdx,val){
   toast('Saved','#30D158');
 }
 
-// ── I&I case log edits ──
+// ── I&I case log edits — every change recomputes all I&I rates and charts.
 function updCase(id,field,val){
   const c=S.iiCases.find(x=>x.id===id);
   if(c){c[field]=val;saveS();}
-  buildMetrics();
+  buildMetrics();buildOverview();
+  // Changing the type or date shifts the recordable counts that drive the rate.
+  if(field==='caseType'||field==='date') toast('Case updated — rates recalculated','#0A7AFF');
 }
 function delCase(id){
   if(!confirm('Remove this case from the log?')) return;
   S.iiCases=S.iiCases.filter(c=>c.id!==id);
-  saveS();buildMetrics();
-  toast('Case removed','#FF453A');
+  saveS();buildMetrics();buildOverview();
+  toast('Case removed — rates recalculated','#FF453A');
 }
 function addCase(){
   const today=new Date().toISOString().slice(0,10);
@@ -2804,8 +2841,8 @@ function addCase(){
     date:today,caseType:"Recordable",dept:"Norton",occupation:"",
     accidentType:"",injuryType:"",bodyPart:"",detailBodyPart:"",desc:"",notes:""
   });
-  saveS();buildMetrics();
-  toast('New case added — fill in details','#30D158');
+  saveS();buildMetrics();buildOverview();
+  toast('Recordable added — rates recalculated. Fill in details.','#30D158');
 }
 
 // ── Simple SVG line chart for goal vs actual series ──
