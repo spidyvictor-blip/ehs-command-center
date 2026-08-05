@@ -411,6 +411,10 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
   .reveal-init{opacity:1;transform:none}
   .hero::after,.hero::before{transform:none}
 }
+
+/* ═══ NORTH STAR / HOSHIN ═══ */
+.hoshin-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+@media(max-width:820px){.hoshin-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -461,6 +465,7 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
 
 <main>
   <div id="pg-overview" class="page fade-in"></div>
+  <div id="pg-hoshin"   class="page hidden"></div>
   <div id="pg-metrics"  class="page hidden"></div>
   <div id="pg-vpp"      class="page hidden"></div>
   <div id="pg-actions"  class="page hidden"></div>
@@ -512,6 +517,7 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
       <div class="mfield"><label>Program</label>
         <select id="m-prog"><option>Core EHS</option><option>Ergo</option><option>VPP</option><option>Security</option></select>
       </div>
+      <div class="mfield"><label>North Star Objective (optional)</label><select id="m-hoshin"></select></div>
       <div class="mfield"><label>Specific Due Date (optional)</label><input id="m-duedate" type="date"/></div>
       <div class="mfield"><label>Notes / Details</label><textarea id="m-notes" placeholder="Any additional context..."></textarea></div>
     </div>
@@ -849,6 +855,43 @@ const DEFAULT_VPP=[
   {id:11,ms:"Pre-Assessment Internal VPP Audit",           owner:"Victor",       target:"Sep 2026", pct:0, status:"Not Started"},
   {id:12,ms:"OSHA Site Assessment Scheduled",              owner:"Victor",       target:"Sep 2026", pct:0, status:"Not Started"},
   {id:13,ms:"⭐ VPP STAR RE-CERTIFICATION AWARDED",        owner:"FULL TEAM",    target:"Oct 2026", pct:0, status:"Not Started"},
+];
+
+// ════════════════════════════════════════════════════
+// NORTH STAR OBJECTIVES — Hoshin Kanri breakthrough goals.
+// Seeded once; fully editable in the app and stored with team data.
+// ════════════════════════════════════════════════════
+const DEFAULT_HOSHIN=[
+ {id:"NS1",code:"NS-1",title:"Interdependent Safety Culture & Psychological Safety",
+  aim:"Every associate feels safe to speak up, stop work, and report anything — and actually does. Safety is owned by everyone on the floor, not policed by EHS.",
+  vision:"By 2029 Muskegon operates as a fully interdependent safety culture: psychological safety is measured and managed to the intent of ISO 45003, stop-work authority is used and celebrated, and associates coach each other unprompted.",
+  focus:"2026: Baseline culture & psychological-safety perception survey · launch a Safety Voice metric (concerns raised with a closed feedback loop) · leader listening rounds on the floor · celebrate good catches site-wide through the MVPP engagement plan.",
+  kpi:"% associates who agree \"I can raise a safety concern without fear\" · good catches per associate per month · concern-to-closure cycle time",
+  owner:"Victor Pizarro",pct:10,status:"Ongoing",color:"#1859C8",icon:"users"},
+ {id:"NS2",code:"NS-2",title:"Predict & Prevent — Leading-Indicator EHS",
+  aim:"Shift the site from reacting to injuries to predicting and preventing them — weekly decisions driven by leading indicators, not last month's recordables.",
+  vision:"By 2029 EHS runs on a predictive model: live digital heat mapping, SIF-precursor tracking, and a leading-to-lagging indicator ratio of 10:1 or better steering priorities every week.",
+  focus:"2026: Digital heat-mapping baseline · daily Pre-Flight Safety Checks at full cadence · relaunch near-miss / good-catch reporting · define and start tracking SIF (serious injury & fatality) precursors · build the leading-indicator bowler.",
+  kpi:"Leading:lagging indicator ratio · % of corrective actions originating from leading sources (audits, near misses, heat map) · SIF precursors identified and controlled",
+  owner:"Victor Pizarro",pct:15,status:"Ongoing",color:"#0E7490",icon:"trendUp"},
+ {id:"NS3",code:"NS-3",title:"Zero Harm by Design — MOC & Prevention through Design",
+  aim:"No new risk walks in the door: every equipment purchase, modification, and process change passes an EHS risk gate before it ever reaches the floor.",
+  vision:"By 2029 Prevention-through-Design is standard work — safety and ergonomic requirements are written into purchase specifications, MOC compliance is 100%, and post-install retrofits reach zero.",
+  focus:"2026: Refresh and simplify the MOC workflow · add a risk-assessment gate to capex and equipment purchases · publish a vendor EHS specification sheet · MOC training for engineering, maintenance, and purchasing.",
+  kpi:"% of modifications and purchases completing MOC before energization · post-install EHS retrofit actions (goal: 0) · MOC cycle time",
+  owner:"Steve Wolbrink",pct:20,status:"Ongoing",color:"#B7791F",icon:"tool"},
+ {id:"NS4",code:"NS-4",title:"Ergonomic Excellence — Design Out the Strain",
+  aim:"Engineer ergonomic risk out of the work instead of coaching people through it — and catch discomfort early, before it ever becomes an MSD case.",
+  vision:"By 2029 the top ergonomic risks are engineered out year after year, every workstation is assessed to TS2031, and MSD recordables trend to zero.",
+  focus:"2026: Publish the HEAT MAP Top 10 and close them with engineering fixes · CR2031/TS2031 gap plan · stand up the MSD/discomfort leading metric · fully document early-intervention workflows.",
+  kpi:"High-risk tasks engineered out per year · early-intervention encounters vs. MSD cases · % of workstations assessed",
+  owner:"Mike Shuster",pct:20,status:"Ongoing",color:"#6E56CF",icon:"activity"},
+ {id:"NS5",code:"NS-5",title:"Audit-Ready Every Day — VPP, Compliance & Security as One System",
+  aim:"The site is inspection-ready any day, unannounced — VPP Star excellence, zero violations, and physical security running as one integrated management system.",
+  vision:"By 2029 VPP Star status is sustained, compliance calendars run at 100% with zero NOVs, and security is fully woven into the EHS management system and the site culture.",
+  focus:"2026: VPP Star re-certification (October) · zero regulatory violations · security assessment action plan and framework compliance · 100% training currency across LOTO/JSA/PPE.",
+  kpi:"Compliance calendar completion · NOVs (goal 0) · framework & security audit scores · training currency",
+  owner:"Full Team",pct:30,status:"On Schedule",color:"#0E8345",icon:"shield"},
 ];
 
 const DEFAULT_METRICS={
@@ -1221,6 +1264,7 @@ function _seedTracked(key,goal,unit,higherIsBetter,seedMonthly,monthKeys){
 function applyDefaults(){
   if(!S.actions)  S.actions=JSON.parse(JSON.stringify(DEFAULT_ACTIONS));
   if(!S.vpp)      S.vpp=JSON.parse(JSON.stringify(DEFAULT_VPP));
+  if(!S.hoshin)   S.hoshin=JSON.parse(JSON.stringify(DEFAULT_HOSHIN));
   mergeDefault('metrics',DEFAULT_METRICS);
   if(!S.links)    S.links=JSON.parse(JSON.stringify(DEFAULT_LINKS));
   if(!S.comments) S.comments={};
@@ -1772,6 +1816,7 @@ function rebuildAll(){
   buildOverview();
   const cur=Object.keys(PAGES).find(k=>!document.getElementById('pg-'+k).classList.contains('hidden'));
   if(cur==='actions') buildActions();
+  else if(cur==='hoshin') buildHoshin();
   else if(cur==='vpp') buildVPP();
   else if(cur==='metrics') buildMetrics();
   else if(cur==='team') buildTeamRoles();
@@ -1840,6 +1885,7 @@ function buildRow(a,isSub){
     <td><select class="esel" onchange="upd(${a.id},'pri',this.value)">${opts(PRI_OPTS,a.pri)}</select></td>
     <td>${dueDateCell(a)}</td>
     <td><select class="esel" onchange="upd(${a.id},'prog',this.value)">${opts(PROG_OPTS,a.prog)}</select></td>
+    <td>${hoshinSelectCell(a)}</td>
     <td>
       <div style="display:flex;gap:4px;align-items:center">
         ${!isSub?`<button class="btn btn-ghost btn-icon" onclick="addSubAction(${a.id})" title="Add sub-action">${ic('plus')}</button>`:''}
@@ -1908,6 +1954,8 @@ function openAddModal(preOwner){
   document.getElementById('m-target').value='Q2 2026';
   document.getElementById('m-prog').value='Core EHS';
   document.getElementById('m-duedate').value='';
+  const hsel=document.getElementById('m-hoshin');
+  if(hsel) hsel.innerHTML='<option value="">— None —</option>'+(S.hoshin||[]).map(h=>`<option value="${h.id}">${h.code} · ${h.title}</option>`).join('');
   if(preOwner) document.getElementById('m-owner').value=preOwner;
   document.getElementById('modal-add').classList.remove('hidden');
   document.getElementById('m-task').focus();
@@ -1925,6 +1973,7 @@ function saveNewTask(){
     target:document.getElementById('m-target').value,
     dueDate:document.getElementById('m-duedate').value,
     prog:document.getElementById('m-prog').value,
+    hoshin:(document.getElementById('m-hoshin')||{value:''}).value||'',
   };
   const notes=document.getElementById('m-notes').value.trim();
   if(notes) S.comments[newA.id]=[{author:"You",text:notes,time:new Date().toLocaleString()}];
@@ -2242,6 +2291,7 @@ function buildOverview(){
   const metricsOnTargetPct=metricsOnTargetPercent();
   const ringTiles=[
     {label:"Actions",pct:pct,sub:`${done}/${total} complete`,color:"#1859C8",click:"goPage('actions')"},
+    {label:"North Star",pct:avgHoshinProgress(),sub:"Hoshin goal progress",color:"#0A1E5E",click:"goPage('hoshin')"},
     {label:"VPP Path",pct:vppAvgForRing,sub:"Avg milestone progress",color:"#D97706",click:"goPage('vpp')"},
     {label:"Metrics",pct:metricsOnTargetPct,sub:"Targets on track",color:"#0E8345",click:"goPage('metrics')"},
     {label:"Victor",pct:teamPct('VP'),sub:"Action items done",color:TEAM.VP.color,click:"goPage('VP')"},
@@ -2414,7 +2464,7 @@ function applyF(){
 }
 
 function tableShell(rows){
-  return `<div class="twrap"><table><thead><tr><th></th><th></th><th>Task Name</th><th>Owner</th><th>Status</th><th>Priority</th><th>Due / Target</th><th>Program</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  return `<div class="twrap"><table><thead><tr><th></th><th></th><th>Task Name</th><th>Owner</th><th>Status</th><th>Priority</th><th>Due / Target</th><th>Program</th><th>North Star</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 function renderGroupedActions(fl){
@@ -2464,7 +2514,7 @@ function renderGroupedActions(fl){
       const doneItems=items.filter(a=>a.status==='Complete');
       const doneId=gid+'-done';
       const doneCollapsed=groupCollapse[doneId]!==false; // completed collapsed by default
-      let inner=tableShell(activeItems.map(a=>buildRow(a)).join('')||`<tr><td colspan="9" style="padding:18px;text-align:center;color:var(--muted)">No active items</td></tr>`);
+      let inner=tableShell(activeItems.map(a=>buildRow(a)).join('')||`<tr><td colspan="10" style="padding:18px;text-align:center;color:var(--muted)">No active items</td></tr>`);
       if(doneItems.length){
         inner+=`<div class="done-subsection">
           <div class="done-subhdr" onclick="toggleGroup('${doneId}')">
@@ -3370,8 +3420,8 @@ function buildPersonPage(key){
 
   // Top-level actions for this person; sub-actions render under their parents.
   const topActs=acts.filter(a=>!a.parentId);
-  const rowsActive=topActs.filter(a=>a.status!=='Complete').map(a=>buildRow(a)).join('')||'<tr><td colspan="9" style="padding:24px;text-align:center;color:var(--muted)">No active tasks — all caught up.</td></tr>';
-  const rowsDone=topActs.filter(a=>a.status==='Complete').map(a=>buildRow(a)).join('')||'<tr><td colspan="9" style="padding:24px;text-align:center;color:var(--muted)">No completed tasks yet.</td></tr>';
+  const rowsActive=topActs.filter(a=>a.status!=='Complete').map(a=>buildRow(a)).join('')||'<tr><td colspan="10" style="padding:24px;text-align:center;color:var(--muted)">No active tasks — all caught up.</td></tr>';
+  const rowsDone=topActs.filter(a=>a.status==='Complete').map(a=>buildRow(a)).join('')||'<tr><td colspan="10" style="padding:24px;text-align:center;color:var(--muted)">No completed tasks yet.</td></tr>';
   const doneCount=topActs.filter(a=>a.status==='Complete').length;
 
   document.getElementById('pg-'+key).innerHTML=`
@@ -3401,7 +3451,7 @@ function buildPersonPage(key){
         </div>
       </div>
       <div class="info-bar">Edit any field inline &middot; drag the grip handle to reorder &middot; row tools add comments or delete.</div>
-      <div class="twrap"><table><thead><tr><th></th><th></th><th>Task</th><th>Owner</th><th>Status</th><th>Priority</th><th>Due / Target</th><th>Program</th><th>Actions</th></tr></thead>
+      <div class="twrap"><table><thead><tr><th></th><th></th><th>Task</th><th>Owner</th><th>Status</th><th>Priority</th><th>Due / Target</th><th>Program</th><th>North Star</th><th>Actions</th></tr></thead>
         <tbody id="atbody-active-${key}" class="${(personView[key]||'active')==='active'?'':'hidden'}">${rowsActive}</tbody>
         <tbody id="atbody-done-${key}" class="${personView[key]==='done'?'':'hidden'}">${rowsDone}</tbody>
       </table></div>
@@ -3456,11 +3506,12 @@ function _csv(rows){
 function _stamp(){return new Date().toISOString().slice(0,10);}
 
 function exportActionsCSV(){
-  const rows=[['ID','Task','Parent Plan','Owner','Status','Priority','Target Period','Specific Due Date','Program','Comments / Updates']];
+  const rows=[['ID','Task','Parent Plan','Owner','Status','Priority','Target Period','Specific Due Date','Program','North Star Goal','Comments / Updates']];
   (S.actions||[]).forEach(a=>{
     const parent=a.parentId?((S.actions.find(x=>x.id===a.parentId)||{}).task||''):'';
     const cm=((S.comments||{})[a.id]||[]).map(c=>`[${c.time}] ${c.author}: ${c.text}`).join(' | ');
-    rows.push([a.id,a.task,parent,a.owner,a.status,a.pri,a.target,a.dueDate||'',a.prog,cm]);
+    const hg=a.hoshin?((S.hoshin||[]).find(h=>h.id===a.hoshin)||null):null;
+    rows.push([a.id,a.task,parent,a.owner,a.status,a.pri,a.target,a.dueDate||'',a.prog,hg?hg.code+' — '+hg.title:'',cm]);
   });
   _dl(_csv(rows),'text/csv','ehs-action-plan-'+_stamp()+'.csv');
   toast('Action plan exported — opens in Excel','#0E8345');
@@ -3593,11 +3644,94 @@ function exportOnePager(){
   w.document.close();
 }
 
+
+// ════════════════════════════════════════════════════
+// NORTH STAR PAGE — Hoshin Kanri breakthrough objectives
+// ════════════════════════════════════════════════════
+function avgHoshinProgress(){
+  const hs=S.hoshin||[];
+  if(!hs.length) return 0;
+  return Math.round(hs.reduce((s,h)=>s+(h.pct||0),0)/hs.length);
+}
+function actionsForHoshin(id){return (S.actions||[]).filter(a=>a.hoshin===id);}
+function hoshinSelectCell(a){
+  const hs=S.hoshin||[];
+  return `<select class="esel" onchange="upd(${a.id},'hoshin',this.value)" title="Link this action to a North Star objective"><option value=""${!a.hoshin?' selected':''}>—</option>${hs.map(h=>`<option value="${h.id}"${a.hoshin===h.id?' selected':''}>${h.code}</option>`).join('')}</select>`;
+}
+function updHoshin(id,field,val){
+  const h=(S.hoshin||[]).find(x=>x.id===id);
+  if(!h) return;
+  h[field]=field==='pct'?Math.max(0,Math.min(100,+val||0)):val;
+  saveS();buildHoshin();buildOverview();
+  toast('North Star updated','#0E8345');
+}
+function buildHoshin(){
+  const hs=S.hoshin||[];
+  const avg=avgHoshinProgress();
+  const assigned=(S.actions||[]).filter(a=>a.hoshin).length;
+  const alignPct=S.actions.length?Math.round(assigned/S.actions.length*100):0;
+  const cards=hs.map(h=>{
+    const linked=actionsForHoshin(h.id);
+    const done=linked.filter(a=>a.status==='Complete').length;
+    const beh=linked.filter(a=>['Behind','At-Risk'].includes(a.status)).length;
+    const exec=linked.length?Math.round(done/linked.length*100):0;
+    const list=linked.length?linked.map(a=>`<div class="top3-item" style="cursor:default;padding:8px 12px"><div class="top3-text"><div class="top3-task" style="font-size:11.5px;font-weight:600">${esc(a.task)}</div><div class="top3-meta">${esc(a.owner)} &middot; ${pri(a.pri)} &middot; Due ${a.target}</div></div><span class="${bk(a.status)}">${a.status}</span></div>`).join('')
+      :`<div style="padding:14px;text-align:center;color:var(--muted);font-size:11px">No actions linked yet — use the <b>North Star</b> column on any action, or the field in the Add Task form.</div>`;
+    return `<div class="card">
+      <div class="ch" style="background:linear-gradient(120deg,#00003D 0%,${h.color} 160%)">
+        <span class="ct" style="color:#fff">${ic(h.icon)} <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:7px;padding:2px 8px;font-size:10px;letter-spacing:.5px">${h.code}</span> ${esc(h.title)}</span>
+        <select class="esel" style="color:#fff;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)" onchange="updHoshin('${h.id}','status',this.value)">${opts(STATUS_OPTS,h.status)}</select>
+      </div>
+      <div class="hoshin-grid" style="padding:16px 20px">
+        <div>
+          <div class="flbl" style="margin-bottom:4px">Breakthrough Aim</div>
+          <textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updHoshin('${h.id}','aim',this.value)">${esc(h.aim)}</textarea>
+          <div class="flbl" style="margin:10px 0 4px">3-Year Vision</div>
+          <textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updHoshin('${h.id}','vision',this.value)">${esc(h.vision)}</textarea>
+          <div class="flbl" style="margin:10px 0 4px">This Year's Focus</div>
+          <textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updHoshin('${h.id}','focus',this.value)">${esc(h.focus)}</textarea>
+          <div class="flbl" style="margin:10px 0 4px">How We Measure It — Leading KPIs</div>
+          <textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updHoshin('${h.id}','kpi',this.value)">${esc(h.kpi)}</textarea>
+        </div>
+        <div>
+          <div class="flbl" style="margin-bottom:4px">Champion</div>
+          <select class="esel" onchange="updHoshin('${h.id}','owner',this.value)">${opts([...PERSON_OPTS,'Full Team'],h.owner)}</select>
+          <div class="flbl" style="margin:14px 0 4px">Strategic Progress — champion's judgment</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <input type="number" min="0" max="100" value="${h.pct}" style="width:52px;border:1px solid var(--border2);border-radius:6px;padding:2px 5px;font-size:12px;font-weight:700;text-align:center;outline:none;color:${pc(h.pct)}" onchange="updHoshin('${h.id}','pct',this.value)"/><span style="font-size:11px;color:var(--muted)">%</span>
+          </div>
+          ${pb(h.pct,8)}
+          <div class="flbl" style="margin:16px 0 4px">Action Execution — computed live</div>
+          ${linked.length?`<div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);margin-bottom:3px"><span>${done}/${linked.length} complete${beh?` &middot; <span style="color:var(--red)">${beh} behind / at-risk</span>`:''}</span><span style="color:${pc(exec)};font-weight:800">${exec}%</span></div>${pb(exec,8)}`:`<div class="gband-empty">Link actions to see execution roll up here</div>`}
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--border)">
+        <div class="flbl" style="padding:12px 20px 2px">Linked Actions (${linked.length})</div>
+        <div class="top3-list" style="padding:8px 16px 16px">${list}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('pg-hoshin').innerHTML=`
+    <div class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="hero-title">North Star Objectives</div>
+          <div class="hero-sub">Hoshin Kanri breakthrough goals &middot; every action on this site ladders up to one of these &middot; ${alignPct}% of actions aligned so far</div>
+        </div>
+        <div class="hero-badge">AVG STRATEGIC PROGRESS &middot; ${avg}%</div>
+      </div>
+    </div>
+    <div class="card"><div class="info-bar" style="border-bottom:none;display:block;line-height:1.6">Catchball is the point — refine these aims with the team, then link every action through the <b>North Star</b> column on the Actions tab. Strategic progress is the champion's judgment; execution is computed live from linked actions. Every field below is editable and syncs for everyone.</div></div>
+    ${cards}`;
+  autoGrowAll();
+}
+
 // ════════════════════════════════════════════════════
 // NAVIGATION
 // ════════════════════════════════════════════════════
 const PAGES={
   overview:{label:"Overview"},
+  hoshin:  {label:"North Star"},
   metrics: {label:"Metrics"},
   vpp:     {label:"VPP"},
   actions: {label:"Actions"},
@@ -3611,7 +3745,7 @@ const PAGES={
 };
 let curPage='overview';
 const pageBuilders={
-  overview:buildOverview,actions:buildActions,vpp:buildVPP,
+  overview:buildOverview,hoshin:buildHoshin,actions:buildActions,vpp:buildVPP,
   metrics:buildMetrics,team:buildTeamRoles,links:buildLinks,
   VP:()=>buildPersonPage('VP'),SW:()=>buildPersonPage('SW'),
   MS:()=>buildPersonPage('MS'),RD:()=>buildPersonPage('RD'),ZT:()=>buildPersonPage('ZT'),
