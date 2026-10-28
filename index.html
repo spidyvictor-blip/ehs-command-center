@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>EHS+S Command Center · GE Aerospace Muskegon</title>
+<title>EHS Command Center · GE Aerospace Muskegon</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -21,24 +21,24 @@
   --ink2:#3C4149;
   --muted:#8A9099;
   --muted2:#A8AEB7;
-  --blue:#1859C8;
-  --blue-dk:#0F3E96;
-  --blue-lt:#E8EFFA;
-  --green:#0E8345;
-  --green-lt:#E4F3EA;
-  --amber:#D97706;
-  --amber-lt:#FBEFDD;
-  --red:#D92D20;
-  --red-lt:#F9E9E7;
-  --purple:#6E56CF;
-  --purple-lt:#EEEBFA;
-  --teal:#0E9CD8;
-  --teal-lt:#E3F2F9;
-  --indigo:#4F5BD5;
+  --blue:#0A7AFF;
+  --blue-dk:#0060DF;
+  --blue-lt:#E9F2FF;
+  --green:#1FB55B;
+  --green-lt:#E4F8EC;
+  --amber:#F5A623;
+  --amber-lt:#FEF3E2;
+  --red:#F0453E;
+  --red-lt:#FDEBEA;
+  --purple:#9B5DE5;
+  --purple-lt:#F2EAFC;
+  --teal:#3BB8E0;
+  --teal-lt:#E5F6FC;
+  --indigo:#5B5BD6;
   --indigo-lt:#ECECFB;
-  --gold:#D97706;
-  --navy:#00003D;
-  --navy2:#0A1E5E;
+  --gold:#F5A623;
+  --navy:#0A1A33;
+  --navy2:#0F2A5C;
   --r:14px;
   --r-sm:10px;
   --r-lg:18px;
@@ -48,16 +48,16 @@
   --blur:saturate(180%) blur(20px);
 }
 html{scroll-behavior:smooth}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:13px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background-image:radial-gradient(circle at 12% 8%,rgba(0,0,61,.05),transparent 38%),radial-gradient(circle at 88% 92%,rgba(24,89,200,.04),transparent 38%);background-attachment:fixed}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:13px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background-image:radial-gradient(circle at 12% 8%,rgba(10,122,255,.04),transparent 38%),radial-gradient(circle at 88% 92%,rgba(155,93,229,.04),transparent 38%);background-attachment:fixed}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#C7CAD1;border-radius:4px;border:2px solid transparent;background-clip:padding-box}
 ::-webkit-scrollbar-thumb:hover{background:#A8AEB7;background-clip:padding-box}
 
 /* ═══ PIN LOCK SCREEN ═══ */
-#pinscreen{position:fixed;inset:0;background:linear-gradient(155deg,#00003D 0%,#0A1E5E 50%,#123C8C 100%);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;transition:opacity .4s,visibility .4s}
-#pinscreen::before{content:'';position:absolute;top:-20%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(90,140,255,.14),transparent 65%);border-radius:50%}
-#pinscreen::after{content:'';position:absolute;bottom:-20%;left:-10%;width:480px;height:480px;background:radial-gradient(circle,rgba(40,90,220,.12),transparent 68%);border-radius:50%}
+#pinscreen{position:fixed;inset:0;background:linear-gradient(155deg,#0A1A33 0%,#0F2A5C 50%,#1A4DA8 100%);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;transition:opacity .4s,visibility .4s}
+#pinscreen::before{content:'';position:absolute;top:-20%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(120,170,255,.14),transparent 65%);border-radius:50%}
+#pinscreen::after{content:'';position:absolute;bottom:-20%;left:-10%;width:480px;height:480px;background:radial-gradient(circle,rgba(155,93,229,.10),transparent 68%);border-radius:50%}
 #pinscreen>*{position:relative;z-index:1}
 #pinscreen.hidden{opacity:0;visibility:hidden;pointer-events:none}
 .pin-logo{width:66px;height:66px;border-radius:18px;background:rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:20px;backdrop-filter:var(--blur);border:1px solid rgba(255,255,255,.22)}
@@ -66,7 +66,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;b
 .pin-dots{display:flex;gap:15px;margin-bottom:26px}
 .pin-dot{width:15px;height:15px;border-radius:50%;border:2px solid rgba(255,255,255,.4);transition:all .15s}
 .pin-dot.filled{background:#fff;border-color:#fff}
-.pin-dot.error{border-color:#D92D20;background:#D92D20;animation:shake .3s}
+.pin-dot.error{border-color:#F0453E;background:#F0453E;animation:shake .3s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .pin-pad{display:grid;grid-template-columns:repeat(3,66px);gap:15px}
 .pin-key{width:66px;height:66px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:23px;font-weight:600;cursor:pointer;transition:all .12s;backdrop-filter:var(--blur)}
@@ -76,19 +76,19 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;b
 .pin-err{font-size:12px;color:#FF8A82;margin-top:16px;font-weight:600;height:16px}
 
 /* ═══ TOPBAR ═══ */
-#topbar{position:sticky;top:0;z-index:500;background:linear-gradient(90deg,#00003D 0%,#0A1E5E 100%);border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 2px 12px rgba(0,0,61,.25)}
+#topbar{position:sticky;top:0;z-index:500;background:rgba(255,255,255,.85);backdrop-filter:var(--blur);border-bottom:1px solid var(--border);box-shadow:0 1px 0 rgba(16,24,40,.02)}
 .tb{max-width:1640px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .brand{padding:12px 0;display:flex;align-items:center;gap:12px}
-.brand-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#00003D,#0A1E5E 60%,#1550B4);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 2px 6px rgba(15,42,92,.25);position:relative}
+.brand-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#0A1A33,#0F2A5C 60%,#1E5AC4);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 2px 6px rgba(15,42,92,.25);position:relative}
 .brand-icon::after{content:'';position:absolute;inset:0;border-radius:10px;border:1px solid rgba(255,255,255,.12)}
 .brand-text{display:flex;flex-direction:column}
-.brand-name{font-size:14.5px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1.2}
-.brand-sub{font-size:9.5px;color:rgba(255,255,255,.55);font-weight:700;letter-spacing:.5px;margin-top:1px}
+.brand-name{font-size:14.5px;font-weight:800;color:var(--ink);letter-spacing:-.3px;line-height:1.2}
+.brand-sub{font-size:9.5px;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-top:1px}
 .nav{display:flex;align-items:center;gap:3px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
 .nav::-webkit-scrollbar{display:none}
-.nb{padding:7px 14px;background:transparent;border:none;color:rgba(255,255,255,.75);font-size:12px;font-weight:600;cursor:pointer;border-radius:9px;transition:all .15s;white-space:nowrap;font-family:inherit;position:relative}
-.nb:hover{background:rgba(255,255,255,.1);color:#fff}
-.nb.active{background:#fff;color:#00003D;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.nb{padding:7px 14px;background:transparent;border:none;color:var(--ink2);font-size:12px;font-weight:600;cursor:pointer;border-radius:9px;transition:all .15s;white-space:nowrap;font-family:inherit;position:relative}
+.nb:hover{background:rgba(16,24,40,.05);color:var(--ink)}
+.nb.active{background:var(--ink);color:#fff;box-shadow:0 1px 3px rgba(16,24,40,.2)}
 
 /* ═══ MAIN ═══ */
 main{max-width:1640px;margin:0 auto;padding:20px 24px 64px}
@@ -98,10 +98,10 @@ main{max-width:1640px;margin:0 auto;padding:20px 24px 64px}
 .fade-in{animation:fadeUp .28s cubic-bezier(.16,1,.3,1) both}
 
 /* ═══ HERO ═══ */
-.hero{background:linear-gradient(125deg,#00003D 0%,#0A1E5E 50%,#123C8C 100%);border-radius:var(--r-lg);padding:30px 34px;color:#fff;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(15,42,92,.18)}
+.hero{background:linear-gradient(125deg,#0A1A33 0%,#0F2A5C 50%,#1A4DA8 100%);border-radius:var(--r-lg);padding:30px 34px;color:#fff;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(15,42,92,.18)}
 .hero-ge-badge{width:62px;height:62px;border-radius:16px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;backdrop-filter:blur(8px)}
-.hero::after{content:'';position:absolute;top:-40%;right:-8%;width:380px;height:380px;background:radial-gradient(circle,rgba(90,140,255,.16),transparent 68%);border-radius:50%}
-.hero::before{content:'';position:absolute;bottom:-60%;left:20%;width:300px;height:300px;background:radial-gradient(circle,rgba(40,90,220,.12),transparent 70%);border-radius:50%}
+.hero::after{content:'';position:absolute;top:-40%;right:-8%;width:380px;height:380px;background:radial-gradient(circle,rgba(120,170,255,.16),transparent 68%);border-radius:50%}
+.hero::before{content:'';position:absolute;bottom:-60%;left:20%;width:300px;height:300px;background:radial-gradient(circle,rgba(155,93,229,.12),transparent 70%);border-radius:50%}
 .hero-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;position:relative;z-index:1}
 .hero-title{font-size:27px;font-weight:900;letter-spacing:-.6px;line-height:1.1}
 .hero-sub{font-size:13px;color:rgba(255,255,255,.7);margin-top:6px;font-weight:500}
@@ -138,8 +138,8 @@ main{max-width:1640px;margin:0 auto;padding:20px 24px 64px}
 .s-OnSchedule{background:var(--teal-lt);color:#0E5C73}.s-OnSchedule::before{background:var(--teal)}
 .s-Behind{background:var(--red-lt);color:#A6271E}.s-Behind::before{background:var(--red)}
 .s-AtRisk{background:var(--amber-lt);color:#8A4A00}.s-AtRisk::before{background:var(--amber)}
-.s-NotStarted{background:var(--purple-lt);color:#3B2E7E}.s-NotStarted::before{background:var(--purple)}
-.s-Open{background:#F1F1F4;color:#48484A}.s-Open::before{background:#667085}
+.s-NotStarted{background:var(--purple-lt);color:#5E2A8C}.s-NotStarted::before{background:var(--purple)}
+.s-Open{background:#F1F1F4;color:#48484A}.s-Open::before{background:#8E8E93}
 .s-Ongoing{background:var(--green-lt);color:#1B5E20}.s-Ongoing::before{background:var(--green)}
 .s-OnHold{background:var(--amber-lt);color:#8A4A00}.s-OnHold::before{background:var(--amber)}
 .p-High{background:var(--red-lt);color:#A6271E;border-radius:7px;padding:2px 7px;font-size:9px;font-weight:800}
@@ -172,8 +172,8 @@ tbody tr:last-child td{border-bottom:none}
 /* ═══ BUTTONS ═══ */
 .btn{border:none;border-radius:9px;padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:6px;letter-spacing:-.1px}
 .btn-primary{background:var(--blue);color:#fff;box-shadow:0 1px 2px rgba(10,122,255,.25)}.btn-primary:hover{background:var(--blue-dk);transform:translateY(-1px);box-shadow:0 2px 6px rgba(10,122,255,.3)}
-.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#0B6B38;transform:translateY(-1px)}
-.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#B42318}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#179B4C;transform:translateY(-1px)}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#DC3A33}
 .btn-ghost{background:var(--surface3);color:var(--ink2);border:1px solid var(--border)}.btn-ghost:hover{background:var(--bg2);border-color:var(--border2)}
 .btn-sm{padding:6px 12px;font-size:11px;border-radius:8px}
 .btn-icon{width:30px;height:30px;padding:0;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;position:relative;border:1px solid transparent}
@@ -371,50 +371,6 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
 
 .color-sw{width:30px;height:30px;border-radius:50%;cursor:pointer;transition:transform .1s;border:2px solid #fff}
 .color-sw:hover{transform:scale(1.1)}
-
-/* ═══ ICONS (SVG) ═══ */
-.ic{display:inline-block;vertical-align:-0.14em;flex-shrink:0}
-.ct .ic{color:inherit;opacity:.85}
-.btn .ic{vertical-align:-0.18em}
-
-/* ═══ KPI SNAPSHOT (leading / lagging) ═══ */
-.snap-hdr-band{background:linear-gradient(120deg,#00003D 0%,#0A1E5E 60%,#123C8C 100%)}
-.snap-sec{padding:16px 20px 18px}
-.snap-sec+.snap-sec{border-top:1px solid var(--border)}
-.snap-sec-title{font-size:10px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;display:flex;gap:8px;align-items:center;margin-bottom:11px}
-.snap-sec-title .snap-tag{font-size:8.5px;font-weight:700;letter-spacing:.4px;padding:2px 8px;border-radius:20px;text-transform:none}
-.snap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:10px}
-.snap-tile{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px 11px;position:relative;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s}
-.snap-tile:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--border2)}
-.snap-val{font-size:24px;font-weight:800;letter-spacing:-.8px;line-height:1;display:flex;align-items:baseline;gap:5px}
-.snap-val small{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0}
-.snap-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-top:7px;line-height:1.35}
-.snap-sub{font-size:10px;color:var(--muted2);margin-top:3px;font-weight:500;line-height:1.35}
-.snap-dot{position:absolute;top:11px;right:11px;width:8px;height:8px;border-radius:50%}
-
-/* ═══ MOTION — aurora, parallax, scroll reveal ═══ */
-@keyframes aurora{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-@keyframes orbFloat{from{transform:translate3d(0,-12px,0) scale(1)}to{transform:translate3d(0,16px,0) scale(1.07)}}
-.hero{background:linear-gradient(125deg,#00003D 0%,#0A1E5E 30%,#123C8C 55%,#0A1E5E 80%,#00003D 100%);background-size:230% 230%;animation:aurora 22s ease-in-out infinite}
-.snap-hdr-band{background:linear-gradient(120deg,#00003D 0%,#0A1E5E 45%,#123C8C 70%,#00003D 100%);background-size:250% 250%;animation:aurora 30s ease-in-out infinite}
-.hero::after{transform:translate3d(0,calc(var(--pary,0)*-0.5px),0)}
-.hero::before{transform:translate3d(0,calc(var(--pary,0)*0.35px),0)}
-#pinscreen{background-size:200% 200%;animation:aurora 26s ease-in-out infinite}
-#pinscreen::before{animation:orbFloat 13s ease-in-out infinite alternate}
-#pinscreen::after{animation:orbFloat 17s ease-in-out infinite alternate-reverse}
-#topbar{transition:box-shadow .25s}
-#topbar.scrolled{box-shadow:0 6px 24px rgba(0,0,61,.45)}
-.reveal-init{opacity:0;transform:translateY(16px)}
-.reveal-in{opacity:1;transform:none;transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1)}
-@media (prefers-reduced-motion: reduce){
-  .hero,.snap-hdr-band,#pinscreen,#pinscreen::before,#pinscreen::after{animation:none}
-  .reveal-init{opacity:1;transform:none}
-  .hero::after,.hero::before{transform:none}
-}
-
-/* ═══ NORTH STAR / HOSHIN ═══ */
-.hoshin-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
-@media(max-width:820px){.hoshin-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -427,7 +383,7 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
       <text x="50" y="62" text-anchor="middle" font-family="-apple-system,Arial,sans-serif" font-size="40" font-weight="800" fill="#ffffff">GE</text>
     </svg>
   </div>
-  <div class="pin-title">EHS+S Command Center</div>
+  <div class="pin-title">EHS Command Center</div>
   <div class="pin-sub">GE Aerospace Muskegon &middot; Enter your PIN to continue</div>
   <div class="pin-dots">
     <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
@@ -447,17 +403,17 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
         </svg>
       </div>
       <div class="brand-text">
-        <div class="brand-name">EHS+S Command Center</div>
+        <div class="brand-name">EHS Command Center</div>
         <div class="brand-sub">GE AEROSPACE MUSKEGON</div>
       </div>
     </div>
     <div class="nav" id="nav"></div>
-    <span id="sync-indicator" style="font-size:10px;font-weight:800;color:#FFC46B;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;flex-shrink:0;white-space:nowrap;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:8px">Connecting…</span>
-    <button class="btn btn-sm" onclick="openBackupModal()" title="Backup &amp; Restore Data" style="margin:8px 0 8px 4px;flex-shrink:0;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.18)"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> Data</button>
+    <span id="sync-indicator" style="font-size:10px;font-weight:800;color:#F5A623;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;flex-shrink:0;white-space:nowrap;background:var(--surface3);border:1px solid var(--border);border-radius:8px">Connecting…</span>
+    <button class="btn btn-ghost btn-sm" onclick="openBackupModal()" title="Backup &amp; Restore Data" style="margin:8px 0 8px 4px;flex-shrink:0">💾 Data</button>
   </div>
 </div>
 <div id="loading-screen" style="position:fixed;inset:0;z-index:9998;background:#F4F5F7;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px">
-  <div style="width:42px;height:42px;border-radius:50%;border:3px solid #E3E5E9;border-top-color:#1859C8;animation:spin 0.8s linear infinite"></div>
+  <div style="width:42px;height:42px;border-radius:50%;border:3px solid #E3E5E9;border-top-color:#0A7AFF;animation:spin 0.8s linear infinite"></div>
   <div style="font-size:13px;color:#8A9099;font-weight:600">Loading shared team workspace…</div>
 </div>
 <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
@@ -465,7 +421,6 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
 
 <main>
   <div id="pg-overview" class="page fade-in"></div>
-  <div id="pg-hoshin"   class="page hidden"></div>
   <div id="pg-metrics"  class="page hidden"></div>
   <div id="pg-vpp"      class="page hidden"></div>
   <div id="pg-actions"  class="page hidden"></div>
@@ -474,13 +429,13 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
   <div id="pg-SW"       class="page hidden"></div>
   <div id="pg-MS"       class="page hidden"></div>
   <div id="pg-RD"       class="page hidden"></div>
-  <div id="pg-ZT"       class="page hidden"></div>
+  <div id="pg-JK"       class="page hidden"></div>
   <div id="pg-links"    class="page hidden"></div>
 </main>
 
 <footer>
   <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
-    <span style="font-weight:800;color:var(--ink2)">EHS+S TEAM COMMAND CENTER</span>
+    <span style="font-weight:800;color:var(--ink2)">EHS TEAM COMMAND CENTER</span>
     <span style="opacity:.5">•</span>
     <span>GE AEROSPACE MUSKEGON</span>
     <span style="opacity:.5">•</span>
@@ -500,7 +455,7 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
       <div class="mfield"><label>Task Name *</label><input id="m-task" placeholder="Describe the task..."/></div>
       <div class="g2">
         <div class="mfield"><label>Assigned To</label>
-          <select id="m-owner"><option>Victor Pizarro</option><option>Steve Wolbrink</option><option>Mike Shuster</option><option>Rich DeLeau</option><option>Zach Tindall</option></select>
+          <select id="m-owner"><option>Victor Pizarro</option><option>Steve Wolbrink</option><option>Mike Shuster</option><option>Rich DeLeau</option><option>Jakob</option></select>
         </div>
         <div class="mfield"><label>Status</label>
           <select id="m-status"><option>Open</option><option>Not Started</option><option>Ongoing</option><option>On Schedule</option><option>Behind</option><option>At-Risk</option><option>Complete</option><option>On Hold</option></select>
@@ -515,15 +470,14 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
         </div>
       </div>
       <div class="mfield"><label>Program</label>
-        <select id="m-prog"><option>Core EHS</option><option>Ergo</option><option>VPP</option><option>Security</option></select>
+        <select id="m-prog"><option>Core EHS</option><option>Ergo</option><option>VPP</option></select>
       </div>
-      <div class="mfield"><label>North Star Objective (optional)</label><select id="m-hoshin"></select></div>
       <div class="mfield"><label>Specific Due Date (optional)</label><input id="m-duedate" type="date"/></div>
       <div class="mfield"><label>Notes / Details</label><textarea id="m-notes" placeholder="Any additional context..."></textarea></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-add')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveNewTask()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add Task</button>
+      <button class="btn btn-primary" onclick="saveNewTask()">&#10133; Add Task</button>
     </div>
   </div>
 </div>
@@ -532,7 +486,7 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
 <div class="modal-bg hidden" id="modal-comment">
   <div class="modal">
     <div class="modal-hdr">
-      <div class="modal-title" style="display:flex;align-items:center;gap:8px"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Comments &amp; Progress Updates</div>
+      <div class="modal-title">&#128172; Comments &amp; Progress Updates</div>
       <button class="modal-close" onclick="closeModal('modal-comment')">&#10005;</button>
     </div>
     <div style="padding:14px 18px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--ink)" id="comment-task-name"></div>
@@ -561,7 +515,7 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
       <div class="mfield"><label>Color</label><div id="sm-colors" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"></div></div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" id="sm-delete" onclick="deleteSchedEvent()" style="background:var(--red-lt);color:var(--red)"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/></svg> Delete</button>
+      <button class="btn btn-ghost" id="sm-delete" onclick="deleteSchedEvent()" style="background:var(--red-lt);color:var(--red)">&#128465;&#65039; Delete</button>
       <div style="flex:1"></div>
       <button class="btn btn-ghost" onclick="closeModal('modal-sched')">Cancel</button>
       <button class="btn btn-primary" onclick="saveSchedEvent()">Save</button>
@@ -587,21 +541,10 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
 <div class="modal-bg hidden" id="modal-backup">
   <div class="modal" style="max-width:480px">
     <div class="modal-hdr">
-      <div class="modal-title">Data, Reports &amp; Backup</div>
+      <div class="modal-title">💾 Data, Backup & Restore</div>
       <button class="modal-close" onclick="closeModal('modal-backup')">&#10005;</button>
     </div>
     <div class="modal-body">
-      <div style="font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Reports &amp; Exports</div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
-        <button class="btn btn-primary" onclick="exportOnePager()" style="width:100%;justify-content:center"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> One-Page Executive Summary (print / PDF)</button>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-          <button class="btn btn-ghost btn-sm" onclick="exportActionsCSV()" style="justify-content:center"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Actions CSV</button>
-          <button class="btn btn-ghost btn-sm" onclick="exportCasesCSV()" style="justify-content:center"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Cases CSV</button>
-          <button class="btn btn-ghost btn-sm" onclick="exportMetricsCSV()" style="justify-content:center"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Metrics CSV</button>
-        </div>
-        <div style="font-size:10.5px;color:var(--muted);line-height:1.5">CSV files open directly in Excel and import cleanly into EHS systems like Gensuite or Cority. The incident export carries OSHA-style case fields — treatment level, days away/restricted, root cause, and corrective actions.</div>
-      </div>
-      <div style="border-top:1px solid var(--border);padding-top:14px;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Cloud Backup &amp; Restore</div>
       <div style="font-size:12px;color:var(--ink2);line-height:1.6;margin-bottom:16px">
         Everything you enter — tasks, comments, calendars, metrics, I&amp;I cases, links — is saved live to a shared cloud database. Every team member on any phone, computer, or browser sees the same data, updated within a couple seconds.
       </div>
@@ -609,8 +552,8 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
         <strong>Note:</strong> restoring a backup replaces the shared data for the <em>entire team</em>, not just this device. Use it to recover from a mistake or migrate data — download a backup occasionally as a safety net.
       </div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <button class="btn btn-primary" onclick="exportData()" style="width:100%;justify-content:center"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Backup (.json)</button>
-        <button class="btn btn-ghost" onclick="triggerImport()" style="width:100%;justify-content:center"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Restore From Backup File</button>
+        <button class="btn btn-primary" onclick="exportData()" style="width:100%;justify-content:center">⬇️ Download Backup (.json)</button>
+        <button class="btn btn-ghost" onclick="triggerImport()" style="width:100%;justify-content:center">⬆️ Restore From Backup File</button>
       </div>
       <div id="backup-lastsaved" style="font-size:11px;color:var(--muted);margin-top:14px;text-align:center"></div>
     </div>
@@ -650,64 +593,7 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeModal('modal-link')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveNewLink()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add Link</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- INCIDENT CASE DETAIL MODAL -->
-<div class="modal-bg hidden" id="modal-case">
-  <div class="modal" style="max-width:660px">
-    <div class="modal-hdr">
-      <div class="modal-title" style="display:flex;align-items:center;gap:8px"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M12 10v6M9 13h6"/></svg> Incident Case Detail</div>
-      <button class="modal-close" onclick="closeModal('modal-case')">&#10005;</button>
-    </div>
-    <div style="padding:10px 24px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted)">
-      <span id="cd-title-date"></span> &middot; Extended fields mirror Gensuite / Cority incident-management records. Every change saves instantly for the whole team.
-    </div>
-    <div class="modal-body">
-      <div class="g3">
-        <div class="mfield"><label>Case # / Gensuite ID</label><input id="cd-caseNo" onchange="updCaseField('caseNo',this.value)" placeholder="e.g. INC-2026-014"/></div>
-        <div class="mfield"><label>Date</label><input type="date" id="cd-date" onchange="updCaseField('date',this.value)"/></div>
-        <div class="mfield"><label>Time of Event</label><input type="time" id="cd-time" onchange="updCaseField('time',this.value)"/></div>
-      </div>
-      <div class="g3">
-        <div class="mfield"><label>Shift</label><select id="cd-shift" onchange="updCaseField('shift',this.value)"><option value=""></option><option>1st</option><option>2nd</option><option>3rd</option></select></div>
-        <div class="mfield"><label>Case Type</label><select id="cd-caseType" onchange="updCaseField('caseType',this.value)"><option>Recordable</option><option>Non-Recordable</option><option>First Aid</option><option>Near Miss</option></select></div>
-        <div class="mfield"><label>Case Status</label><select id="cd-caseStatus" onchange="updCaseField('caseStatus',this.value)"><option value=""></option><option>Open</option><option>In Progress</option><option>Closed</option></select></div>
-      </div>
-      <div class="g3">
-        <div class="mfield"><label>Treatment Level</label><select id="cd-treatment" onchange="updCaseField('treatment',this.value)"><option value=""></option><option>None</option><option>First Aid Only</option><option>Medical Treatment</option><option>ER Visit</option><option>Hospitalization</option></select></div>
-        <div class="mfield"><label>Days Away</label><input type="number" min="0" id="cd-daysAway" onchange="updCaseField('daysAway',this.value)"/></div>
-        <div class="mfield"><label>Days Restricted</label><input type="number" min="0" id="cd-daysRestricted" onchange="updCaseField('daysRestricted',this.value)"/></div>
-      </div>
-      <div class="g2">
-        <div class="mfield"><label>Site / Dept</label><select id="cd-dept" onchange="updCaseField('dept',this.value)"><option>Norton</option><option>Latimer</option></select></div>
-        <div class="mfield"><label>Occupation</label><input id="cd-occupation" onchange="updCaseField('occupation',this.value)"/></div>
-      </div>
-      <div class="g2">
-        <div class="mfield"><label>Accident Type</label><input id="cd-accidentType" onchange="updCaseField('accidentType',this.value)"/></div>
-        <div class="mfield"><label>Injury Type</label><input id="cd-injuryType" onchange="updCaseField('injuryType',this.value)"/></div>
-      </div>
-      <div class="g2">
-        <div class="mfield"><label>Body Part</label><input id="cd-bodyPart" onchange="updCaseField('bodyPart',this.value)"/></div>
-        <div class="mfield"><label>Body Part Detail</label><input id="cd-detailBodyPart" onchange="updCaseField('detailBodyPart',this.value)"/></div>
-      </div>
-      <div class="mfield"><label>Medical Provider / Clinic</label><input id="cd-provider" onchange="updCaseField('provider',this.value)" placeholder="e.g. Workplace Health"/></div>
-      <div class="mfield"><label>Description</label><textarea id="cd-desc" onchange="updCaseField('desc',this.value)"></textarea></div>
-      <div class="mfield"><label>Root Cause</label><textarea id="cd-rootCause" onchange="updCaseField('rootCause',this.value)" placeholder="Root cause analysis outcome..."></textarea></div>
-      <div class="mfield"><label>Corrective Action</label><textarea id="cd-correctiveAction" onchange="updCaseField('correctiveAction',this.value)" placeholder="Corrective / preventive actions taken or planned..."></textarea></div>
-      <div class="g2">
-        <div class="mfield"><label>Corrective Action Owner</label><select id="cd-caOwner" onchange="updCaseField('caOwner',this.value)"><option value=""></option><option>Victor Pizarro</option><option>Steve Wolbrink</option><option>Mike Shuster</option><option>Rich DeLeau</option><option>Zach Tindall</option></select></div>
-        <div class="mfield"><label>Corrective Action Due</label><input type="date" id="cd-caDue" onchange="updCaseField('caDue',this.value)"/></div>
-      </div>
-      <div class="mfield"><label>Notes</label><textarea id="cd-notes" onchange="updCaseField('notes',this.value)"></textarea></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost btn-sm" onclick="exportCasesCSV()"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export All Cases (CSV)</button>
-      <div style="flex:1"></div>
-      <button class="btn btn-primary" onclick="closeModal('modal-case')">Done</button>
+      <button class="btn btn-primary" onclick="saveNewLink()">➕ Add Link</button>
     </div>
   </div>
 </div>
@@ -716,71 +602,19 @@ footer{background:transparent;color:var(--muted);text-align:center;padding:24px 
 
 <script>
 // ════════════════════════════════════════════════════
-// ICON SYSTEM — inline SVG (professional, no emojis)
-// ════════════════════════════════════════════════════
-const ICON_PATHS={
- chart:'<path d="M18 20V10M12 20V4M6 20v-6"/>',
- checkCircle:'<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',
- alertCircle:'<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',
- alert:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/>',
- clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
- clipboard:'<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/>',
- users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
- user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
- star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
- calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
- search:'<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>',
- plus:'<path d="M12 5v14M5 12h14"/>',
- trash:'<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/>',
- comment:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
- link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
- edit:'<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>',
- trendUp:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
- trendDown:'<polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>',
- target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
- activity:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
- shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
- refresh:'<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
- layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
- firstaid:'<rect x="3" y="6" width="18" height="14" rx="2"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M12 10v6M9 13h6"/>',
- plane:'<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
- award:'<circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>',
- building:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M8 10h.01M16 10h.01M12 10h.01M8 14h.01M16 14h.01M12 14h.01"/>',
- lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
- folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
- scale:'<path d="M12 3v18"/><path d="M5 7l7-4 7 4"/><path d="M5 7l-3 7a4 4 0 0 0 6 0z"/><path d="M19 7l-3 7a4 4 0 0 0 6 0z"/>',
- leaf:'<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
- tool:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
- download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
- upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
- database:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>',
-};
-function ic(name,size=14,style=''){
-  const p=ICON_PATHS[name]||ICON_PATHS.chart;
-  return `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${style?` style="${style}"`:''}>${p}</svg>`;
-}
-// Legacy emoji icons (stored in team data from the previous version) map to SVG
-const EMOJI_ICON_MAP={"📋":"clipboard","📊":"chart","🏭":"building","🔒":"lock","👥":"users","📁":"folder","✈️":"plane","⚖️":"scale","🛡️":"shield","🌱":"leaf","🤝":"users","🗂️":"folder","🔗":"link","📈":"trendUp","💬":"comment","📅":"calendar","🧰":"tool","🚨":"alert","⭐":"star"};
-function linkIcon(v){
-  if(ICON_PATHS[v]) return ic(v,20);
-  if(EMOJI_ICON_MAP[v]) return ic(EMOJI_ICON_MAP[v],20);
-  return `<span style="font-size:17px">${v||''}</span>`;
-}
-
-// ════════════════════════════════════════════════════
 // TEAM
 // ════════════════════════════════════════════════════
 const TEAM={
-  VP:{name:"Victor Pizarro",  ini:"VP",role:"EHS Leader",                   color:"#1859C8",bg:"linear-gradient(135deg,#00003D,#1859C8)"},
-  SW:{name:"Steve Wolbrink",  ini:"SW",role:"EHS Compliance Specialist",    color:"#0E8345",bg:"linear-gradient(135deg,#053B21,#0E8345)"},
-  MS:{name:"Mike Shuster",    ini:"MS",role:"Ergonomic Specialist (ATI)",   color:"#6E56CF",bg:"linear-gradient(135deg,#2E2566,#6E56CF)"},
-  RD:{name:"Rich DeLeau",     ini:"RD",role:"EHS Specialist (Contract)",    color:"#0E7490",bg:"linear-gradient(135deg,#083A47,#0E7490)"},
-  ZT:{name:"Zach Tindall",    ini:"ZT",role:"Security Specialist",          color:"#B7791F",bg:"linear-gradient(135deg,#5C3D10,#B7791F)"},
+  VP:{name:"Victor Pizarro",  ini:"VP",role:"EHS Leader",                   color:"#0A84FF",bg:"linear-gradient(135deg,#0040DD,#0A84FF)"},
+  SW:{name:"Steve Wolbrink",  ini:"SW",role:"EHS Compliance Specialist",    color:"#30D158",bg:"linear-gradient(135deg,#1B5E20,#30D158)"},
+  MS:{name:"Mike Shuster",    ini:"MS",role:"Ergonomic Specialist (ATI)",   color:"#BF5AF2",bg:"linear-gradient(135deg,#5E2A8C,#BF5AF2)"},
+  RD:{name:"Rich DeLeau",     ini:"RD",role:"EHS Specialist (Contract)",    color:"#64D2FF",bg:"linear-gradient(135deg,#0E5C73,#64D2FF)"},
+  JK:{name:"Jakob",           ini:"JK",role:"EHS Specialist — Norton (starts Nov 3)",color:"#F5A623",bg:"linear-gradient(135deg,#8A4A00,#F5A623)"},
 };
 const STATUS_OPTS=["Complete","On Schedule","Behind","At-Risk","Not Started","Open","On Hold","Ongoing"];
 const PRI_OPTS=["High","Medium","Low"];
-const TARGET_OPTS=["Q1 2026","Q2 2026","Q3 2026","Q4 2026","Jan 2026","Feb 2026","Mar 2026","Apr 2026","May 2026","Jun 2026","Jul 2026","Aug 2026","Sep 2026","Oct 2026","Nov 2026","Dec 2026","Weekly","Monthly","Bi-Weekly","Quarterly","Annual","Ongoing","Complete","TBD"];
-const PROG_OPTS=["Core EHS","Ergo","VPP","Security"];
+const TARGET_OPTS=["Q1 2026","Q2 2026","Q3 2026","Q4 2026","Q1 2027","Q2 2027","Q3 2027","Q4 2027","Jan 2026","Feb 2026","Mar 2026","Apr 2026","May 2026","Jun 2026","Jul 2026","Aug 2026","Sep 2026","Oct 2026","Nov 2026","Dec 2026","Weekly","Monthly","Bi-Weekly","Quarterly","Annual","Ongoing","Complete","TBD"];
+const PROG_OPTS=["Core EHS","Ergo","VPP"];
 const PERSON_OPTS=Object.values(TEAM).map(t=>t.name);
 const DAY_NAMES=["Monday","Tuesday","Wednesday","Thursday","Friday"];
 const TIMES=["7:00","7:30","8:00","8:30","9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","1:00","1:30","2:00","2:30","3:00","3:30","4:00","4:30"];
@@ -803,7 +637,6 @@ const DEFAULT_ACTIONS=[
   {id:12, task:"Fall Prevention — Grinders Project",               owner:"Rich DeLeau",    status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
   {id:13, task:"E-Gauge Light Curtain Requirements Review",        owner:"Rich DeLeau",    status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
   {id:14, task:"PFAS Updates Tracking",                            owner:"Rich DeLeau",    status:"Open",       pri:"Medium",target:"Ongoing", prog:"Core EHS"},
-  {id:15, task:"Build Security Assessment Action Plan",            owner:"Zach Tindall",   status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
   {id:16, task:"Verify Stormwater Plan Updates",                   owner:"Steve Wolbrink", status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
   {id:17, task:"Verify SPCC & PIPP Updates",                       owner:"Steve Wolbrink", status:"Open",       pri:"High",  target:"Q2 2026", prog:"Core EHS"},
   {id:18, task:"Add Latimer East to ODS",                          owner:"Steve Wolbrink", status:"Open",       pri:"Medium",target:"Q2 2026", prog:"Core EHS"},
@@ -832,13 +665,6 @@ const DEFAULT_ACTIONS=[
   {id:41, task:"Shroud Packing Improvement",                       owner:"Mike Shuster",   status:"Behind",     pri:"Medium",target:"Q3 2026", prog:"Ergo"},
   {id:42, task:"Shipping Skids — Safety/Ergo",                     owner:"Rich DeLeau",    status:"Behind",     pri:"High",  target:"Q2 2026", prog:"Ergo"},
   {id:43, task:"Shipping Racks — Safety/Ergo",                     owner:"Rich DeLeau",    status:"Behind",     pri:"High",  target:"Q2 2026", prog:"Ergo"},
-  {id:44, task:"Security Framework Compliance Review",             owner:"Zach Tindall",   status:"Open",       pri:"High",  target:"Q3 2026", prog:"Security"},
-  {id:45, task:"Profiler Updates (Security Module)",               owner:"Zach Tindall",   status:"Open",       pri:"Medium",target:"Annual",  prog:"Security"},
-  {id:46, task:"OnGuard Badge Database Audit",                     owner:"Zach Tindall",   status:"Ongoing",    pri:"High",  target:"Ongoing", prog:"Security"},
-  {id:47, task:"Security/Emergency Mapping — Complete All",        owner:"Zach Tindall",   status:"Ongoing",    pri:"Medium",target:"Q3 2026", prog:"Security"},
-  {id:48, task:"Emergency Exit Testing — Document Weekly",         owner:"Zach Tindall",   status:"Ongoing",    pri:"High",  target:"Weekly",  prog:"Security"},
-  {id:49, task:"Card Access Reviews — Report Anomalies",           owner:"Zach Tindall",   status:"Ongoing",    pri:"High",  target:"Weekly",  prog:"Security"},
-  {id:50, task:"SPCC Audits — Both Sites Monthly",                 owner:"Zach Tindall",   status:"Ongoing",    pri:"Medium",target:"Monthly", prog:"Security"},
 ];
 
 const DEFAULT_VPP=[
@@ -847,51 +673,13 @@ const DEFAULT_VPP=[
   {id:3,ms:"LOTO Program Full Review & Refresh",           owner:"Steve",        target:"Q1 2026",  pct:15,status:"Behind"},
   {id:4,ms:"Ergo Risk HEAT MAP Q1 Top 10 Published",       owner:"Mike",         target:"Q1 2026",  pct:30,status:"Behind"},
   {id:5,ms:"Digital Heat Mapping Baseline Established",    owner:"Victor",       target:"Q2 2026",  pct:5, status:"Not Started"},
-  {id:6,ms:"Contractor Safety 100% Audit Compliance",      owner:"Zach/Rich",    target:"Q2 2026",  pct:60,status:"On Schedule"},
-  {id:7,ms:"Physical Security Program Documented",         owner:"Zach",         target:"Q3 2026",  pct:25,status:"At-Risk"},
+  {id:6,ms:"Contractor Safety 100% Audit Compliance",      owner:"Rich",         target:"Q2 2026",  pct:60,status:"On Schedule"},
   {id:8,ms:"All LOTO/JSA/PPE Training Current",            owner:"Steve",        target:"Q3 2026",  pct:40,status:"At-Risk"},
   {id:9,ms:"VPP Documentation Package Assembled",          owner:"Victor",       target:"Q3 2026",  pct:5, status:"Not Started"},
   {id:10,ms:"Employee VPP Education (5 Points of Star)",   owner:"Steve/Victor", target:"Sep 2026", pct:0, status:"Not Started"},
   {id:11,ms:"Pre-Assessment Internal VPP Audit",           owner:"Victor",       target:"Sep 2026", pct:0, status:"Not Started"},
   {id:12,ms:"OSHA Site Assessment Scheduled",              owner:"Victor",       target:"Sep 2026", pct:0, status:"Not Started"},
   {id:13,ms:"⭐ VPP STAR RE-CERTIFICATION AWARDED",        owner:"FULL TEAM",    target:"Oct 2026", pct:0, status:"Not Started"},
-];
-
-// ════════════════════════════════════════════════════
-// NORTH STAR OBJECTIVES — Hoshin Kanri breakthrough goals.
-// Seeded once; fully editable in the app and stored with team data.
-// ════════════════════════════════════════════════════
-const DEFAULT_HOSHIN=[
- {id:"NS1",code:"NS-1",title:"Interdependent Safety Culture & Psychological Safety",
-  aim:"Every associate feels safe to speak up, stop work, and report anything — and actually does. Safety is owned by everyone on the floor, not policed by EHS.",
-  vision:"By 2029 Muskegon operates as a fully interdependent safety culture: psychological safety is measured and managed to the intent of ISO 45003, stop-work authority is used and celebrated, and associates coach each other unprompted.",
-  focus:"2026: Baseline culture & psychological-safety perception survey · launch a Safety Voice metric (concerns raised with a closed feedback loop) · leader listening rounds on the floor · celebrate good catches site-wide through the MVPP engagement plan.",
-  kpi:"% associates who agree \"I can raise a safety concern without fear\" · good catches per associate per month · concern-to-closure cycle time",
-  owner:"Victor Pizarro",pct:10,status:"Ongoing",color:"#1859C8",icon:"users"},
- {id:"NS2",code:"NS-2",title:"Predict & Prevent — Leading-Indicator EHS",
-  aim:"Shift the site from reacting to injuries to predicting and preventing them — weekly decisions driven by leading indicators, not last month's recordables.",
-  vision:"By 2029 EHS runs on a predictive model: live digital heat mapping, SIF-precursor tracking, and a leading-to-lagging indicator ratio of 10:1 or better steering priorities every week.",
-  focus:"2026: Digital heat-mapping baseline · daily Pre-Flight Safety Checks at full cadence · relaunch near-miss / good-catch reporting · define and start tracking SIF (serious injury & fatality) precursors · build the leading-indicator bowler.",
-  kpi:"Leading:lagging indicator ratio · % of corrective actions originating from leading sources (audits, near misses, heat map) · SIF precursors identified and controlled",
-  owner:"Victor Pizarro",pct:15,status:"Ongoing",color:"#0E7490",icon:"trendUp"},
- {id:"NS3",code:"NS-3",title:"Zero Harm by Design — MOC & Prevention through Design",
-  aim:"No new risk walks in the door: every equipment purchase, modification, and process change passes an EHS risk gate before it ever reaches the floor.",
-  vision:"By 2029 Prevention-through-Design is standard work — safety and ergonomic requirements are written into purchase specifications, MOC compliance is 100%, and post-install retrofits reach zero.",
-  focus:"2026: Refresh and simplify the MOC workflow · add a risk-assessment gate to capex and equipment purchases · publish a vendor EHS specification sheet · MOC training for engineering, maintenance, and purchasing.",
-  kpi:"% of modifications and purchases completing MOC before energization · post-install EHS retrofit actions (goal: 0) · MOC cycle time",
-  owner:"Steve Wolbrink",pct:20,status:"Ongoing",color:"#B7791F",icon:"tool"},
- {id:"NS4",code:"NS-4",title:"Ergonomic Excellence — Design Out the Strain",
-  aim:"Engineer ergonomic risk out of the work instead of coaching people through it — and catch discomfort early, before it ever becomes an MSD case.",
-  vision:"By 2029 the top ergonomic risks are engineered out year after year, every workstation is assessed to TS2031, and MSD recordables trend to zero.",
-  focus:"2026: Publish the HEAT MAP Top 10 and close them with engineering fixes · CR2031/TS2031 gap plan · stand up the MSD/discomfort leading metric · fully document early-intervention workflows.",
-  kpi:"High-risk tasks engineered out per year · early-intervention encounters vs. MSD cases · % of workstations assessed",
-  owner:"Mike Shuster",pct:20,status:"Ongoing",color:"#6E56CF",icon:"activity"},
- {id:"NS5",code:"NS-5",title:"Audit-Ready Every Day — VPP, Compliance & Security as One System",
-  aim:"The site is inspection-ready any day, unannounced — VPP Star excellence, zero violations, and physical security running as one integrated management system.",
-  vision:"By 2029 VPP Star status is sustained, compliance calendars run at 100% with zero NOVs, and security is fully woven into the EHS management system and the site culture.",
-  focus:"2026: VPP Star re-certification (October) · zero regulatory violations · security assessment action plan and framework compliance · 100% training currency across LOTO/JSA/PPE.",
-  kpi:"Compliance calendar completion · NOVs (goal 0) · framework & security audit scores · training currency",
-  owner:"Full Team",pct:30,status:"On Schedule",color:"#0E8345",icon:"shield"},
 ];
 
 const DEFAULT_METRICS={
@@ -910,94 +698,79 @@ const DEFAULT_METRICS={
 };
 
 const DEFAULT_LINKS=[
-  {name:"Gensuite EHS",url:"https://gehscloud.com",desc:"Compliance & action tracking",icon:"📋",color:"#1859C8"},
-  {name:"Spotfire Bowler",url:"https://ge.com",desc:"EHS & Security dashboard metrics",icon:"📊",color:"#0E8345"},
-  {name:"TAVS WOR",url:"https://ge.com",desc:"Plant health pulse reports",icon:"🏭",color:"#6E56CF"},
-  {name:"OnGuard",url:"https://ge.com",desc:"Badge & access control system",icon:"🔒",color:"#D97706"},
-  {name:"Right Crowd",url:"https://ge.com",desc:"Visitor & contractor management",icon:"👥",color:"#0E9CD8"},
-  {name:"Box / GE Docs",url:"https://box.com",desc:"EHS document storage & sharing",icon:"📁",color:"#667085"},
-  {name:"GE Aerospace Hub",url:"https://gehub.ge.com",desc:"Internal GE portal",icon:"✈️",color:"#1859C8"},
-  {name:"Enhesa",url:"https://enhesa.com",desc:"Regulatory intelligence platform",icon:"⚖️",color:"#D92D20"},
-  {name:"OSHA Resources",url:"https://osha.gov",desc:"Standards, regulations, VPP info",icon:"🛡️",color:"#0E8345"},
+  {name:"Gensuite EHS",url:"https://gehscloud.com",desc:"Compliance & action tracking",icon:"📋",color:"#0A84FF"},
+  {name:"Spotfire Bowler",url:"https://ge.com",desc:"EHS dashboard metrics",icon:"📊",color:"#30D158"},
+  {name:"TAVS WOR",url:"https://ge.com",desc:"Plant health pulse reports",icon:"🏭",color:"#BF5AF2"},
+  {name:"Right Crowd",url:"https://ge.com",desc:"Visitor & contractor management",icon:"👥",color:"#64D2FF"},
+  {name:"Box / GE Docs",url:"https://box.com",desc:"EHS document storage & sharing",icon:"📁",color:"#8E8E93"},
+  {name:"GE Aerospace Hub",url:"https://gehub.ge.com",desc:"Internal GE portal",icon:"✈️",color:"#0A84FF"},
+  {name:"Enhesa",url:"https://enhesa.com",desc:"Regulatory intelligence platform",icon:"⚖️",color:"#FF453A"},
+  {name:"OSHA Resources",url:"https://osha.gov",desc:"Standards, regulations, VPP info",icon:"🛡️",color:"#30D158"},
   {name:"EPA Compliance",url:"https://epa.gov",desc:"Environmental regulations",icon:"🌱",color:"#1B5E20"},
-  {name:"ATI / Ergo Portal",url:"https://ati.com",desc:"Ergonomics contractor portal",icon:"🤝",color:"#6E56CF"},
-  {name:"GE Muskegon EHS Drive",url:"https://box.com",desc:"Site-specific EHS files",icon:"🗂️",color:"#0E9CD8"},
+  {name:"ATI / Ergo Portal",url:"https://ati.com",desc:"Ergonomics contractor portal",icon:"🤝",color:"#BF5AF2"},
+  {name:"GE Muskegon EHS Drive",url:"https://box.com",desc:"Site-specific EHS files",icon:"🗂️",color:"#64D2FF"},
 ];
 
 // SCHEDULE — now stored mutable; defaults below
 const DEFAULT_SCHED={
   VP:[
-    {id:1,day:1,time:"8:00",label:"Update Weekly Pulse",color:"#1859C8"},
-    {id:2,day:1,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#0E8345"},
-    {id:3,day:1,time:"9:00",label:"Review Gensuite Calendar",color:"#6E56CF"},
-    {id:4,day:2,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#0E8345"},
-    {id:5,day:2,time:"9:30",label:"W. Hoshin",color:"#6E56CF"},
-    {id:6,day:3,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#0E8345"},
-    {id:7,day:3,time:"10:00",label:"LOTO / Safety Training",color:"#D97706"},
-    {id:8,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#C01048"},
-    {id:9,day:4,time:"10:00",label:"SQDIP Staff Mtg",color:"#1859C8"},
-    {id:10,day:5,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#0E8345"},
-    {id:11,day:5,time:"12:00",label:"Safe Start Monday Prep",color:"#D97706"},
+    {id:1,day:1,time:"8:00",label:"Update Weekly Pulse",color:"#0A84FF"},
+    {id:2,day:1,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#30D158"},
+    {id:3,day:1,time:"9:00",label:"Review Gensuite Calendar",color:"#BF5AF2"},
+    {id:4,day:2,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#30D158"},
+    {id:5,day:2,time:"9:30",label:"W. Hoshin",color:"#BF5AF2"},
+    {id:6,day:3,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#30D158"},
+    {id:7,day:3,time:"10:00",label:"LOTO / Safety Training",color:"#FF9F0A"},
+    {id:8,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#FF375F"},
+    {id:9,day:4,time:"10:00",label:"SQDIP Staff Mtg",color:"#0A84FF"},
+    {id:10,day:5,time:"8:30",label:"Floor Genba / Tier 4-5",color:"#30D158"},
+    {id:11,day:5,time:"12:00",label:"Safe Start Monday Prep",color:"#FF9F0A"},
   ],
   SW:[
-    {id:1,day:1,time:"7:30",label:"Cell Inspection Rounds",color:"#0E8345"},
-    {id:2,day:1,time:"9:00",label:"Gensuite Calendar Review",color:"#6E56CF"},
-    {id:3,day:1,time:"10:00",label:"PPE Audits",color:"#D97706"},
-    {id:4,day:2,time:"7:30",label:"Cell Inspection Rounds",color:"#0E8345"},
-    {id:5,day:2,time:"10:00",label:"JSA Audits",color:"#D97706"},
-    {id:6,day:3,time:"7:30",label:"Cell Inspection Rounds",color:"#0E8345"},
-    {id:7,day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",color:"#0E8345"},
-    {id:8,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#C01048"},
-    {id:9,day:4,time:"10:00",label:"LOTO Annual Review Docs",color:"#D97706"},
-    {id:10,day:5,time:"7:30",label:"Cell Inspection Rounds",color:"#0E8345"},
-    {id:11,day:5,time:"12:00",label:"Safe Start Monday Delivery",color:"#D97706"},
+    {id:1,day:1,time:"7:30",label:"Cell Inspection Rounds",color:"#30D158"},
+    {id:2,day:1,time:"9:00",label:"Gensuite Calendar Review",color:"#BF5AF2"},
+    {id:3,day:1,time:"10:00",label:"PPE Audits",color:"#FF9F0A"},
+    {id:4,day:2,time:"7:30",label:"Cell Inspection Rounds",color:"#30D158"},
+    {id:5,day:2,time:"10:00",label:"JSA Audits",color:"#FF9F0A"},
+    {id:6,day:3,time:"7:30",label:"Cell Inspection Rounds",color:"#30D158"},
+    {id:7,day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",color:"#30D158"},
+    {id:8,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#FF375F"},
+    {id:9,day:4,time:"10:00",label:"LOTO Annual Review Docs",color:"#FF9F0A"},
+    {id:10,day:5,time:"7:30",label:"Cell Inspection Rounds",color:"#30D158"},
+    {id:11,day:5,time:"12:00",label:"Safe Start Monday Delivery",color:"#FF9F0A"},
   ],
   MS:[
-    {id:1,day:1,time:"7:30",label:"AT Floor Time / EI",color:"#6E56CF"},
-    {id:2,day:1,time:"10:00",label:"Ergo Projects",color:"#6E56CF"},
-    {id:3,day:2,time:"7:30",label:"AT Floor / Occ Cases",color:"#6E56CF"},
-    {id:4,day:2,time:"10:00",label:"HEAT MAP Analysis",color:"#6E56CF"},
-    {id:5,day:3,time:"7:30",label:"AT Floor / Non-Occ",color:"#6E56CF"},
-    {id:6,day:3,time:"9:00",label:"Ergo Dashboard Update",color:"#1859C8"},
-    {id:7,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#C01048"},
-    {id:8,day:4,time:"9:00",label:"EIP / Ergo Pulse",color:"#6E56CF"},
-    {id:9,day:5,time:"7:30",label:"AT Floor / Coaching",color:"#6E56CF"},
-    {id:10,day:5,time:"9:00",label:"Recognize Teams",color:"#0E8345"},
+    {id:1,day:1,time:"7:30",label:"AT Floor Time / EI",color:"#BF5AF2"},
+    {id:2,day:1,time:"10:00",label:"Ergo Projects",color:"#BF5AF2"},
+    {id:3,day:2,time:"7:30",label:"AT Floor / Occ Cases",color:"#BF5AF2"},
+    {id:4,day:2,time:"10:00",label:"HEAT MAP Analysis",color:"#BF5AF2"},
+    {id:5,day:3,time:"7:30",label:"AT Floor / Non-Occ",color:"#BF5AF2"},
+    {id:6,day:3,time:"9:00",label:"Ergo Dashboard Update",color:"#0A84FF"},
+    {id:7,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#FF375F"},
+    {id:8,day:4,time:"9:00",label:"EIP / Ergo Pulse",color:"#BF5AF2"},
+    {id:9,day:5,time:"7:30",label:"AT Floor / Coaching",color:"#BF5AF2"},
+    {id:10,day:5,time:"9:00",label:"Recognize Teams",color:"#30D158"},
   ],
   RD:[
-    {id:1,day:1,time:"7:00",label:"Contractor JSA Audit",color:"#D97706"},
-    {id:2,day:1,time:"7:30",label:"Aerial/Scissor Lift Insp.",color:"#D97706"},
-    {id:3,day:2,time:"7:00",label:"Contractor JSA Audit",color:"#D97706"},
-    {id:4,day:2,time:"7:30",label:"Aerial/Scissor Lift Insp.",color:"#D97706"},
-    {id:5,day:3,time:"7:00",label:"Contractor JSA Audit",color:"#D97706"},
-    {id:6,day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",color:"#0E8345"},
-    {id:7,day:4,time:"7:00",label:"Contractor JSA Audit",color:"#D97706"},
-    {id:8,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#C01048"},
-    {id:9,day:5,time:"7:00",label:"Contractor JSA Audit",color:"#D97706"},
-    {id:10,day:5,time:"10:00",label:"Gensuite ATS Closures",color:"#1859C8"},
-  ],
-  ZT:[
-    {id:1,day:1,time:"7:00",label:"Badge Audit + Sign-in",color:"#4F5BD5"},
-    {id:2,day:1,time:"9:00",label:"Perimeter Inspection",color:"#4F5BD5"},
-    {id:3,day:1,time:"10:00",label:"Camera Inspection",color:"#4F5BD5"},
-    {id:4,day:2,time:"7:00",label:"Badge Audit + Sign-in",color:"#4F5BD5"},
-    {id:5,day:2,time:"9:00",label:"Lighting Inspection",color:"#4F5BD5"},
-    {id:6,day:3,time:"7:00",label:"Badge Audit + Sign-in",color:"#4F5BD5"},
-    {id:7,day:3,time:"9:00",label:"Eyewash / Spill Kit",color:"#0E8345"},
-    {id:8,day:4,time:"7:00",label:"Badge Audit + Sign-in",color:"#4F5BD5"},
-    {id:9,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#C01048"},
-    {id:10,day:4,time:"9:00",label:"Emergency Exit Testing",color:"#D97706"},
-    {id:11,day:5,time:"7:00",label:"Badge Audit + Sign-in",color:"#4F5BD5"},
-    {id:12,day:5,time:"8:30",label:"NEO Security Module",color:"#4F5BD5"},
+    {id:1,day:1,time:"7:00",label:"Contractor JSA Audit",color:"#FF9F0A"},
+    {id:2,day:1,time:"7:30",label:"Aerial/Scissor Lift Insp.",color:"#FF9F0A"},
+    {id:3,day:2,time:"7:00",label:"Contractor JSA Audit",color:"#FF9F0A"},
+    {id:4,day:2,time:"7:30",label:"Aerial/Scissor Lift Insp.",color:"#FF9F0A"},
+    {id:5,day:3,time:"7:00",label:"Contractor JSA Audit",color:"#FF9F0A"},
+    {id:6,day:3,time:"10:00",label:"Eyewash / Spill Kit Audit",color:"#30D158"},
+    {id:7,day:4,time:"7:00",label:"Contractor JSA Audit",color:"#FF9F0A"},
+    {id:8,day:4,time:"7:45",label:"⭐ EHS Team Meeting",color:"#FF375F"},
+    {id:9,day:5,time:"7:00",label:"Contractor JSA Audit",color:"#FF9F0A"},
+    {id:10,day:5,time:"10:00",label:"Gensuite ATS Closures",color:"#0A84FF"},
   ],
 };
 
 const DEFAULT_REC={
-  VP:{DAILY:["Floor Genba — Tier 4/5","Review team comms & day priority","Check Gensuite open items"],WEEKLY:["EHS Team Meeting Thu 7:45","TAVS WOR Pulse Tue 2PM","Update EHS Pulse Wed 8AM","SQDIP Action Plan update","Safe Start Monday prep","Bi-Weekly Safety Walks"],MONTHLY:["EHS Bowler Review","TAVS MOR Bowler + Safety Moment","Muskegon EHS Staff Mtg","Security MOR","IM Sustainability Review","Check Spotfire Bowlers"],ONGOING:["VPP Re-Certification prep","Profiler Updates","Framework Compliance","Environmental Permit Review"]},
-  SW:{DAILY:["Cell inspection rounds","Eyewash station check","Spill kit check"],WEEKLY:["EHS Team Meeting Thu 7:45","PPE Audits — 38/wk","JSA Audits — 26/mo","STF Audits — 88/wk","LOTO Audits","EHS Cell Inspection (17/wk)","Labor Hours verify","Clear Desk Audit","Safe Start Monday delivery"],MONTHLY:["EHS Monthly Cell Inspection","LOTO Annual Reviews","SPCC Audits","EHS Training Compliance","EHS Committee Mtgs"],ONGOING:["MVPP prep","LOTO Procedures — decision tree","JSA Training Course","Update training materials","Enhesa Review"]},
+  VP:{DAILY:["Floor Genba — Tier 4/5","Review team comms & day priority","Check Gensuite open items"],WEEKLY:["EHS Team Meeting Thu 7:45","TAVS WOR Pulse Tue 2PM","Update EHS Pulse Wed 8AM","SQDIP Action Plan update","Safe Start Monday prep","Bi-Weekly Safety Walks"],MONTHLY:["EHS Bowler Review","TAVS MOR Bowler + Safety Moment","Muskegon EHS Staff Mtg","IM Sustainability Review","Check Spotfire Bowlers"],ONGOING:["VPP Re-Certification prep","Profiler Updates","Framework Compliance","Environmental Permit Review"]},
+  SW:{DAILY:["Cell inspection rounds","Eyewash station check","Spill kit check"],WEEKLY:["EHS Team Meeting Thu 7:45","PPE Audits — 38/wk","JSA Audits — 26/mo","STF Audits — 88/wk","LOTO Audits","EHS Cell Inspection (17/wk)","Labor Hours verify","Safe Start Monday delivery"],MONTHLY:["EHS Monthly Cell Inspection","LOTO Annual Reviews","SPCC Audits","EHS Training Compliance","EHS Committee Mtgs"],ONGOING:["MVPP prep","LOTO Procedures — decision tree","JSA Training Course","Update training materials","Enhesa Review"]},
   MS:{DAILY:["AT floor time / coaching","Early intervention check-ins","Monitor stretching participation"],WEEKLY:["EHS Team Meeting Thu 7:45","Structured AT floor time","Early Intervention rounds","Recognize AT engagement teams","Ergo project work"],MONTHLY:["EIP / Ergonomic Pulse","Ergo Committee Review","Ergo Dashboard metrics","Leading indicators tracking","Biometric tracking"],ONGOING:["Ergo HEAT MAP finalize","CR2031/TS2031 Gap Assessment","Ergo training delivery","MSD metric","TWP Plans","Refresh HEAT MAP — 2027"]},
   RD:{DAILY:["Contractor JSA Audit & Collection","Aerial/Scissor Lift Inspection","Contractor Safety Audit (all)"],WEEKLY:["EHS Team Meeting Thu 7:45","PPE Audits support","JSA/STF Audit support","EHS Cell Inspection support","Eyewash Station Audit","Spill Kit Audit"],MONTHLY:["MVPP prep support","Gensuite ATS closures"],ONGOING:["LOTO Program Review support","E-Gauge light curtain","Coopermatic hearing protection","PFAS tracking","Electrical Safety Framework","Grinders fall prevention"]},
-  ZT:{DAILY:["Badge audits — all employees","Contractor safety audits","JSA audit & collection","Sign-in sheets vs OnGuard"],WEEKLY:["Perimeter inspections","Lighting inspections","Camera inspections","Clear desk audit","Card access reviews","Emergency exit testing","NEO Security Module","Parking violation audits","New hire permanent badges"],MONTHLY:["SPCC Audits — both sites","Server Room Access Audit","Security MOR Meeting","Check Security Spotfire Bowler"],ONGOING:["Quarterly Contraband Audit","Security/Emergency Mapping","Security Assessment Action Plan","Security Framework Compliance","Profiler Updates"]},
+  JK:{DAILY:["Floor presence — Norton"],WEEKLY:["EHS Team Meeting Thu 7:45"],MONTHLY:["Laser & GHS program review progress"],ONGOING:["Label / posting standard updates"]},
 };
 
 // ════════════════════════════════════════════════════
@@ -1132,6 +905,14 @@ const ROLE_RESPONSIBILITIES={
       "Ergonomics Assessment — evaluate all workstations with feedback into JSAs",
     ]
   },
+  "Jakob":{
+    title:"EHS Specialist — Norton (starts Nov 3, 2026)",
+    items:[
+      "Laser Safety Program — review, rebuild, and train",
+      "GHS / Hazard Communication Program — full review",
+      "Update the site label & posting standard; support secondary containment label training",
+    ]
+  },
   "Rich DeLeau":{
     title:"EHS Specialist (Contract)",
     items:[
@@ -1140,15 +921,6 @@ const ROLE_RESPONSIBILITIES={
       "Safety Compliance — maintain & update safety policies, SOPs, and site documentation for accuracy/compliance",
       "Training Execution — deliver in-person training (forklift, aerial lift); prepare/maintain J-Train materials",
       "Emergency Planning — drill planning & execution; emergency response plans; maintain ENS",
-    ]
-  },
-  "Zach Tindall":{
-    title:"Security Specialist — Physical Security Only",
-    items:[
-      "Contractor Safety — lead day-to-day contractor safety oversight on the ground",
-      "Work forward in Gensuite annual reviews regardless of due date (two at a time)",
-      "Work forward in required maintenance/technical training; re-write training programs; schedule & conduct in-person, up to one year forward",
-      "Monthly training topic materials — review for accuracy, revise as needed (with Steve/Victor support)",
     ]
   },
 };
@@ -1264,7 +1036,6 @@ function _seedTracked(key,goal,unit,higherIsBetter,seedMonthly,monthKeys){
 function applyDefaults(){
   if(!S.actions)  S.actions=JSON.parse(JSON.stringify(DEFAULT_ACTIONS));
   if(!S.vpp)      S.vpp=JSON.parse(JSON.stringify(DEFAULT_VPP));
-  if(!S.hoshin)   S.hoshin=JSON.parse(JSON.stringify(DEFAULT_HOSHIN));
   mergeDefault('metrics',DEFAULT_METRICS);
   if(!S.links)    S.links=JSON.parse(JSON.stringify(DEFAULT_LINKS));
   if(!S.comments) S.comments={};
@@ -1280,6 +1051,91 @@ function applyDefaults(){
   if(!S.iiCases)  S.iiCases=JSON.parse(JSON.stringify(DEFAULT_II_CASES));
   if(!S.nextId)   S.nextId=200;
   if(!S.nextCaseId) S.nextCaseId=Math.max(0,...S.iiCases.map(c=>c.id))+1;
+  // Migration: the Security function was removed from the department.
+  // Security items are MOVED (not deleted) into S.archivedSecurity so they
+  // remain recoverable from the shared database/backup if ever needed.
+  if(!S.securityRemoved){
+    const isSec=a=>a.owner==='Zach Tindall'||a.prog==='Security';
+    const secIds=new Set(S.actions.filter(isSec).map(a=>a.id));
+    // also catch sub-actions whose parent is a security item
+    S.actions.forEach(a=>{if(a.parentId&&secIds.has(a.parentId)) secIds.add(a.id);});
+    const arch={actions:S.actions.filter(a=>secIds.has(a.id)),vpp:[],sched:S.sched&&S.sched.ZT||[],rec:S.rec&&S.rec.ZT||{},links:[]};
+    S.actions=S.actions.filter(a=>!secIds.has(a.id));
+    S.vpp=(S.vpp||[]).filter(m=>{
+      if(/physical security/i.test(m.ms)){arch.vpp.push(m);return false;}
+      if(m.owner==='Zach') {arch.vpp.push(m);return false;}
+      if(typeof m.owner==='string') m.owner=m.owner.replace(/Zach\s*\/\s*|\s*\/\s*Zach/g,'');
+      return true;
+    });
+    S.links=(S.links||[]).filter(l=>{
+      if(l.name==='OnGuard'){arch.links.push(l);return false;}
+      if(l.desc==='EHS & Security dashboard metrics') l.desc='EHS dashboard metrics';
+      return true;
+    });
+    if(S.sched) delete S.sched.ZT;
+    if(S.rec) delete S.rec.ZT;
+    // Security-only recurring items that sat on other people's lists
+    const secRec=/^(security mor|clear desk audit)$/i;
+    if(S.rec) Object.keys(S.rec).forEach(k=>{
+      Object.keys(S.rec[k]||{}).forEach(f=>{
+        const list=S.rec[k][f]; if(!Array.isArray(list)) return;
+        const kept=list.filter(t=>!secRec.test(String(t).trim()));
+        if(kept.length!==list.length){(arch.recRemoved=arch.recRemoved||[]).push({person:k,freq:f,items:list.filter(t=>secRec.test(String(t).trim()))});S.rec[k][f]=kept;}
+      });
+    });
+    if(S.nextSchedId) delete S.nextSchedId.ZT;
+    S.archivedSecurity=arch;
+    S.securityRemoved=true;
+  }
+  // Focus areas from the Oct 28, 2026 team whiteboard. Added once; any task
+  // title that already exists is skipped so nothing is duplicated, and
+  // existing actions keep their order, status, and comments.
+  if(!S.focusAreasOct2026){
+    if(!S.nextSchedId) S.nextSchedId={};
+    if(!S.nextSchedId.JK) S.nextSchedId.JK=1;
+    if(!S.sched) S.sched={};
+    if(!S.sched.JK) S.sched.JK=[];
+    const V="Victor Pizarro", R="Rich DeLeau", M="Mike Shuster", J="Jakob";
+    const PLAN=[
+      {t:"MVPP Response",o:V,p:"VPP",pr:"High",tg:"Q4 2026",subs:[
+        {t:"MVPP Information — Employee Totals",o:R}]},
+      {t:"DOT Applicability Review",o:R,p:"Core EHS",pr:"High",tg:"Q4 2026",subs:[
+        {t:"DOT + Contractor — applicability & requirements",o:R}]},
+      {t:"Fire Prevention Program",o:V,p:"Core EHS",pr:"High",tg:"Q1 2027"},
+      {t:"Hydrogen / Ethanol Emergency Response",o:V,p:"Core EHS",pr:"High",tg:"Q1 2027"},
+      {t:"GE Permit Review",o:V,p:"Core EHS",pr:"Medium",tg:"Q4 2026"},
+      {t:"Laser Program — Create & Train",o:J,p:"Core EHS",pr:"High",tg:"Q1 2027",subs:[
+        {t:"Laser + GHS Program Review",o:J},
+        {t:"Laser Program — Training Rollout",o:J}]},
+      {t:"Robot Program — Create & Train",o:V,p:"Core EHS",pr:"High",tg:"Q1 2027",subs:[
+        {t:"Robot Program — Write Program",o:V},
+        {t:"Robot Program — Training Rollout",o:V}]},
+      {t:"Secondary Containment → Label Training",o:J,p:"Core EHS",pr:"Medium",tg:"Q1 2027",subs:[
+        {t:"Update Label / Posting Standard",o:J}]},
+      {t:"Red-Line Process (5 Recordables in 2026)",o:V,p:"Core EHS",pr:"High",tg:"Ongoing"},
+      {t:"Ergo + MOC Process",o:M,p:"Ergo",pr:"High",tg:"Q1 2027"},
+      {t:"JSA Input + Ergo Metric",o:M,p:"Ergo",pr:"Medium",tg:"Q1 2027"},
+      {t:"Stretching Program Refresh",o:M,p:"Ergo",pr:"Medium",tg:"Q1 2027"},
+      {t:"Onboard Jakob — Day 1 Nov 3, 8 AM, Norton",o:V,p:"Core EHS",pr:"High",tg:"Nov 2026",due:"2026-11-03"},
+    ];
+    const norm=x=>String(x||'').trim().toLowerCase();
+    const have=new Set((S.actions||[]).map(a=>norm(a.task)));
+    const added=[];
+    const mk=(it,parentId,parent)=>({id:S.nextId++,task:it.t,owner:it.o,status:"Open",
+      pri:it.pr||(parent&&parent.pri)||"Medium",target:it.tg||(parent&&parent.target)||"Q4 2026",
+      dueDate:it.due||"",prog:it.p||(parent&&parent.prog)||"Core EHS",...(parentId?{parentId}:{})});
+    PLAN.forEach(it=>{
+      let parent=(S.actions||[]).find(a=>norm(a.task)===norm(it.t));
+      if(!parent){parent=mk(it);added.push(parent);have.add(norm(it.t));}
+      (it.subs||[]).forEach(s=>{
+        if(have.has(norm(s.t))) return;
+        added.push(mk(s,parent.id,parent));have.add(norm(s.t));
+      });
+    });
+    // New priorities go to the top; existing actions keep their relative order.
+    S.actions=added.concat(S.actions||[]);
+    S.focusAreasOct2026=true;
+  }
   if(!S.nextSchedId){S.nextSchedId={};Object.keys(TEAM).forEach(k=>{const max=Math.max(0,...(S.sched[k]||[]).map(e=>e.id));S.nextSchedId[k]=max+1;});}
   // Ergo pulse — manually-tracked figures, scoped to the current month so they reset naturally
   const curMonthKey=new Date().toISOString().slice(0,7); // YYYY-MM
@@ -1370,7 +1226,7 @@ function saveS(){
     }).catch((e)=>{
       console.error(e);
       setSyncIndicator('error');
-      toast('Sync failed — check internet connection','#D92D20');
+      toast('⚠️ Sync failed — check internet connection','#FF453A');
     });
   },250); // brief debounce so rapid edits (typing) don't spam writes
 }
@@ -1378,10 +1234,10 @@ function setSyncIndicator(state){
   const el=document.getElementById('sync-indicator');
   if(!el) return;
   const dot=(c)=>`<span style="width:6px;height:6px;border-radius:50%;background:${c};display:inline-block"></span>`;
-  if(state==='syncing'){ el.innerHTML=dot('#7DB0FF')+'Syncing…'; el.style.color='#7DB0FF'; }
-  else if(state==='synced'){ el.innerHTML=dot('#4ADE80')+'Live · Synced'; el.style.color='#4ADE80'; }
-  else if(state==='error'){ el.innerHTML=dot('#FF8A82')+'Sync error'; el.style.color='#FF8A82'; }
-  else if(state==='connecting'){ el.innerHTML=dot('#FFC46B')+'Connecting…'; el.style.color='#FFC46B'; }
+  if(state==='syncing'){ el.innerHTML=dot('#0A7AFF')+'Syncing…'; el.style.color='#0A7AFF'; }
+  else if(state==='synced'){ el.innerHTML=dot('#1FB55B')+'Live · Synced'; el.style.color='#1FB55B'; }
+  else if(state==='error'){ el.innerHTML=dot('#F0453E')+'Sync error'; el.style.color='#F0453E'; }
+  else if(state==='connecting'){ el.innerHTML=dot('#F5A623')+'Connecting…'; el.style.color='#F5A623'; }
 }
 
 // ── Realtime listener: fires on initial load AND whenever ANY team
@@ -1417,7 +1273,7 @@ dataRef.on('value', (snapshot) => {
 }, (error) => {
   console.error('Firebase read failed:', error);
   setSyncIndicator('error');
-  toast('Could not connect to shared database','#D92D20');
+  toast('⚠️ Could not connect to shared database','#FF453A');
 });
 
 // ── Export full data as downloadable JSON backup (still useful as an offline safety net) ──
@@ -1432,7 +1288,7 @@ function exportData(){
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  toast('Backup downloaded','#0E8345');
+  toast('Backup downloaded','#30D158');
 }
 // ── Import a previously exported JSON backup (overwrites shared data for everyone) ──
 function importData(file){
@@ -1440,13 +1296,13 @@ function importData(file){
   reader.onload=(e)=>{
     try{
       const parsed=JSON.parse(e.target.result);
-      if(!parsed.actions){toast('Invalid backup file','#D92D20');return;}
+      if(!parsed.actions){toast('Invalid backup file','#FF453A');return;}
       if(!confirm('This will replace ALL shared team data with the backup file, for everyone. Continue?')) return;
       S=parsed;
       saveS();
-      toast('Backup restored for the whole team','#0E8345');
+      toast('Backup restored for the whole team','#30D158');
     }catch(err){
-      toast('Could not read backup file','#D92D20');
+      toast('Could not read backup file','#FF453A');
     }
   };
   reader.readAsText(file);
@@ -1466,7 +1322,7 @@ const personView={};
 // ════════════════════════════════════════════════════
 // HELPERS
 // ════════════════════════════════════════════════════
-function pc(p){return p>=75?'#0E8345':p>=40?'#D97706':'#D92D20'}
+function pc(p){return p>=75?'#30D158':p>=40?'#FF9F0A':'#FF453A'}
 function pb(pct,h=8){const p=Math.min(pct,100);return `<div class="pt" style="height:${h}px"><div class="pf" style="width:${p}%;background:${pc(pct)};height:${h}px"></div></div>`}
 function bk(s){return 'badge s-'+(s||'Open').replace(/[\s-]/g,'')}
 function pri(p){return `<span class="p-${p||'Low'}">${p||'Low'}</span>`}
@@ -1478,8 +1334,6 @@ function esc(s){
   if(s===null||s===undefined) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-// Display-only: escape + strip a leading legacy star emoji from stored labels.
-function dspl(s){return esc(String(s===null||s===undefined?'':s).replace(/^\u2B50\s*/,''));}
 // Convert a slot count (30-min units) into a human label like "1h 30m".
 function slotsToLabel(slots){
   const mins=slots*30;
@@ -1616,8 +1470,8 @@ function metricsOnTargetPercent(){
 
 // ── Donut chart (pure SVG, no library) ──
 const PIE_COLORS={
-  "Complete":"#0E8345","On Schedule":"#0E9CD8","Behind":"#D92D20","At-Risk":"#D97706",
-  "Not Started":"#6E56CF","Open":"#667085","Ongoing":"#1859C8","On Hold":"#D97706"
+  "Complete":"#30D158","On Schedule":"#64D2FF","Behind":"#FF453A","At-Risk":"#FF9F0A",
+  "Not Started":"#BF5AF2","Open":"#8E8E93","Ongoing":"#0A84FF","On Hold":"#FF9F0A"
 };
 // Compact single-value progress ring — used for tab/section summary tiles.
 function progressRing(pct,size=72,color,label){
@@ -1650,7 +1504,7 @@ function goalBand(actual,goal,opts={}){
   const pct=Math.max(0,Math.min(130,ratio*100)); // allow slight overflow past 100 for visual headroom
   const onTarget=higherIsBetter?actual>=goal:actual<=goal;
   const closeMargin=higherIsBetter?actual>=goal*0.85:actual<=goal*1.15;
-  const color=onTarget?'#0E8345':closeMargin?'#D97706':'#D92D20';
+  const color=onTarget?'#30D158':closeMargin?'#FF9F0A':'#FF453A';
   const barPct=Math.min(100,pct/130*100);
   const goalMarkerPct=Math.min(100,(goal/(goal*1.3))*100); // goal sits at 100/130 of the scale
   return `<div class="gband">
@@ -1666,7 +1520,7 @@ function goalBand(actual,goal,opts={}){
 // rendered under a metric so users can see direction without a full chart. ──
 function sparkline(values,opts={}){
   const w=opts.width||140, h=opts.height||28;
-  const color=opts.color||'#1859C8';
+  const color=opts.color||'#0A84FF';
   const goal=opts.goal;
   const nums=values.map(v=>v===null||v===undefined?null:Number(v));
   const valid=nums.filter(v=>v!==null);
@@ -1683,7 +1537,7 @@ function sparkline(values,opts={}){
     path+=(path?' L':'M')+x+' '+y;
   });
   const dots=nums.map((v,i)=>v===null?'':`<circle cx="${i*stepX}" cy="${yFor(v)}" r="2" fill="${color}"/>`).join('');
-  const goalLine=(goal!==undefined&&goal!==null)?`<line x1="0" y1="${yFor(goal)}" x2="${w}" y2="${yFor(goal)}" stroke="#667085" stroke-width="1" stroke-dasharray="2,2"/>`:'';
+  const goalLine=(goal!==undefined&&goal!==null)?`<line x1="0" y1="${yFor(goal)}" x2="${w}" y2="${yFor(goal)}" stroke="#8E8E93" stroke-width="1" stroke-dasharray="2,2"/>`:'';
   return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block;overflow:visible">
     ${goalLine}
     <path d="${path}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1704,7 +1558,7 @@ function buildDonut(actionsList,size=160){
   Object.entries(counts).forEach(([status,cnt])=>{
     const frac=cnt/total;
     const len=frac*circumference;
-    const color=PIE_COLORS[status]||'#667085';
+    const color=PIE_COLORS[status]||'#8E8E93';
     segs+=`<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-dasharray="${len} ${circumference-len}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})" stroke-linecap="butt"/>`;
     offset+=len;
   });
@@ -1714,10 +1568,10 @@ function buildDonut(actionsList,size=160){
     <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="#F1F1F4" stroke-width="${stroke}"/>
     ${segs}
     <text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="${size*0.17}" font-weight="900" fill="var(--ink)" font-family="-apple-system,sans-serif">${pct}%</text>
-    <text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="${size*0.075}" font-weight="700" fill="#667085" font-family="-apple-system,sans-serif">COMPLETE</text>
+    <text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="${size*0.075}" font-weight="700" fill="#8E8E93" font-family="-apple-system,sans-serif">COMPLETE</text>
   </svg>`;
   const legend=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([status,cnt])=>
-    `<div class="pie-legend-item"><div class="pie-legend-dot" style="background:${PIE_COLORS[status]||'#667085'}"></div>${status}: <strong>${cnt}</strong></div>`
+    `<div class="pie-legend-item"><div class="pie-legend-dot" style="background:${PIE_COLORS[status]||'#8E8E93'}"></div>${status}: <strong>${cnt}</strong></div>`
   ).join('');
   return `<div class="pie-wrap">${svg}<div class="pie-legend">${legend}</div></div>`;
 }
@@ -1734,8 +1588,8 @@ function getTop3(actionsList){
 }
 function buildTop3(actionsList){
   const top=getTop3(actionsList);
-  if(!top.length) return '<div style="padding:24px;text-align:center;color:var(--muted);font-size:12px">Nothing urgent — everything is complete or on track.</div>';
-  const rankColors=['#D92D20','#D97706','#1859C8'];
+  if(!top.length) return '<div style="padding:24px;text-align:center;color:var(--muted);font-size:12px">🎉 Nothing urgent — everything is complete or on track!</div>';
+  const rankColors=['#FF453A','#FF9F0A','#0A84FF'];
   return `<div class="top3-list">`+top.map((a,i)=>`
     <div class="top3-item">
       <div class="top3-rank" style="background:${rankColors[i]}">${i+1}</div>
@@ -1775,7 +1629,7 @@ function openKpiDetail(kind){
     title=kind+' Actions';
     const items=S.actions.filter(a=>a.status===kind);
     bodyHTML=items.length?tableShell(items.map(buildRow).join(''))
-      :`<div style="padding:24px;text-align:center;color:var(--muted)">No items with status "${kind}" right now.</div>`;
+      :`<div style="padding:24px;text-align:center;color:var(--muted)">🎉 No items with status "${kind}" right now.</div>`;
   }
   document.getElementById('kpi-detail-title').textContent=title;
   document.getElementById('kpi-detail-body').innerHTML=bodyHTML;
@@ -1797,7 +1651,7 @@ function openInsights(scope){
         ${buildDonut(actionsList,160)}
       </div>
       <div>
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Top 3 Actions Needing Attention</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">🔥 Top 3 Actions Needing Attention</div>
         ${buildTop3(actionsList)}
       </div>
     </div>`;
@@ -1808,7 +1662,7 @@ let _editingCell=false;
 function upd(id,field,val){
   const a=S.actions.find(x=>x.id===id);if(a){a[field]=val;saveS();}
   rebuildAll();
-  toast(`Updated`,'#0E8345');
+  toast(`Updated`,'#30D158');
 }
 function rebuildAll(){
   // Never interrupt an active contenteditable session (user is mid-edit)
@@ -1816,12 +1670,11 @@ function rebuildAll(){
   buildOverview();
   const cur=Object.keys(PAGES).find(k=>!document.getElementById('pg-'+k).classList.contains('hidden'));
   if(cur==='actions') buildActions();
-  else if(cur==='hoshin') buildHoshin();
   else if(cur==='vpp') buildVPP();
   else if(cur==='metrics') buildMetrics();
   else if(cur==='team') buildTeamRoles();
   else if(cur==='links') buildLinks();
-  else if(['VP','SW','MS','RD','ZT'].includes(cur)) buildPersonPage(cur);
+  else if(Object.keys(TEAM).includes(cur)) buildPersonPage(cur);
   // Keep open modals in sync
   if(!document.getElementById('modal-kpi').classList.contains('hidden')){
     const t=document.getElementById('kpi-detail-title').textContent;
@@ -1840,7 +1693,7 @@ function del(id){
   if(!confirm(msg)) return;
   S.actions=S.actions.filter(a=>a.id!==id&&a.parentId!==id);
   saveS();rebuildAll();
-  toast('Deleted','#D92D20');
+  toast('Deleted','#FF453A');
 }
 // Reorder an action by moving it to the position of the target row.
 // Operates on the master S.actions order so it persists for everyone.
@@ -1852,7 +1705,7 @@ function reorderAction(fromId,toId){
   const [moved]=S.actions.splice(fromIdx,1);
   S.actions.splice(toIdx,0,moved);
   saveS();rebuildAll();
-  toast('Reordered','#0E8345');
+  toast('Reordered','#1FB55B');
 }
 function toggleDone(id){
   const a=S.actions.find(x=>x.id===id);
@@ -1885,14 +1738,13 @@ function buildRow(a,isSub){
     <td><select class="esel" onchange="upd(${a.id},'pri',this.value)">${opts(PRI_OPTS,a.pri)}</select></td>
     <td>${dueDateCell(a)}</td>
     <td><select class="esel" onchange="upd(${a.id},'prog',this.value)">${opts(PROG_OPTS,a.prog)}</select></td>
-    <td>${hoshinSelectCell(a)}</td>
     <td>
       <div style="display:flex;gap:4px;align-items:center">
-        ${!isSub?`<button class="btn btn-ghost btn-icon" onclick="addSubAction(${a.id})" title="Add sub-action">${ic('plus')}</button>`:''}
+        ${!isSub?`<button class="btn btn-ghost btn-icon" onclick="addSubAction(${a.id})" title="Add sub-action">➕</button>`:''}
         <button class="btn btn-ghost btn-icon" onclick="openComments(${a.id})" title="Comments & Updates">
-          ${ic('comment')}${cmtCount>0?`<span style="position:absolute;top:-3px;right:-3px;font-size:8px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 4px;line-height:1.3">${cmtCount}</span>`:''}
+          💬${cmtCount>0?`<span style="position:absolute;top:-3px;right:-3px;font-size:8px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 4px;line-height:1.3">${cmtCount}</span>`:''}
         </button>
-        <button class="btn btn-ghost btn-icon" onclick="del(${a.id})" title="Delete${hasKids?' (and its sub-actions)':''}" style="color:var(--red)">${ic('trash')}</button>
+        <button class="btn btn-ghost btn-icon" onclick="del(${a.id})" title="Delete${hasKids?' (and its sub-actions)':''}" style="color:var(--red)">🗑️</button>
       </div>
     </td>
   </tr>`;
@@ -1915,7 +1767,7 @@ function addSubAction(parentId){
   S.actions.splice(insertIdx,0,{id,parentId,task:'New sub-action…',owner:parent.owner,status:'Open',pri:parent.pri,target:parent.target,dueDate:'',prog:parent.prog});
   actionCollapse[parentId]=false;
   saveS();rebuildAll();
-  toast('Sub-action added','#0E8345');
+  toast('Sub-action added','#1FB55B');
 }
 
 // Dual-mode due date: a dropdown for Q1/Q2/.../recurring buckets, plus
@@ -1954,8 +1806,6 @@ function openAddModal(preOwner){
   document.getElementById('m-target').value='Q2 2026';
   document.getElementById('m-prog').value='Core EHS';
   document.getElementById('m-duedate').value='';
-  const hsel=document.getElementById('m-hoshin');
-  if(hsel) hsel.innerHTML='<option value="">— None —</option>'+(S.hoshin||[]).map(h=>`<option value="${h.id}">${h.code} · ${h.title}</option>`).join('');
   if(preOwner) document.getElementById('m-owner').value=preOwner;
   document.getElementById('modal-add').classList.remove('hidden');
   document.getElementById('m-task').focus();
@@ -1963,7 +1813,7 @@ function openAddModal(preOwner){
 function closeModal(id){document.getElementById(id).classList.add('hidden')}
 function saveNewTask(){
   const task=document.getElementById('m-task').value.trim();
-  if(!task){toast('Task name required','#D92D20');return;}
+  if(!task){toast('Task name required','#FF453A');return;}
   const newA={
     id:S.nextId++,
     task,
@@ -1973,13 +1823,12 @@ function saveNewTask(){
     target:document.getElementById('m-target').value,
     dueDate:document.getElementById('m-duedate').value,
     prog:document.getElementById('m-prog').value,
-    hoshin:(document.getElementById('m-hoshin')||{value:''}).value||'',
   };
   const notes=document.getElementById('m-notes').value.trim();
   if(notes) S.comments[newA.id]=[{author:"You",text:notes,time:new Date().toLocaleString()}];
   S.actions.push(newA);
   saveS();closeModal('modal-add');rebuildAll();
-  toast('Task added','#0E8345');
+  toast('Task added','#30D158');
 }
 
 // ════════════════════════════════════════════════════
@@ -2037,11 +1886,12 @@ function updCommentBadge(id){
 // SCHEDULE EVENT MODAL (add/edit/delete calendar entries)
 // ════════════════════════════════════════════════════
 let schedEditCtx=null; // {personKey, day, time, eventId}
-const EVENT_COLORS=["#1859C8","#0E8345","#6E56CF","#D97706","#D92D20","#0E9CD8","#4F5BD5","#C01048","#667085"];
+const EVENT_COLORS=["#0A84FF","#30D158","#BF5AF2","#FF9F0A","#FF453A","#64D2FF","#5856D6","#FF375F","#8E8E93"];
 
 let schedSelectedColor=EVENT_COLORS[0];
 function openSchedModal(personKey,day,time,eventId){
   schedEditCtx={personKey,day,time,eventId};
+  S.sched[personKey]=S.sched[personKey]||[];
   const existing=eventId?S.sched[personKey].find(e=>e.id===eventId):null;
   document.getElementById('sm-title').textContent=existing?'Edit Event':'Add Event';
   document.getElementById('sm-day-time').textContent=`${DAY_NAMES[day-1]} · starts ${existing?existing.time:time}`;
@@ -2073,7 +1923,7 @@ function selectColor(c){
 function saveSchedEvent(){
   const {personKey,day,time,eventId}=schedEditCtx;
   const label=document.getElementById('sm-label').value.trim();
-  if(!label){toast('Event name required','#D92D20');return;}
+  if(!label){toast('Event name required','#FF453A');return;}
   const color=schedSelectedColor||EVENT_COLORS[0];
   const slots=Math.max(1,parseInt(document.getElementById('sm-duration').value)||1);
   if(eventId){
@@ -2081,17 +1931,19 @@ function saveSchedEvent(){
     if(ev){ev.label=label;ev.color=color;ev.slots=slots;}
   }else{
     if(!S.nextSchedId[personKey]) S.nextSchedId[personKey]=1;
+    S.sched[personKey]=S.sched[personKey]||[];
+    if(!S.nextSchedId[personKey]) S.nextSchedId[personKey]=1;
     S.sched[personKey].push({id:S.nextSchedId[personKey]++,day,time,label,color,slots});
   }
   saveS();closeModal('modal-sched');buildPersonPage(personKey);buildOverview();
-  toast('Calendar updated','#0E8345');
+  toast('Calendar updated','#30D158');
 }
 function deleteSchedEvent(){
   const {personKey,eventId}=schedEditCtx;
   if(!eventId) return;
-  S.sched[personKey]=S.sched[personKey].filter(e=>e.id!==eventId);
+  S.sched[personKey]=(S.sched[personKey]||[]).filter(e=>e.id!==eventId);
   saveS();closeModal('modal-sched');buildPersonPage(personKey);buildOverview();
-  toast('Event removed','#D92D20');
+  toast('Event removed','#FF453A');
 }
 
 // ════════════════════════════════════════════════════
@@ -2100,14 +1952,16 @@ function deleteSchedEvent(){
 function updRecItem(personKey,freq,idx,val){
   S.rec[personKey][freq][idx]=val;
   saveS();
-  toast('Saved','#0E8345');
+  toast('Saved','#30D158');
 }
 function delRecItem(personKey,freq,idx){
   S.rec[personKey][freq].splice(idx,1);
   saveS();buildPersonPage(personKey);
-  toast('Removed','#D92D20');
+  toast('Removed','#FF453A');
 }
 function addRecItem(personKey,freq){
+  S.rec[personKey]=S.rec[personKey]||{};
+  S.rec[personKey][freq]=S.rec[personKey][freq]||[];
   S.rec[personKey][freq].push('New task...');
   saveS();buildPersonPage(personKey);
   // focus the new input
@@ -2123,107 +1977,7 @@ function reorderRecItem(personKey,freq,fromIdx,toIdx){
   const [moved]=arr.splice(fromIdx,1);
   arr.splice(toIdx,0,moved);
   saveS();buildPersonPage(personKey);
-  toast('Reordered','#0E8345');
-}
-
-
-// ════════════════════════════════════════════════════
-// LEADING / LAGGING INDICATOR SNAPSHOT (Overview)
-// Computed live from the same shared data as the Metrics tab.
-// ════════════════════════════════════════════════════
-function _recCountFromLog(year,monthIdx){
-  return (S.iiCases||[]).filter(c=>{
-    if(c.caseType!=='Recordable'||!c.date) return false;
-    const d=new Date(c.date+'T00:00:00');
-    if(isNaN(d)||d.getFullYear()!==year) return false;
-    return monthIdx===undefined?true:d.getMonth()===monthIdx;
-  }).length;
-}
-function computeSnapshot(){
-  const now=new Date(),curYear=now.getFullYear(),curMonth=now.getMonth();
-  const curMonthKey=now.toISOString().slice(0,7);
-  const iiGoal=1.2;
-  // Lagging — calendar-YTD I&I rate
-  let cumH=0,cumI=0;
-  for(let i=0;i<=curMonth&&i<(S.rollingTable||[]).length;i++){
-    const m=S.rollingTable[i];
-    if(m&&m.hours){cumH+=m.hours;cumI+=_recCountFromLog(curYear,i);}
-  }
-  const ytdRate=cumH>0?(cumI*200000/cumH):null;
-  // Lagging — rolling 12-month rate
-  let r12H=0,r12I=0;
-  for(let back=0;back<12;back++){
-    const d=new Date(curYear,curMonth-back,1);
-    const m=(S.rollingTable||[])[d.getMonth()];
-    if(m&&m.hours){r12H+=m.hours;r12I+=_recCountFromLog(d.getFullYear(),d.getMonth());}
-  }
-  const r12Rate=r12H>0?(r12I*200000/r12H):null;
-  const recYTD=_recCountFromLog(curYear);
-  const recPrior=((S.recByMonth||{})[curYear-1]||[]).reduce((s,v)=>s+(v||0),0)||_recCountFromLog(curYear-1);
-  const recDates=(S.iiCases||[]).filter(c=>c.caseType==='Recordable'&&c.date).map(c=>new Date(c.date+'T00:00:00')).filter(d=>!isNaN(d));
-  const daysSince=recDates.length?Math.max(0,Math.floor((now-new Date(Math.max(...recDates)))/86400000)):null;
-  const firstAidYTD=(S.iiCases||[]).filter(c=>c.caseType==='First Aid'&&c.date&&c.date.slice(0,4)===String(curYear)).length;
-  const nearMissYTD=(S.iiCases||[]).filter(c=>c.caseType==='Near Miss'&&c.date&&c.date.slice(0,4)===String(curYear)).length;
-  // Leading — prevention activity
-  const tmPre=(S.trackedMetrics||{}).preflightCheck||null;
-  const tmTrain=(S.trackedMetrics||{}).safetyTraining||null;
-  const em=((S.ergoMonthly||{})[curMonthKey])||{};
-  const cellRow=(S.auditData||[]).find(a=>/Electronic Cell/i.test(a.label||''));
-  return {
-    iiGoal,ytdRate,r12Rate,recYTD,recPrior,daysSince,firstAidYTD,nearMissYTD,
-    preGoal:tmPre?tmPre.goal:null,preAct:tmPre?tmPre.history[curMonthKey]:undefined,
-    trainGoal:tmTrain?tmTrain.goal:null,trainAct:tmTrain?tmTrain.history[curMonthKey]:undefined,
-    ergoEnc:em.encounters??0,ergoAssess:em.assessmentsCompleted??0,ergoAssessGoal:em.assessmentsGoal??2,
-    cellMonth:cellRow?cellRow.monthly[curMonth]:null,
-    vppAvg:avgVppProgress(),priorYear:curYear-1,curYear
-  };
-}
-function snapTile(o){
-  const col=o.state==='good'?'var(--green)':o.state==='bad'?'var(--red)':o.state==='warn'?'var(--amber)':'var(--muted2)';
-  const valCol=o.state==='none'?'var(--ink)':col;
-  return `<div class="snap-tile" onclick="goPage('${o.go||'metrics'}')" title="Open ${o.go==='vpp'?'VPP tracker':'Metrics'} for detail">
-    <span class="snap-dot" style="background:${col}"></span>
-    <div class="snap-val" style="color:${valCol}">${o.val}${o.unit?`<small>${o.unit}</small>`:''}</div>
-    <div class="snap-lbl">${o.label}</div>
-    ${o.sub?`<div class="snap-sub">${o.sub}</div>`:''}
-  </div>`;
-}
-function buildKpiSnapshot(){
-  try{
-    const s=computeSnapshot();
-    const fmt=v=>v===null||v===undefined?'—':(typeof v==='number'?(Number.isInteger(v)?v:v.toFixed(2)):v);
-    const rateState=r=>r===null?'none':(r<=s.iiGoal?'good':'bad');
-    const lag=[
-      snapTile({label:`I&I Rate — ${s.curYear} YTD`,val:fmt(s.ytdRate),state:rateState(s.ytdRate),sub:`Goal ≤ ${s.iiGoal.toFixed(2)} per 200k hrs`}),
-      snapTile({label:'Rolling 12-Month I&I Rate',val:fmt(s.r12Rate),state:rateState(s.r12Rate),sub:`Goal ≤ ${s.iiGoal.toFixed(2)}`}),
-      snapTile({label:`Recordable Injuries — YTD`,val:s.recYTD,state:s.recYTD===0?'good':(s.recYTD<s.recPrior?'good':s.recYTD===s.recPrior?'warn':'bad'),sub:`${s.recPrior} full-year ${s.priorYear}`}),
-      snapTile({label:'Days Since Last Recordable',val:fmt(s.daysSince),state:s.daysSince===null?'none':(s.daysSince>=30?'good':s.daysSince>=7?'warn':'bad'),sub:'From I&I case log'}),
-      snapTile({label:'First Aid Cases — YTD',val:s.firstAidYTD,state:'none',sub:'Non-recordable treatment'}),
-    ].join('');
-    const lead=[
-      snapTile({label:'Pre-Flight Safety Checks',val:fmt(s.preAct),state:s.preAct===undefined||s.preGoal===null?'none':(s.preAct>=s.preGoal?'good':s.preAct>=s.preGoal*0.85?'warn':'bad'),sub:s.preGoal?`Goal ${s.preGoal}/month`:'Set goal in Metrics'}),
-      snapTile({label:'Safety Training Completion',val:s.trainAct===undefined?'—':fmt(s.trainAct),unit:s.trainAct===undefined?'':'%',state:s.trainAct===undefined||s.trainGoal===null?'none':(s.trainAct>=s.trainGoal?'good':'warn'),sub:s.trainGoal?`Goal ≥ ${s.trainGoal}%`:'Set goal in Metrics'}),
-      snapTile({label:'Cell Inspections — This Month',val:fmt(s.cellMonth),state:s.cellMonth===null||s.cellMonth===undefined?'none':(s.cellMonth>=68?'good':s.cellMonth>=34?'warn':'bad'),sub:'Electronic · goal 68/month'}),
-      snapTile({label:'Ergo Assessments — Month',val:s.ergoAssess,state:s.ergoAssessGoal?(s.ergoAssess>=s.ergoAssessGoal?'good':'warn'):'none',sub:`Goal ${s.ergoAssessGoal}/month`}),
-      snapTile({label:'Ergo Encounters — Month',val:s.ergoEnc,state:'none',sub:'Early interventions logged'}),
-      snapTile({label:'Near Miss Reports — YTD',val:s.nearMissYTD,state:'none',sub:'Reporting drives prevention'}),
-      snapTile({label:'VPP Readiness',val:s.vppAvg,unit:'%',state:s.vppAvg>=75?'good':s.vppAvg>=40?'warn':'bad',sub:'Avg milestone progress',go:'vpp'}),
-    ].join('');
-    return `<div class="card">
-      <div class="ch snap-hdr-band">
-        <span class="ct" style="color:#fff">${ic('activity')} Leading &amp; Lagging Indicators</span>
-        <span class="cs" style="color:rgba(255,255,255,.8)">Live site safety snapshot · computed from shared team data · tap a tile for detail</span>
-      </div>
-      <div class="snap-sec">
-        <div class="snap-sec-title" style="color:var(--red)">${ic('trendDown',12)} Lagging — Outcomes <span class="snap-tag" style="background:var(--red-lt);color:var(--red)">what has happened</span></div>
-        <div class="snap-grid">${lag}</div>
-      </div>
-      <div class="snap-sec">
-        <div class="snap-sec-title" style="color:var(--blue)">${ic('trendUp',12)} Leading — Prevention <span class="snap-tag" style="background:var(--blue-lt);color:var(--blue-dk)">what we're doing about it</span></div>
-        <div class="snap-grid">${lead}</div>
-      </div>
-    </div>`;
-  }catch(e){ console.error('snapshot',e); return ''; }
+  toast('Reordered','#1FB55B');
 }
 
 // ════════════════════════════════════════════════════
@@ -2234,27 +1988,27 @@ function buildOverview(){
   const beh=byStatus('Behind'),atr=byStatus('At-Risk'),open=byStatus('Open');
 
   const KS=[
-    {l:"TOTAL ACTIONS",v:total,s:"Across all programs",c:"#1859C8",bg:"#E8EFFA",ic:ic("chart",16),click:"openKpiDetail('all')"},
-    {l:"COMPLETE",v:done,s:pct+"% of all items",c:"#0E8345",bg:"#E4F3EA",ic:ic("checkCircle",16),click:"openKpiDetail('Complete')"},
-    {l:"BEHIND",v:beh,s:"Needs attention",c:"#D92D20",bg:"#F9E9E7",ic:ic("alertCircle",16),click:"openKpiDetail('Behind')"},
-    {l:"AT-RISK",v:atr,s:"Monitor closely",c:"#D97706",bg:"#FBEFDD",ic:ic("clock",16),click:"openKpiDetail('At-Risk')"},
-    {l:"OPEN",v:open,s:"Not yet started",c:"#8A9099",bg:"#F1F2F4",ic:ic("clipboard",16),click:"openKpiDetail('Open')"},
-    {l:"ONGOING",v:byStatus('Ongoing')+byStatus('On Schedule'),s:"In progress",c:"#0E9CD8",bg:"#E3F2F9",ic:ic("activity",16),click:"openKpiDetail('ongoing-combined')"},
-    {l:"TEAM",v:"5",s:"Department members",c:"#6E56CF",bg:"#EEEBFA",ic:ic("users",16),click:"openKpiDetail('team')"},
-    {l:"COMPLETION",v:pct+"%",s:"Overall progress",c:"#D97706",bg:"#FBEFDD",ic:ic("star",16),click:"openInsights('all')"},
+    {l:"TOTAL ACTIONS",v:total,s:"Across all programs",c:"#0A7AFF",bg:"#E9F2FF",ic:"📊",click:"openKpiDetail('all')"},
+    {l:"COMPLETE",v:done,s:pct+"% of all items",c:"#1FB55B",bg:"#E4F8EC",ic:"✅",click:"openKpiDetail('Complete')"},
+    {l:"BEHIND",v:beh,s:"Needs attention",c:"#F0453E",bg:"#FDEBEA",ic:"🔴",click:"openKpiDetail('Behind')"},
+    {l:"AT-RISK",v:atr,s:"Monitor closely",c:"#F5A623",bg:"#FEF3E2",ic:"🟡",click:"openKpiDetail('At-Risk')"},
+    {l:"OPEN",v:open,s:"Not yet started",c:"#8A9099",bg:"#F1F2F4",ic:"📋",click:"openKpiDetail('Open')"},
+    {l:"ONGOING",v:byStatus('Ongoing')+byStatus('On Schedule'),s:"In progress",c:"#3BB8E0",bg:"#E5F6FC",ic:"🔵",click:"openKpiDetail('ongoing-combined')"},
+    {l:"TEAM",v:String(Object.keys(TEAM).length),s:"Department members",c:"#9B5DE5",bg:"#F2EAFC",ic:"👥",click:"openKpiDetail('team')"},
+    {l:"COMPLETION",v:pct+"%",s:"Overall progress",c:"#F5A623",bg:"#FEF3E2",ic:"⭐",click:"openInsights('all')"},
   ];
 
-  const kHTML=`<div class="kgrid">`+KS.map(k=>`<div class="kcard" onclick="${k.click}" style="cursor:pointer"><div class="kicon" style="background:${k.bg};color:${k.c}">${k.ic}</div><div class="kval" style="color:${k.c}">${k.v}</div><div class="klbl">${k.l}</div><div class="ksub">${k.s}</div></div>`).join('')+'</div>';
+  const kHTML=`<div class="kgrid">`+KS.map(k=>`<div class="kcard" onclick="${k.click}" style="cursor:pointer"><div class="kicon" style="background:${k.bg}">${k.ic}</div><div class="kval" style="color:${k.c}">${k.v}</div><div class="klbl">${k.l}</div><div class="ksub">${k.s}</div></div>`).join('')+'</div>';
 
   const TILE_CFG=[
-    {s:"Complete",dot:"#0E8345",text:"#1B5E20",bg:"#E4F3EA"},
-    {s:"On Schedule",dot:"#0E9CD8",text:"#0E5C73",bg:"#E3F2F9"},
-    {s:"Behind",dot:"#D92D20",text:"#A6271E",bg:"#F9E9E7"},
-    {s:"At-Risk",dot:"#D97706",text:"#8A4A00",bg:"#FBEFDD"},
-    {s:"Not Started",dot:"#6E56CF",text:"#3B2E7E",bg:"#EEEBFA"},
-    {s:"Open",dot:"#667085",text:"#48484A",bg:"#F1F1F4"},
-    {s:"Ongoing",dot:"#0E8345",text:"#1B5E20",bg:"#E4F3EA"},
-    {s:"On Hold",dot:"#D97706",text:"#8A4A00",bg:"#FBEFDD"},
+    {s:"Complete",dot:"#30D158",text:"#1B5E20",bg:"#E3FCEA"},
+    {s:"On Schedule",dot:"#64D2FF",text:"#0E5C73",bg:"#E5F8FF"},
+    {s:"Behind",dot:"#FF453A",text:"#A6271E",bg:"#FFEBEA"},
+    {s:"At-Risk",dot:"#FF9F0A",text:"#8A4A00",bg:"#FFF4E5"},
+    {s:"Not Started",dot:"#BF5AF2",text:"#5E2A8C",bg:"#F6E9FE"},
+    {s:"Open",dot:"#8E8E93",text:"#48484A",bg:"#F1F1F4"},
+    {s:"Ongoing",dot:"#30D158",text:"#1B5E20",bg:"#E3FCEA"},
+    {s:"On Hold",dot:"#FF9F0A",text:"#8A4A00",bg:"#FFF4E5"},
   ];
   const tilesHTML=`<div class="stiles">`+TILE_CFG.map(t=>{
     const cnt=S.actions.filter(a=>a.status===t.s).length;
@@ -2281,7 +2035,7 @@ function buildOverview(){
 
   const nonGoal=S.vpp.slice(0,-1);
   const avg=nonGoal.length?Math.round(nonGoal.reduce((s,m)=>s+m.pct,0)/nonGoal.length):0;
-  const vppMini=S.vpp.slice(0,5).map(m=>`<div class="ms-row" style="display:flex;align-items:center;gap:13px;padding:11px 18px;border-bottom:1px solid #F2F2F5;flex-wrap:wrap"><div style="width:28px;height:28px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0">${m.id}</div><div style="flex:1;min-width:150px"><div style="font-size:12px;font-weight:600">${dspl(m.ms)}</div><div style="font-size:10px;color:var(--muted);margin-top:1px">${m.owner} · ${m.target}</div></div><div style="min-width:150px"><div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);margin-bottom:3px"><span>Progress</span><span style="color:${pc(m.pct)}">${m.pct}%</span></div>${pb(m.pct)}</div><span class="${bk(m.status)}">${m.status}</span></div>`).join('')+`<div style="padding:10px 18px"><a class="lnk" href="#" onclick="goPage('vpp');return false">View all 13 milestones →</a></div>`;
+  const vppMini=S.vpp.slice(0,5).map(m=>`<div class="ms-row" style="display:flex;align-items:center;gap:13px;padding:11px 18px;border-bottom:1px solid #F2F2F5;flex-wrap:wrap"><div style="width:28px;height:28px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0">${m.id}</div><div style="flex:1;min-width:150px"><div style="font-size:12px;font-weight:600">${m.ms}</div><div style="font-size:10px;color:var(--muted);margin-top:1px">${m.owner} · ${m.target}</div></div><div style="min-width:150px"><div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);margin-bottom:3px"><span>Progress</span><span style="color:${pc(m.pct)}">${m.pct}%</span></div>${pb(m.pct)}</div><span class="${bk(m.status)}">${m.status}</span></div>`).join('')+`<div style="padding:10px 18px"><a class="lnk" href="#" onclick="goPage('vpp');return false">View all 13 milestones →</a></div>`;
 
   // ── COMBINED TEAM CALENDAR ──
   const combinedHTML=buildCombinedCalendar();
@@ -2290,15 +2044,14 @@ function buildOverview(){
   const vppAvgForRing=avgVppProgress();
   const metricsOnTargetPct=metricsOnTargetPercent();
   const ringTiles=[
-    {label:"Actions",pct:pct,sub:`${done}/${total} complete`,color:"#1859C8",click:"goPage('actions')"},
-    {label:"North Star",pct:avgHoshinProgress(),sub:"Hoshin goal progress",color:"#0A1E5E",click:"goPage('hoshin')"},
-    {label:"VPP Path",pct:vppAvgForRing,sub:"Avg milestone progress",color:"#D97706",click:"goPage('vpp')"},
-    {label:"Metrics",pct:metricsOnTargetPct,sub:"Targets on track",color:"#0E8345",click:"goPage('metrics')"},
+    {label:"Actions",pct:pct,sub:`${done}/${total} complete`,color:"#0A84FF",click:"goPage('actions')"},
+    {label:"VPP Path",pct:vppAvgForRing,sub:"Avg milestone progress",color:"#FF9F0A",click:"goPage('vpp')"},
+    {label:"Metrics",pct:metricsOnTargetPct,sub:"Targets on track",color:"#30D158",click:"goPage('metrics')"},
     {label:"Victor",pct:teamPct('VP'),sub:"Action items done",color:TEAM.VP.color,click:"goPage('VP')"},
     {label:"Steve",pct:teamPct('SW'),sub:"Action items done",color:TEAM.SW.color,click:"goPage('SW')"},
     {label:"Mike",pct:teamPct('MS'),sub:"Action items done",color:TEAM.MS.color,click:"goPage('MS')"},
     {label:"Rich",pct:teamPct('RD'),sub:"Action items done",color:TEAM.RD.color,click:"goPage('RD')"},
-    {label:"Zach",pct:teamPct('ZT'),sub:"Action items done",color:TEAM.ZT.color,click:"goPage('ZT')"},
+    {label:"Jakob",pct:teamPct('JK'),sub:"Action items done",color:TEAM.JK.color,click:"goPage('JK')"},
   ];
   const ringsHTML=`<div class="rgrid">`+ringTiles.map(r=>`
     <div class="rtile" onclick="${r.click}">
@@ -2318,35 +2071,34 @@ function buildOverview(){
             </svg>
           </div>
           <div>
-            <div class="hero-title">EHS+S Command Center</div>
-            <div class="hero-sub">GE Aerospace Muskegon · EHS+S Strategic Action Plan · ${total} active items tracked</div>
+            <div class="hero-title">Welcome back, Team 👋</div>
+            <div class="hero-sub">GE Aerospace Muskegon · EHS Strategic Action Plan · ${total} active items tracked</div>
           </div>
         </div>
-        <div class="hero-badge">VPP STAR RE-CERTIFICATION · OCTOBER 2026</div>
+        <div class="hero-badge">⭐ VPP Star Target — October 2026</div>
       </div>
     </div>
-    ${buildKpiSnapshot()}
     <div class="card">
-      <div class="ch"><span class="ct">${ic('target')} Progress at a Glance</span><span class="cs">Tap any ring to open that tab</span></div>
+      <div class="ch"><span class="ct">🎯 Progress at a Glance</span><span class="cs">Tap any ring to open that tab</span></div>
       ${ringsHTML}
     </div>
     ${kHTML}
     <div class="g2">
       <div class="card">
-        <div class="ch"><span class="ct">${ic('users')} Team Scorecard</span><span class="cs">Tap a row to open their dashboard</span></div>
-        <div class="twrap"><table><thead><tr><th>Member</th><th>Total</th><th>Done</th><th>Behind</th><th>At-Risk</th><th>%</th><th style="min-width:100px">Progress</th><th></th></tr></thead><tbody>${scoreHTML}</tbody></table></div>
+        <div class="ch"><span class="ct">👥 Team Scorecard</span><span class="cs">Tap a row to open their dashboard</span></div>
+        <div class="twrap"><table><thead><tr><th>Member</th><th>Total</th><th>✅</th><th>🔴</th><th>🟡</th><th>%</th><th style="min-width:100px">Progress</th><th></th></tr></thead><tbody>${scoreHTML}</tbody></table></div>
       </div>
       <div class="card">
-        <div class="ch"><span class="ct">${ic('chart')} Status Breakdown</span><button class="btn btn-ghost btn-sm" onclick="openInsights('all')">${ic('trendUp')} Insights</button></div>
+        <div class="ch"><span class="ct">📊 Status Breakdown</span><button class="btn btn-ghost btn-sm" onclick="openInsights('all')">📈 Insights</button></div>
         ${tilesHTML}
       </div>
     </div>
     <div class="card">
-      <div class="ch"><span class="ct">${ic('star')} VPP Path — Top 5 Milestones</span><span class="cs">Avg: ${avg}%</span></div>
+      <div class="ch"><span class="ct">⭐ VPP Path — Top 5 Milestones</span><span class="cs">Avg: ${avg}%</span></div>
       ${vppMini}
     </div>
     <div class="card">
-      <div class="ch"><span class="ct">${ic('calendar')} Combined Team Calendar — This Week</span><span class="cs">All 5 schedules merged</span></div>
+      <div class="ch"><span class="ct">📅 Combined Team Calendar — This Week</span><span class="cs">All 5 schedules merged</span></div>
       ${combinedHTML}
     </div>`;
 }
@@ -2369,7 +2121,7 @@ function buildCombinedCalendar(){
     Object.entries(byDay).forEach(([day,evs])=>{
       rows+=`<div class="combined-row">
         <div class="combined-label">${DAY_NAMES[day-1].slice(0,3)} · ${time}</div>
-        <div class="combined-events">${evs.map(e=>`<span class="combined-chip" style="background:${e.color}">${e.person}: ${dspl(e.label)}</span>`).join('')}</div>
+        <div class="combined-events">${evs.map(e=>`<span class="combined-chip" style="background:${e.color}">${e.person}: ${e.label}</span>`).join('')}</div>
       </div>`;
     });
   });
@@ -2385,7 +2137,7 @@ function filterJump(s){document.getElementById('fa-status').value=s;goPage('acti
 function buildActions(){
   document.getElementById('pg-actions').innerHTML=`
     <div class="card">
-      <div class="ch"><span class="ct">${ic('calendar')} Team Action Plan View</span><span class="cs">Outlook-style grouped view — pick a time window and grouping</span></div>
+      <div class="ch"><span class="ct">📅 Team Action Plan View</span><span class="cs">Outlook-style grouped view — pick a time window and grouping</span></div>
       <div style="padding:14px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <div class="seg-toggle">
           <button class="seg-btn${timePeriod==='day'?' active':''}" id="seg-day" onclick="setTimePeriod('day')">Day</button>
@@ -2402,7 +2154,7 @@ function buildActions(){
       </div>
     </div>
     <div class="card">
-      <div class="ch"><span class="ct">${ic('search')} Filter, Search &amp; Manage</span><span class="cs" id="fc"></span></div>
+      <div class="ch"><span class="ct">🔍 Filter, Search & Manage</span><span class="cs" id="fc"></span></div>
       <div class="fbar">
         <div class="fg"><label class="flbl">Person</label><select class="fsel2" id="fa-person" onchange="applyF()"><option>All</option>${PERSON_OPTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
         <div class="fg"><label class="flbl">Status</label><select class="fsel2" id="fa-status" onchange="applyF()"><option>All</option>${STATUS_OPTS.map(s=>`<option>${s}</option>`).join('')}</select></div>
@@ -2410,9 +2162,8 @@ function buildActions(){
         <div class="fg"><label class="flbl">Priority</label><select class="fsel2" id="fa-pri" onchange="applyF()"><option>All</option>${PRI_OPTS.map(p=>`<option>${p}</option>`).join('')}</select></div>
         <div class="fg"><label class="flbl">Search</label><input class="fsrch" type="text" id="fa-search" placeholder="Task or owner…" oninput="applyF()"/></div>
         <button class="btn btn-ghost" onclick="clearF()">Clear</button>
-        <button class="btn btn-ghost" onclick="openInsights('all')">${ic('chart')} Insights</button>
-        <button class="btn btn-ghost" onclick="exportActionsCSV()">${ic('download')} Export</button>
-        <button class="btn btn-primary" onclick="openAddModal()">${ic('plus')} Add Task</button>
+        <button class="btn btn-ghost" onclick="openInsights('all')">📊 Insights</button>
+        <button class="btn btn-primary" onclick="openAddModal()">➕ Add Task</button>
       </div>
     </div>
     <div id="actions-groups"></div>`;
@@ -2464,7 +2215,7 @@ function applyF(){
 }
 
 function tableShell(rows){
-  return `<div class="twrap"><table><thead><tr><th></th><th></th><th>Task Name</th><th>Owner</th><th>Status</th><th>Priority</th><th>Due / Target</th><th>Program</th><th>North Star</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  return `<div class="twrap"><table><thead><tr><th></th><th>✔</th><th>Task Name</th><th>Owner</th><th>Status</th><th>Priority</th><th>Due / Target</th><th>Program</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 function renderGroupedActions(fl){
@@ -2484,7 +2235,7 @@ function renderGroupedActions(fl){
     const active=topLevel.filter(a=>a.status!=='Complete');
     const doneTop=topLevel.filter(a=>a.status==='Complete');
     wrap.innerHTML=`<div class="card">
-      <div class="info-bar">Tap any field to edit inline &middot; drag the grip handle to reorder &middot; row tools add sub-actions, comments, or delete.</div>
+      <div class="info-bar">✏️ Tap any field to edit inline. ⠿ Drag to reorder. ➕ adds a sub-action under a plan. 💬 Comments, 🗑️ delete.</div>
       ${tableShell(active.map(a=>buildRow(a)).join(''))}
     </div>
     ${doneTop.length?completedSection('none',doneTop):''}`;
@@ -2501,10 +2252,10 @@ function renderGroupedActions(fl){
   }
   const colorMap=groupBy==='owner'
     ? Object.fromEntries(Object.values(TEAM).map(t=>[t.name,t.color]))
-    : {Complete:"#0E8345","On Schedule":"#0E9CD8",Behind:"#D92D20","At-Risk":"#D97706","Not Started":"#6E56CF",Open:"#8A9099",Ongoing:"#1859C8","On Hold":"#D97706"};
+    : {Complete:"#1FB55B","On Schedule":"#3BB8E0",Behind:"#F0453E","At-Risk":"#F5A623","Not Started":"#9B5DE5",Open:"#8A9099",Ongoing:"#0A7AFF","On Hold":"#F5A623"};
 
   // When grouping by person, split each person's completed items into a sub-section.
-  wrap.innerHTML='<div class="info-bar" style="border-radius:14px 14px 0 0;border:1px solid var(--border);border-bottom:none">Tap any field to edit &middot; drag the grip handle to reorder &middot; completed items collapse into their own section &middot; click a group header to collapse.</div>'
+  wrap.innerHTML='<div class="info-bar" style="border-radius:14px 14px 0 0;border:1px solid var(--border);border-bottom:none">✏️ Tap any field to edit. ⠿ Drag to reorder. ➕ sub-action. Completed items collapse into their own section. Click a group header to collapse.</div>'
     + Object.entries(groups).filter(([k,items])=>items.length).map(([groupName,items],idx,arr)=>{
       const color=colorMap[groupName]||'#8A9099';
       const gid='grp-'+groupBy+'-'+groupName.replace(/[^a-zA-Z0-9]/g,'');
@@ -2514,7 +2265,7 @@ function renderGroupedActions(fl){
       const doneItems=items.filter(a=>a.status==='Complete');
       const doneId=gid+'-done';
       const doneCollapsed=groupCollapse[doneId]!==false; // completed collapsed by default
-      let inner=tableShell(activeItems.map(a=>buildRow(a)).join('')||`<tr><td colspan="10" style="padding:18px;text-align:center;color:var(--muted)">No active items</td></tr>`);
+      let inner=tableShell(activeItems.map(a=>buildRow(a)).join('')||`<tr><td colspan="9" style="padding:18px;text-align:center;color:var(--muted)">No active items</td></tr>`);
       if(doneItems.length){
         inner+=`<div class="done-subsection">
           <div class="done-subhdr" onclick="toggleGroup('${doneId}')">
@@ -2569,10 +2320,10 @@ function buildVPP(){
   const avg=ng.length?Math.round(ng.reduce((s,m)=>s+m.pct,0)/ng.length):0;
   document.getElementById('pg-vpp').innerHTML=`
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#8A4A00,#D97706)"><span class="ct" style="color:#fff">${ic('star')} VPP Star Milestone Tracker</span><div style="text-align:right"><div style="font-size:26px;font-weight:900;color:#fff">${avg}%</div><div style="font-size:9px;color:rgba(255,255,255,.8);font-weight:700">AVG PROGRESS</div></div></div>
-      ${S.vpp.map(m=>`<div class="ms-row ${m.id===13?'':''}" style="display:flex;align-items:center;gap:13px;padding:12px 18px;border-bottom:1px solid #F2F2F5;flex-wrap:wrap;${m.id===13?'background:#FBEFDD;border-left:4px solid #D97706':''}">
-        <div style="width:28px;height:28px;border-radius:50%;background:${m.id===13?'linear-gradient(135deg,#8A4A00,#D97706)':'var(--ink)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0">${m.id===13?ic('star',12):m.id}</div>
-        <div style="flex:1;min-width:150px"><div style="font-size:${m.id===13?'13px':'12px'};font-weight:${m.id===13?900:600};color:${m.id===13?'#8A4A00':'var(--ink)'}">${dspl(m.ms)}</div><div style="font-size:10px;color:var(--muted);margin-top:1px">${m.owner} · ${m.target}</div></div>
+      <div class="ch" style="background:linear-gradient(135deg,#8A4A00,#FF9F0A)"><span class="ct" style="color:#fff">⭐ VPP Star Milestone Tracker</span><div style="text-align:right"><div style="font-size:26px;font-weight:900;color:#fff">${avg}%</div><div style="font-size:9px;color:rgba(255,255,255,.8);font-weight:700">AVG PROGRESS</div></div></div>
+      ${S.vpp.map(m=>`<div class="ms-row ${m.id===13?'':''}" style="display:flex;align-items:center;gap:13px;padding:12px 18px;border-bottom:1px solid #F2F2F5;flex-wrap:wrap;${m.id===13?'background:#FFF4E5;border-left:4px solid #FF9F0A':''}">
+        <div style="width:28px;height:28px;border-radius:50%;background:${m.id===13?'linear-gradient(135deg,#8A4A00,#FF9F0A)':'var(--ink)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0">${m.id===13?'⭐':m.id}</div>
+        <div style="flex:1;min-width:150px"><div style="font-size:${m.id===13?'13px':'12px'};font-weight:${m.id===13?900:600};color:${m.id===13?'#8A4A00':'var(--ink)'}">${m.ms}</div><div style="font-size:10px;color:var(--muted);margin-top:1px">${m.owner} · ${m.target}</div></div>
         <div style="min-width:150px">
           <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);margin-bottom:3px"><span>Progress</span>
             <input type="number" min="0" max="100" value="${m.pct}" style="width:48px;border:1px solid var(--border2);border-radius:6px;padding:1px 4px;font-size:11px;font-weight:700;text-align:center;outline:none;color:${pc(m.pct)}" onchange="updVPP(${m.id},+this.value)"/>%
@@ -2583,8 +2334,8 @@ function buildVPP(){
       </div>`).join('')}
     </div>`;
 }
-function updVPP(id,v){const m=S.vpp.find(x=>x.id===id);if(m){m.pct=Math.max(0,Math.min(100,v));saveS();buildVPP();toast('Progress updated','#0E8345');}}
-function updVPPStatus(id,v){const m=S.vpp.find(x=>x.id===id);if(m){m.status=v;saveS();buildVPP();toast('Status updated','#0E8345');}}
+function updVPP(id,v){const m=S.vpp.find(x=>x.id===id);if(m){m.pct=Math.max(0,Math.min(100,v));saveS();buildVPP();toast('Progress updated','#30D158');}}
+function updVPPStatus(id,v){const m=S.vpp.find(x=>x.id===id);if(m){m.status=v;saveS();buildVPP();toast('Status updated','#30D158');}}
 
 // ════════════════════════════════════════════════════
 // METRICS PAGE — comprehensive, matching 2026 Action Plan workbook
@@ -2627,9 +2378,9 @@ function incidentDerivedCards(){
       </div>
       <div class="mcard-sub">${monthLabel} this month · computed from case log</div>
     </div>`;
-  return card(ic('firstaid',13),'First Aid Cases',faMonth,faYear,'var(--ink)')
-    + card(ic('user',13),'MSD / Ergonomic Cases',msdMonth,msdYear,'#6E56CF')
-    + card(ic('alert',13),'Near Miss Reports',nmMonth,nmYear,'#D97706');
+  return card('🩹','First Aid Cases',faMonth,faYear,'var(--ink)')
+    + card('🦴','MSD / Ergonomic Cases',msdMonth,msdYear,'#9B5DE5')
+    + card('⚠️','Near Miss Reports',nmMonth,nmYear,'#F5A623');
 }
 
 function buildMetrics(){
@@ -2707,23 +2458,23 @@ function buildMetrics(){
   const mkeys=Object.keys(S.metrics);
   // Build the special OSHA cards that lead the scorecard.
   const oshaLeadCards=`
-    <div class="mcard" style="border:1.5px solid #0E8345;background:linear-gradient(180deg,#F2FBF5,#fff)">
-      <div class="mcard-label" style="color:#15803D">${curYear} I&I Rate — Calendar YTD</div>
+    <div class="mcard" style="border:1.5px solid #1FB55B;background:linear-gradient(180deg,#F2FBF5,#fff)">
+      <div class="mcard-label" style="color:#15803D">⭐ ${curYear} I&I Rate — Calendar YTD</div>
       <div style="font-size:30px;font-weight:900;color:${calYearRate===null?'var(--muted)':calYearRate<=iiGoalFlat?'#15803D':'#A6271E'};padding:6px 0;letter-spacing:-1px">${calYearRate===null?'—':calYearRate.toFixed(2)}</div>
       <div class="mcard-sub">Goal ≤ ${iiGoalFlat.toFixed(2)} · ${ytdInjuries} rec. ÷ ${ytdHours.toLocaleString()} hrs (Jan–${MONTHS[curMonthNum]})</div>
     </div>
-    <div class="mcard" style="border:1.5px solid #1859C8;background:linear-gradient(180deg,#F0F7FF,#fff)">
-      <div class="mcard-label" style="color:#0F3E96">Rolling 12-Month I&I Rate</div>
+    <div class="mcard" style="border:1.5px solid #0A7AFF;background:linear-gradient(180deg,#F0F7FF,#fff)">
+      <div class="mcard-label" style="color:#0060DF">📉 Rolling 12-Month I&I Rate</div>
       <div style="font-size:30px;font-weight:900;color:${rolling12Rate===null?'var(--muted)':rolling12Rate<=iiGoalFlat?'#15803D':'#A6271E'};padding:6px 0;letter-spacing:-1px">${rolling12Rate===null?'—':rolling12Rate.toFixed(2)}</div>
       <div class="mcard-sub">Goal ≤ ${iiGoalFlat.toFixed(2)} · ${MONTHS[(curMonthNum+1)%12]} ${curYear-1} – ${MONTHS[curMonthNum]} ${curYear}</div>
     </div>
     <div class="mcard" style="text-align:left">
-      <div class="mcard-label">Days Without Injury</div>
+      <div class="mcard-label">🩹 Days Without Injury</div>
       <div style="font-size:30px;font-weight:900;color:${daysNoInjury===null?'var(--muted)':daysNoInjury>=30?'#15803D':'#A6271E'};padding:6px 0;letter-spacing:-1px">${daysNoInjury===null?'—':daysNoInjury}</div>
       <div class="mcard-sub">${lastRecordableDate?`Since last recordable (${lastRecordableDate})`:'No recordable cases logged'}</div>
     </div>
     <div class="mcard">
-      <div class="mcard-label">Recordable Injury Rate</div>
+      <div class="mcard-label">📊 Recordable Injury Rate</div>
       <div style="font-size:30px;font-weight:900;color:var(--ink);padding:6px 0;letter-spacing:-1px">${computedRecordableRate===null?'—':computedRecordableRate.toFixed(2)}</div>
       <div class="mcard-sub">${ytdHours?`${ytdInjuries} rec. × 200k ÷ ${ytdHours.toLocaleString()} hrs`:'Enter hours & injuries below'}</div>
     </div>
@@ -2773,7 +2524,7 @@ function buildMetrics(){
   const iiGoalSeries=MONTHS.map(()=>iiGoalFlat);
   const iiMaxVal=Math.max(iiGoalFlat,...ytdRateSeries.filter(v=>v!==null),0.5)*1.15;
   const iiChart=buildLineChart(MONTHS,[
-    {name:`${curYear} Cumulative YTD Rate`,data:ytdRateSeries,color:"#1859C8"},
+    {name:`${curYear} Cumulative YTD Rate`,data:ytdRateSeries,color:"#0A7AFF"},
     {name:`Goal (${iiGoalFlat.toFixed(2)})`,data:iiGoalSeries,color:"#8A9099"},
   ],iiMaxVal,2,{trend:`${curYear} Cumulative YTD Rate`});
 
@@ -2781,7 +2532,7 @@ function buildMetrics(){
   // Current year is computed live from the case log; prior years are the
   // stored historical baseline (editable below for context).
   const yrKeys=[twoYearsAgo,lastYear,curYear];
-  const yrColors={[twoYearsAgo]:"#C7CAD1",[lastYear]:"#D97706",[curYear]:"#D92D20"};
+  const yrColors={[twoYearsAgo]:"#C7CAD1",[lastYear]:"#F5A623",[curYear]:"#F0453E"};
   const recForYear=(y)=> y===curYear ? recByMonthComputed.map((v,i)=> i<=curMonthNum ? v : null)
                                      : (S.recByMonth[y]||MONTHS.map(()=>null)).map(v=>v===null||v===undefined?null:v);
   const recSeries=yrKeys.map(y=>({name:String(y),data:recForYear(y),color:yrColors[y]}));
@@ -2813,7 +2564,7 @@ function buildMetrics(){
   const injMaxVal=Math.max(...REC_INJ_GOAL,...S.recInjActual.filter(v=>v!==null));
   const injChart=buildLineChart(MONTHS,[
     {name:"Rolling Goal",data:REC_INJ_GOAL,color:"#8A9099"},
-    {name:"Rolling Actual",data:S.recInjActual,color:"#D92D20"},
+    {name:"Rolling Actual",data:S.recInjActual,color:"#F0453E"},
   ],injMaxVal,0,{trend:"Rolling Actual"});
 
   // ── 5. Audit completion table — editable, full calendar year, goal column ──
@@ -2884,7 +2635,7 @@ function buildMetrics(){
   });
   const sortedYears=Object.keys(caseYearCounts).sort();
   const yearChips=sortedYears.map(y=>
-    `<div class="mcard" style="text-align:center"><div class="mcard-label">${y}</div><div style="font-size:24px;font-weight:900;color:${y==='2026'?'#D92D20':'var(--ink)'}">${caseYearCounts[y]}</div><div class="mcard-sub">Recordable cases</div></div>`
+    `<div class="mcard" style="text-align:center"><div class="mcard-label">${y}</div><div style="font-size:24px;font-weight:900;color:${y==='2026'?'#FF453A':'var(--ink)'}">${caseYearCounts[y]}</div><div class="mcard-sub">Recordable cases</div></div>`
   ).join('');
 
   const bodyPartCounts={};
@@ -2897,7 +2648,7 @@ function buildMetrics(){
   const bodyPartHTML=`<div style="display:flex;flex-direction:column;gap:6px;padding:0 18px 18px">
     ${topBodyParts.map(([part,count])=>`<div style="display:flex;align-items:center;gap:10px">
       <div style="width:70px;font-size:11px;font-weight:700;color:var(--ink2)">${part}</div>
-      <div class="pt" style="flex:1;height:10px"><div class="pf" style="width:${count/maxBP*100}%;height:10px;background:#D97706"></div></div>
+      <div class="pt" style="flex:1;height:10px"><div class="pf" style="width:${count/maxBP*100}%;height:10px;background:#FF9F0A"></div></div>
       <div style="width:24px;text-align:right;font-size:11px;font-weight:800">${count}</div>
     </div>`).join('')}
   </div>`;
@@ -2912,7 +2663,7 @@ function buildMetrics(){
     <td style="min-width:160px"><textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updCase(${c.id},'injuryType',this.value)">${(c.injuryType||'').replace(/</g,'&lt;')}</textarea></td>
     <td style="min-width:110px"><textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updCase(${c.id},'bodyPart',this.value)">${(c.bodyPart||'').replace(/</g,'&lt;')}</textarea></td>
     <td style="min-width:260px"><textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updCase(${c.id},'desc',this.value)">${(c.desc||'').replace(/</g,'&lt;')}</textarea></td>
-    <td><div style="display:flex;gap:4px;align-items:center"><button class="btn btn-ghost btn-icon" onclick="openCaseDetail(${c.id})" title="Full case detail — medical, root cause, corrective actions">${ic('firstaid')}</button><button class="btn btn-ghost btn-icon" onclick="delCase(${c.id})" style="color:var(--red)" title="Remove case">${ic('trash')}</button></div></td>
+    <td><button class="btn btn-ghost btn-icon" onclick="delCase(${c.id})" style="color:var(--red)" title="Remove case">🗑️</button></td>
   </tr>`).join('');
   const caseLogHTML=`<div class="twrap"><table><thead><tr><th>Date</th><th>Type</th><th>Dept</th><th>Occupation</th><th>Accident Type</th><th>Injury Type</th><th>Body Part</th><th>Description / Notes</th><th></th></tr></thead><tbody id="case-log-body">${caseRows}</tbody></table></div>`;
 
@@ -2944,57 +2695,57 @@ function buildMetrics(){
   </div>`;
 
   // ── 9. Notes log ──
-  const notesHTML=METRIC_NOTES_LOG.map(n=>`<div class="top3-item" style="cursor:default"><div class="top3-rank" style="background:#D97706;font-size:11px">!</div><div class="top3-text"><div class="top3-task" style="font-weight:500">${n}</div></div></div>`).join('');
+  const notesHTML=METRIC_NOTES_LOG.map(n=>`<div class="top3-item" style="cursor:default"><div class="top3-rank" style="background:#FF9F0A;font-size:11px">!</div><div class="top3-text"><div class="top3-task" style="font-weight:500">${n}</div></div></div>`).join('');
 
   // ── Goal-tracked cards: JSA Audits, LOTO Compliance, Safety Training ──
   const trackedCardsHTML=`<div class="metric-grid">
-    ${trackedMetricCard('preflightCheck','Daily Pre-Flight Safety Checks',ic('plane',13))}
-    ${trackedMetricCard('safetyTraining','Safety Training Completion',ic('award',13))}
+    ${trackedMetricCard('preflightCheck','Daily Pre-Flight Safety Checks','✈️')}
+    ${trackedMetricCard('safetyTraining','Safety Training Completion','🎓')}
   </div>`;
 
   document.getElementById('pg-metrics').innerHTML=`
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#00003D,#0A1E5E 60%,#123C8C)"><span class="ct" style="color:#fff">${ic('activity')} EHS&S Plant Pulse — ${curYear} Performance</span><span class="cs" style="color:rgba(255,255,255,.85)">Team safety performance for the year · top metrics computed live</span></div>
-      <div class="info-bar">The first four cards are computed automatically from your hours, recordables, and case log. The rest are editable — click any value to update.</div>
+      <div class="ch" style="background:linear-gradient(135deg,#0A1A33,#0F2A5C 60%,#1A4DA8)"><span class="ct" style="color:#fff">📈 EHS&S Plant Pulse — ${curYear} Performance</span><span class="cs" style="color:rgba(255,255,255,.85)">Team safety performance for the year · top metrics computed live</span></div>
+      <div class="info-bar">⭐ The first four cards are computed automatically from your hours, recordables, and case log. The rest are editable — click any value to update.</div>
       <div class="metric-grid">${cardsHTML}</div>
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#0E5C73,#1859C8)"><span class="ct" style="color:#fff">${ic('trendDown')} Trending: ${curYear} I&I Rate — Cumulative Year-to-Date vs Goal</span><span class="cs" style="color:rgba(255,255,255,.85)">Total rate as it evolves month to month with new incidents & hours</span></div>
+      <div class="ch" style="background:linear-gradient(135deg,#0E5C73,#0A7AFF)"><span class="ct" style="color:#fff">📉 Trending: ${curYear} I&I Rate — Cumulative Year-to-Date vs Goal</span><span class="cs" style="color:rgba(255,255,255,.85)">Total rate as it evolves month to month with new incidents & hours</span></div>
       <div style="padding:18px">${iiChart}</div>
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#7A271A,#D92D20)"><span class="ct" style="color:#fff">${ic('chart')} Recordable Injuries — ${twoYearsAgo} vs ${lastYear} vs ${curYear}</span><span class="cs" style="color:rgba(255,255,255,.85)">Three-year monthly trend comparison</span></div>
+      <div class="ch" style="background:linear-gradient(135deg,#8A2426,#F0453E)"><span class="ct" style="color:#fff">📊 Recordable Injuries — ${twoYearsAgo} vs ${lastYear} vs ${curYear}</span><span class="cs" style="color:rgba(255,255,255,.85)">Three-year monthly trend comparison</span></div>
       <div style="padding:18px">${recTrendChart}</div>
-      <div class="info-bar">Edit any month's recordable count below — the trend chart updates automatically.</div>
+      <div class="info-bar">📝 Edit any month's recordable count below — the trend chart updates automatically.</div>
       ${recByMonthTable}
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#1B5E20,#0E5C73)"><span class="ct" style="color:#fff">${ic('layers')} Year-Over-Year Summary</span><span class="cs" style="color:rgba(255,255,255,.85)">Calendar-year rate + recordable case comparison</span></div>
+      <div class="ch" style="background:linear-gradient(135deg,#1B5E20,#0E5C73)"><span class="ct" style="color:#fff">🧮 Year-Over-Year Summary</span><span class="cs" style="color:rgba(255,255,255,.85)">Calendar-year rate + recordable case comparison</span></div>
       ${oshaRateHTML}
     </div>
 
     <div class="card">
-      <div class="ch"><span class="ct">${ic('target')} TAVS MKG Plant Health Pulse — Annual Targets vs Actuals</span></div>
+      <div class="ch"><span class="ct">🎯 TAVS MKG Plant Health Pulse — Annual Targets vs Actuals</span></div>
       ${annualHTML}
     </div>
 
     <div class="card">
-      <div class="ch"><span class="ct">${ic('clipboard')} Audit Compliance &amp; Training — Goal vs. Actual</span><span class="cs">Set a goal, log this month's number, see the trend</span></div>
-      <div class="info-bar">Enter a monthly goal and this month's actual for each — the bar shows how you're tracking, and the sparkline shows recent months.</div>
+      <div class="ch"><span class="ct">📋 Audit Compliance & Training — Goal vs. Actual</span><span class="cs">Set a goal, log this month's number, see the trend</span></div>
+      <div class="info-bar">📝 Enter a monthly goal and this month's actual for each — the bar shows how you're tracking, and the sparkline shows recent months.</div>
       ${trackedCardsHTML}
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#0E5C73,#1859C8)"><span class="ct" style="color:#fff">${ic('edit')} Rolling I&I Rate — Enter Hours Worked</span><span class="cs" style="color:rgba(255,255,255,.85)">Recordables auto-count from the case log · rate updates live</span></div>
-      <div class="info-bar">Enter hours worked per month. Recordable injuries are counted automatically from the I&I case log below — add a Recordable case there and every rate on this page updates instantly.</div>
+      <div class="ch" style="background:linear-gradient(135deg,#0E5C73,#0A7AFF)"><span class="ct" style="color:#fff">✏️ Rolling I&I Rate — Enter Hours Worked</span><span class="cs" style="color:rgba(255,255,255,.85)">Recordables auto-count from the case log · rate updates live</span></div>
+      <div class="info-bar">📝 Enter hours worked per month. Recordable injuries are counted automatically from the I&I case log below — add a Recordable case there and every rate on this page updates instantly.</div>
       ${rollingHTML}
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#7A271A,#D92D20)"><span class="ct" style="color:#fff">${ic('chart')} Rolling 12-Month Recordable Injuries — Editable Actuals</span></div>
+      <div class="ch" style="background:linear-gradient(135deg,#8A2426,#F0453E)"><span class="ct" style="color:#fff">📊 Rolling 12-Month Recordable Injuries — Editable Actuals</span></div>
       <div class="g2" style="padding:18px">
         <div>${recInjTableHTML}</div>
         <div>${injChart}</div>
@@ -3002,54 +2753,54 @@ function buildMetrics(){
     </div>
 
     <div class="card">
-      <div class="ch"><span class="ct">${ic('checkCircle')} Audit &amp; Inspection Completion — Full Year (Editable)</span><span class="cs">PPE · JSA · STF · LOTO · Cell Inspections · goals at left</span></div>
-      <div class="info-bar">Enter completions for any month — goals/cadence shown at the left for reference.</div>
+      <div class="ch"><span class="ct">✅ Audit & Inspection Completion — Full Year (Editable)</span><span class="cs">PPE · JSA · STF · LOTO · Cell Inspections · goals at left</span></div>
+      <div class="info-bar">📝 Enter completions for any month — goals/cadence shown at the left for reference.</div>
       ${auditHTML}
     </div>
 
     <div class="card">
-      <div class="ch"><span class="ct">${ic('calendar')} Recurring Meeting Cadence — Actual / Goal (Editable)</span><span class="cs">Each cell: actual on the left, goal on the right</span></div>
-      <div class="info-bar">Enter actual and goal counts per month (green = goal met). Both numbers are editable per month.</div>
+      <div class="ch"><span class="ct">📅 Recurring Meeting Cadence — Actual / Goal (Editable)</span><span class="cs">Each cell: actual on the left, goal on the right</span></div>
+      <div class="info-bar">📝 Enter actual and goal counts per month (green = goal met). Both numbers are editable per month.</div>
       ${meetingHTML}
     </div>
 
     <div class="g2">
       <div class="card">
-        <div class="ch"><span class="ct">${ic('firstaid')} Recordable Cases by Year</span><span class="cs">Computed from case log below</span></div>
+        <div class="ch"><span class="ct">🩹 Recordable Cases by Year</span><span class="cs">Computed from case log below</span></div>
         <div class="metric-grid">${yearChips}</div>
       </div>
       <div class="card">
-        <div class="ch"><span class="ct">${ic('user')} Top Body Parts Affected (All-Time)</span><span class="cs">Computed from case log below</span></div>
+        <div class="ch"><span class="ct">🦴 Top Body Parts Affected (All-Time)</span><span class="cs">Computed from case log below</span></div>
         ${bodyPartHTML}
       </div>
     </div>
 
     <div class="card">
-      <div class="ch"><span class="ct">${ic('clipboard')} I&I Case Log — Full Detail, Fully Editable</span><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" onclick="exportCasesCSV()">${ic('download')} Export CSV</button><button class="btn btn-primary btn-sm" onclick="addCase()">${ic('plus')} Add Case</button></div></div>
-      <div class="info-bar">Every field here is editable. Tap the case-detail icon on any row for the full medical &amp; corrective-action record (Gensuite / Cority-ready). Summaries and trends update automatically.</div>
+      <div class="ch"><span class="ct">📋 I&I Case Log — Full Detail, Fully Editable</span><button class="btn btn-primary btn-sm" onclick="addCase()">➕ Add Case</button></div>
+      <div class="info-bar">✏️ Every field here is editable. Add new cases as they occur; the summaries and trends above update automatically.</div>
       ${caseLogHTML}
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#3B2E7E,#6E56CF)"><span class="ct" style="color:#fff">${ic('activity')} Weekly Ergonomics Pulse</span></div>
+      <div class="ch" style="background:linear-gradient(135deg,#4C1D95,#9B5DE5)"><span class="ct" style="color:#fff">🧘 Weekly Ergonomics Pulse</span></div>
       ${ergoHTML}
     </div>
 
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#8A4A00,#D97706)"><span class="ct" style="color:#fff">${ic('alert')} Missed Audits / Training Notes — Rotating Log</span></div>
+      <div class="ch" style="background:linear-gradient(135deg,#8A4A00,#F5A623)"><span class="ct" style="color:#fff">⚠️ Missed Audits / Training Notes — Rotating Log</span></div>
       <div class="top3-list" style="padding:14px 18px">${notesHTML}</div>
     </div>
 
     <div class="card">
-      <div class="ch"><span class="ct">${ic('edit')} Additional Notes &amp; Context</span></div>
+      <div class="ch"><span class="ct">📝 Additional Notes & Context</span></div>
       <div style="padding:18px">
         <textarea id="metric-notes" style="width:100%;min-height:120px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:12px;font-family:inherit;outline:none;resize:vertical;color:var(--ink2)" placeholder="Add context, trends, or notes about current metrics here…" onchange="updMetricNotes(this.value)">${S.metricNotes||''}</textarea>
       </div>
     </div>`;
   autoGrowAll();initDragLists();
 }
-function updMetric(k,v){S.metrics[k].value=v;saveS();toast('Metric saved','#0E8345');}
-function updMetricNotes(v){S.metricNotes=v;saveS();toast('Notes saved','#0E8345');}
+function updMetric(k,v){S.metrics[k].value=v;saveS();toast('Metric saved','#30D158');}
+function updMetricNotes(v){S.metricNotes=v;saveS();toast('Notes saved','#30D158');}
 
 // ── Tracked metric card: goal + this-month actual (editable), goal-band
 // visual, and a sparkline of recent history. Used for JSA Audits, LOTO
@@ -3074,7 +2825,7 @@ function trackedMetricCard(key,label,icon){
     </div>
     ${goalBand(actual,tm.goal,{unit:tm.unit,higherIsBetter:tm.higherIsBetter})}
     <div class="tmcard-spark">
-      <div>${sparkline(last6,{color:'#1859C8',goal:tm.goal})}</div>
+      <div>${sparkline(last6,{color:'#0A84FF',goal:tm.goal})}</div>
       <div class="tmcard-spark-lbl">Last ${last6.length}mo</div>
     </div>
   </div>`;
@@ -3084,7 +2835,7 @@ function updTrackedGoal(key,val){
   if(!tm) return;
   tm.goal=Number(val)||0;
   saveS();buildMetrics();
-  toast('Goal updated','#0E8345');
+  toast('Goal updated','#30D158');
 }
 function updTrackedActual(key,val){
   const tm=S.trackedMetrics[key];
@@ -3093,7 +2844,7 @@ function updTrackedActual(key,val){
   if(val===''){ delete tm.history[curMonthKey]; }
   else { tm.history[curMonthKey]=Number(val); }
   saveS();buildMetrics();
-  toast('Saved','#0E8345');
+  toast('Saved','#30D158');
 }
 function updErgoMonthly(field,val){
   const curMonthKey=new Date().toISOString().slice(0,7);
@@ -3101,37 +2852,37 @@ function updErgoMonthly(field,val){
   if(!em) return;
   em[field]=val===''?0:Number(val);
   saveS();buildMetrics();
-  toast('Saved','#0E8345');
+  toast('Saved','#30D158');
 }
 function updRolling(idx,field,val){
   const m=S.rollingTable[idx];
   if(field==='goal') m.goal=parseFloat(val)||0;
   else m[field]=val===''?null:parseInt(val);
   saveS();buildMetrics();
-  toast('Saved','#0E8345');
+  toast('Saved','#30D158');
 }
 function updRecInj(idx,val){
   S.recInjActual[idx]=val===''?null:parseFloat(val);
   saveS();buildMetrics();
-  toast('Saved','#0E8345');
+  toast('Saved','#30D158');
 }
 function updAudit(ai,mi,val){
   if(!S.auditData[ai]) return;
   S.auditData[ai].monthly[mi]=val===''?null:parseFloat(val);
   saveS();buildMetrics();
-  toast('Saved','#0E8345');
+  toast('Saved','#30D158');
 }
 function updMeeting(mi,monthIdx,which,val){
   if(!S.meetingData[mi]) return;
   S.meetingData[mi].monthly[monthIdx][which]=val===''?null:parseFloat(val);
   saveS();buildMetrics();
-  toast('Saved','#0E8345');
+  toast('Saved','#30D158');
 }
 function updRecByMonth(year,monthIdx,val){
   if(!S.recByMonth[year]) S.recByMonth[year]=MONTHS.map(()=>null);
   S.recByMonth[year][monthIdx]=val===''?null:parseFloat(val);
   saveS();buildMetrics();
-  toast('Saved','#0E8345');
+  toast('Saved','#30D158');
 }
 
 // ── I&I case log edits — every change recomputes all I&I rates and charts.
@@ -3140,13 +2891,13 @@ function updCase(id,field,val){
   if(c){c[field]=val;saveS();}
   buildMetrics();buildOverview();
   // Changing the type or date shifts the recordable counts that drive the rate.
-  if(field==='caseType'||field==='date') toast('Case updated — rates recalculated','#1859C8');
+  if(field==='caseType'||field==='date') toast('Case updated — rates recalculated','#0A7AFF');
 }
 function delCase(id){
   if(!confirm('Remove this case from the log?')) return;
   S.iiCases=S.iiCases.filter(c=>c.id!==id);
   saveS();buildMetrics();buildOverview();
-  toast('Case removed — rates recalculated','#D92D20');
+  toast('Case removed — rates recalculated','#FF453A');
 }
 function addCase(){
   const today=new Date().toISOString().slice(0,10);
@@ -3156,7 +2907,7 @@ function addCase(){
     accidentType:"",injuryType:"",bodyPart:"",detailBodyPart:"",desc:"",notes:""
   });
   saveS();buildMetrics();buildOverview();
-  toast('Recordable added — rates recalculated. Fill in details.','#0E8345');
+  toast('Recordable added — rates recalculated. Fill in details.','#30D158');
 }
 
 // ── Simple SVG line chart for goal vs actual series ──
@@ -3177,12 +2928,12 @@ function buildLineChart(labels,series,maxVal,decimals=1,opts={}){
     const y=padT+plotH-(g/4)*plotH;
     const val=(yMax*g/4).toFixed(decimals);
     svg+=`<line x1="${padL}" y1="${y}" x2="${w-padR}" y2="${y}" stroke="#F0F0F2" stroke-width="1"/>`;
-    svg+=`<text x="${padL-6}" y="${y+3}" text-anchor="end" font-size="9" fill="#667085">${val}</text>`;
+    svg+=`<text x="${padL-6}" y="${y+3}" text-anchor="end" font-size="9" fill="#8E8E93">${val}</text>`;
   }
   // x labels
   labels.forEach((lab,i)=>{
     const [x]=pt(i,0);
-    svg+=`<text x="${x}" y="${h-6}" text-anchor="middle" font-size="9" fill="#667085">${lab}</text>`;
+    svg+=`<text x="${x}" y="${h-6}" text-anchor="middle" font-size="9" fill="#8E8E93">${lab}</text>`;
   });
   // Optional trend line(s): least-squares linear regression over a series'
   // non-null points, drawn as a dashed line spanning the populated range.
@@ -3224,7 +2975,7 @@ function buildLineChart(labels,series,maxVal,decimals=1,opts={}){
   });
   svg+='</svg>';
   let legend=series.map(s=>`<div class="pie-legend-item"><div class="pie-legend-dot" style="background:${s.color}"></div>${s.name}</div>`).join('');
-  if(trendNames.length) legend+=`<div class="pie-legend-item"><div style="width:14px;height:0;border-top:2px dashed #667085;margin-right:2px"></div>Trend</div>`;
+  if(trendNames.length) legend+=`<div class="pie-legend-item"><div style="width:14px;height:0;border-top:2px dashed #8E8E93;margin-right:2px"></div>Trend</div>`;
   return svg+`<div class="pie-legend" style="flex-direction:row;gap:16px;margin-top:8px;justify-content:center;flex-wrap:wrap">${legend}</div>`;
 }
 
@@ -3252,7 +3003,7 @@ function buildTeamRoles(){
   }).join('');
 
   // RACI matrix table
-  const raciLevelColor={Primary:"#0E8345",Support:"#1859C8",Consult:"#D97706","Not involved":"#667085"};
+  const raciLevelColor={Primary:"#30D158",Support:"#0A84FF",Consult:"#FF9F0A","Not involved":"#8E8E93"};
   const raciCell=(v)=>`<span class="badge" style="background:${raciLevelColor[v]}1A;color:${raciLevelColor[v]};border:1px solid ${raciLevelColor[v]}33">${v}</span>`;
   const raciHTML=`<div class="twrap"><table><thead><tr><th style="min-width:280px">Responsibility Area</th><th>Steve (Compliance)</th><th>Victor (CI/Leader)</th><th>Mike (Ergo)</th></tr></thead><tbody>
     ${RACI_MATRIX.map(r=>`<tr>
@@ -3268,25 +3019,25 @@ function buildTeamRoles(){
       <div class="hero-top">
         <div>
           <div class="hero-title">Team Roles & Responsibilities</div>
-          <div class="hero-sub">GE Aerospace Muskegon EHS+S Organizational Structure · Rev 2026</div>
+          <div class="hero-sub">GE Aerospace Muskegon EHS Organizational Structure · Rev 2026</div>
         </div>
         <div class="hero-badge">Org chart from EHS Roles Rev2026</div>
       </div>
     </div>
     ${roleCards}
     <div class="card">
-      <div class="ch"><span class="ct">${ic('clipboard')} RACI Matrix — Responsibility Assignments</span><span class="cs">Primary · Support · Consult · Not involved</span></div>
+      <div class="ch"><span class="ct">📋 RACI Matrix — Responsibility Assignments</span><span class="cs">Primary · Support · Consult · Not involved</span></div>
       ${raciHTML}
     </div>`;
 }
 function buildLinks(){
   document.getElementById('pg-links').innerHTML=`
     <div class="card">
-      <div class="ch"><span class="ct">${ic('link')} Important Links &amp; Resources</span><button class="btn btn-primary btn-sm" onclick="openLinkModal()">${ic('plus')} Add Link</button></div>
+      <div class="ch"><span class="ct">🔗 Important Links & Resources</span><button class="btn btn-primary btn-sm" onclick="openLinkModal()">➕ Add Link</button></div>
       <div class="link-grid" id="link-grid">
         ${S.links.map((l,i)=>`
           <a class="link-card" href="${l.url}" target="_blank">
-            <div class="link-icon" style="background:${l.color}14;color:${l.color}">${linkIcon(l.icon)}</div>
+            <div class="link-icon" style="background:${l.color}1A">${l.icon}</div>
             <div style="flex:1;min-width:0">
               <div class="link-name">${l.name}</div>
               <div class="link-desc">${l.desc}</div>
@@ -3296,14 +3047,14 @@ function buildLinks(){
       </div>
     </div>`;
 }
-const LINK_ICONS=["link","clipboard","chart","building","lock","users","folder","plane","scale","leaf","shield","calendar","tool","alert","comment","trendUp","database","target"];
-const LINK_COLORS=["#1859C8","#0E8345","#6E56CF","#D97706","#D92D20","#0E9CD8","#4F5BD5","#667085"];
+const LINK_ICONS=["🔗","📋","📊","🏭","🔒","👥","📁","✈️","⚖️","🌱","🤝","🗂️","📈","🛡️","💬","📅","🧰","🚨"];
+const LINK_COLORS=["#0A84FF","#30D158","#BF5AF2","#FF9F0A","#FF453A","#64D2FF","#5856D6","#8E8E93"];
 function openLinkModal(){
   document.getElementById('lm-name').value='';
   document.getElementById('lm-url').value='';
   document.getElementById('lm-desc').value='';
   const iconRow=document.getElementById('lm-icons');
-  iconRow.innerHTML=LINK_ICONS.map((icn,i)=>`<div class="icon-sw${i===0?' sel':''}" data-icon="${icn}" onclick="selectLinkIcon('${icn}')">${linkIcon(icn)}</div>`).join('');
+  iconRow.innerHTML=LINK_ICONS.map((ic,i)=>`<div class="icon-sw${i===0?' sel':''}" data-icon="${ic}" onclick="selectLinkIcon('${ic}')">${ic}</div>`).join('');
   const colorRow=document.getElementById('lm-colors');
   colorRow.innerHTML=LINK_COLORS.map((c,i)=>`<div class="color-sw${i===0?' sel':''}" data-color="${c}" style="background:${c}" onclick="selectLinkColor('${c}')"></div>`).join('');
   document.getElementById('modal-link').classList.remove('hidden');
@@ -3319,13 +3070,13 @@ function saveNewLink(){
   const name=document.getElementById('lm-name').value.trim();
   const url=document.getElementById('lm-url').value.trim();
   const desc=document.getElementById('lm-desc').value.trim();
-  if(!name||!url){toast('Name and URL required','#D92D20');return;}
+  if(!name||!url){toast('Name and URL required','#FF453A');return;}
   const fullUrl=url.startsWith('http')?url:'https://'+url;
-  const icon=(document.querySelector('#lm-icons .icon-sw.sel')||{}).dataset?.icon||'link';
-  const color=(document.querySelector('#lm-colors .color-sw.sel')||{}).dataset?.color||'#1859C8';
+  const icon=(document.querySelector('#lm-icons .icon-sw.sel')||{}).dataset?.icon||'🔗';
+  const color=(document.querySelector('#lm-colors .color-sw.sel')||{}).dataset?.color||'#0A84FF';
   S.links.push({name,url:fullUrl,desc:desc||'Team resource',icon,color});
   saveS();closeModal('modal-link');buildLinks();
-  toast('Link added','#0E8345');
+  toast('Link added','#30D158');
 }
 function delLink(i){if(!confirm('Remove this link?')) return;S.links.splice(i,1);saveS();buildLinks();}
 
@@ -3354,20 +3105,20 @@ function buildPersonPage(key){
     <div style="padding:0 26px 16px">${pb(pct,10)}</div>
   </div>`;
 
-  const RBGS={DAILY:"#1859C8",WEEKLY:"#0E8345",MONTHLY:"#6E56CF",ONGOING:"#4F5BD5"};
+  const RBGS={DAILY:"#0A7AFF",WEEKLY:"#1FB55B",MONTHLY:"#9B5DE5",ONGOING:"#5B5BD6"};
   const REC_LABELS={DAILY:"DAILY",WEEKLY:"WEEKLY",MONTHLY:"MONTHLY",ONGOING:"RECURRING"};
   const REC_ORDER=['DAILY','WEEKLY','MONTHLY','ONGOING'];
-  const recHTML=REC_ORDER.filter(freq=>rec[freq]).map(freq=>{
-    const items=rec[freq];
+  const recHTML=REC_ORDER.map(freq=>{
+    const items=rec[freq]||[];
     return `<div class="rec-section">
-      <div class="rec-hdr" style="background:${RBGS[freq]||'#4F5BD5'}">
+      <div class="rec-hdr" style="background:${RBGS[freq]||'#5B5BD6'}">
         <span>${REC_LABELS[freq]||freq}</span>
         <button class="rec-add-btn" onclick="addRecItem('${key}','${freq}')" title="Add task">+</button>
       </div>
       <div class="rec-items" data-reclist="${key}|${freq}">
       ${items.map((item,idx)=>`<div class="rec-item" data-recidx="${idx}" data-reckey="${key}" data-recfreq="${freq}">
         <span class="drag-handle" draggable="true" data-rechandle="${key}|${freq}|${idx}" title="Drag to reorder">⠿</span>
-        <div class="rec-dot" style="background:${RBGS[freq]||'#4F5BD5'}"></div>
+        <div class="rec-dot" style="background:${RBGS[freq]||'#5B5BD6'}"></div>
         <textarea class="rec-text" rows="1" oninput="autoGrow(this)" data-rec="${key}-${freq}" onchange="updRecItem('${key}','${freq}',${idx},this.value)">${esc(item)}</textarea>
         <button class="rec-del" onclick="delRecItem('${key}','${freq}',${idx})" title="Remove">✕</button>
       </div>`).join('')}
@@ -3406,7 +3157,7 @@ function buildPersonPage(key){
           const slots=Math.max(1,ev.slots||1);
           const durLabel=slotsToLabel(slots);
           const evHeight=slots*36-6;
-          return `<div class="sg-ev" style="flex:1;min-width:0;background:${ev.color};border-left-color:${shade(ev.color)};min-height:${evHeight}px" onclick="event.stopPropagation();openSchedModal('${key}',${day},'${time}',${ev.id})"><div class="sg-ev-label">${dspl(ev.label)}</div><div class="sg-ev-time">${time} · ${durLabel}</div></div>`;
+          return `<div class="sg-ev" style="flex:1;min-width:0;background:${ev.color};border-left-color:${shade(ev.color)};min-height:${evHeight}px" onclick="event.stopPropagation();openSchedModal('${key}',${day},'${time}',${ev.id})"><div class="sg-ev-label">${esc(ev.label)}</div><div class="sg-ev-time">${time} · ${durLabel}</div></div>`;
         }).join('');
         const multi=evs.length>1;
         calHTML+=`<td class="sg-cell has-event" rowspan="${maxSlots}" onclick="openSchedModal('${key}',${day},'${time}')" title="${multi?evs.length+' events — tap a block to edit, or empty space to add another':''}"><div style="display:flex;gap:3px;height:100%;align-items:stretch">${evHTML}</div></td>`;
@@ -3420,38 +3171,38 @@ function buildPersonPage(key){
 
   // Top-level actions for this person; sub-actions render under their parents.
   const topActs=acts.filter(a=>!a.parentId);
-  const rowsActive=topActs.filter(a=>a.status!=='Complete').map(a=>buildRow(a)).join('')||'<tr><td colspan="10" style="padding:24px;text-align:center;color:var(--muted)">No active tasks — all caught up.</td></tr>';
-  const rowsDone=topActs.filter(a=>a.status==='Complete').map(a=>buildRow(a)).join('')||'<tr><td colspan="10" style="padding:24px;text-align:center;color:var(--muted)">No completed tasks yet.</td></tr>';
+  const rowsActive=topActs.filter(a=>a.status!=='Complete').map(a=>buildRow(a)).join('')||'<tr><td colspan="9" style="padding:24px;text-align:center;color:var(--muted)">🎉 No active tasks — all caught up!</td></tr>';
+  const rowsDone=topActs.filter(a=>a.status==='Complete').map(a=>buildRow(a)).join('')||'<tr><td colspan="9" style="padding:24px;text-align:center;color:var(--muted)">No completed tasks yet.</td></tr>';
   const doneCount=topActs.filter(a=>a.status==='Complete').length;
 
   document.getElementById('pg-'+key).innerHTML=`
     <div class="card">${bannerHTML}</div>
     <div style="display:flex;justify-content:flex-end">
-      <button class="btn btn-ghost" onclick="openInsights('${key}')">${ic('trendUp')} View Insights</button>
+      <button class="btn btn-ghost" onclick="openInsights('${key}')">📊 View Insights</button>
     </div>
     <div class="g2">
       <div class="card">
-        <div class="ch"><span class="ct">${ic('calendar')} Weekly Schedule</span><span class="cs">Tap any cell to add or edit</span></div>
+        <div class="ch"><span class="ct">📅 Weekly Schedule</span><span class="cs">Tap any cell to add or edit</span></div>
         ${calHTML}
       </div>
       <div class="card">
-        <div class="ch"><span class="ct">${ic('refresh')} Recurring Tasks</span><span class="cs">Tap + to add, ✕ to remove</span></div>
+        <div class="ch"><span class="ct">🔁 Recurring Tasks</span><span class="cs">Tap + to add, ✕ to remove</span></div>
         ${recHTML}
       </div>
     </div>
     <div class="card">
       <div class="ch">
-        <span class="ct">${ic('checkCircle')} My Action Items</span>
+        <span class="ct">✅ My Action Items</span>
         <div style="display:flex;gap:10px;align-items:center">
           <div class="seg-toggle">
             <button class="seg-btn${(personView[key]||'active')==='active'?' active':''}" id="seg-active-${key}" onclick="setActionView('${key}','active')">Active</button>
             <button class="seg-btn${personView[key]==='done'?' active':''}" id="seg-done-${key}" onclick="setActionView('${key}','done')">Completed (${doneCount})</button>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openAddModal('${t.name}')">${ic('plus')} Add Task</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddModal('${t.name}')">➕ Add Task</button>
         </div>
       </div>
-      <div class="info-bar">Edit any field inline &middot; drag the grip handle to reorder &middot; row tools add comments or delete.</div>
-      <div class="twrap"><table><thead><tr><th></th><th></th><th>Task</th><th>Owner</th><th>Status</th><th>Priority</th><th>Due / Target</th><th>Program</th><th>North Star</th><th>Actions</th></tr></thead>
+      <div class="info-bar">✏️ Edit any field inline. ⠿ Drag to reorder. 💬 Add comments. 🗑️ Delete tasks.</div>
+      <div class="twrap"><table><thead><tr><th></th><th>✔</th><th>Task</th><th>Owner</th><th>Status</th><th>Priority</th><th>Due / Target</th><th>Program</th><th>Actions</th></tr></thead>
         <tbody id="atbody-active-${key}" class="${(personView[key]||'active')==='active'?'':'hidden'}">${rowsActive}</tbody>
         <tbody id="atbody-done-${key}" class="${personView[key]==='done'?'':'hidden'}">${rowsDone}</tbody>
       </table></div>
@@ -3468,287 +3219,28 @@ function setActionView(key,view){
   autoGrowAll();initDragLists();
 }
 
-
-// ════════════════════════════════════════════════════
-// INCIDENT CASE DETAIL — extended medical / case-management
-// fields (additive & optional; mirrors Gensuite / Cority)
-// ════════════════════════════════════════════════════
-const CASE_FIELD_IDS=['caseNo','date','time','shift','caseType','caseStatus','treatment','daysAway','daysRestricted','dept','occupation','accidentType','injuryType','bodyPart','detailBodyPart','provider','desc','rootCause','correctiveAction','caOwner','caDue','notes'];
-let _caseDetailId=null;
-function openCaseDetail(id){
-  const c=S.iiCases.find(x=>x.id===id);
-  if(!c) return;
-  _caseDetailId=id;
-  CASE_FIELD_IDS.forEach(f=>{const el=document.getElementById('cd-'+f);if(el) el.value=(c[f]===null||c[f]===undefined)?'':c[f];});
-  document.getElementById('cd-title-date').textContent=(c.date||'No date')+' · '+(c.caseType||'Case');
-  document.getElementById('modal-case').classList.remove('hidden');
-}
-function updCaseField(field,val){
-  if(_caseDetailId===null) return;
-  updCase(_caseDetailId,field,val);
-}
-
-// ════════════════════════════════════════════════════
-// EXPORT CENTER — one-pager + CSV (Excel / Gensuite / Cority)
-// ════════════════════════════════════════════════════
-function _dl(content,mime,fname){
-  const blob=new Blob([content],{type:mime});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download=fname;
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-function _csv(rows){
-  const cell=v=>{v=(v===null||v===undefined)?'':String(v);return '"'+v.replace(/"/g,'""')+'"';};
-  return '﻿'+rows.map(r=>r.map(cell).join(',')).join('\r\n');
-}
-function _stamp(){return new Date().toISOString().slice(0,10);}
-
-function exportActionsCSV(){
-  const rows=[['ID','Task','Parent Plan','Owner','Status','Priority','Target Period','Specific Due Date','Program','North Star Goal','Comments / Updates']];
-  (S.actions||[]).forEach(a=>{
-    const parent=a.parentId?((S.actions.find(x=>x.id===a.parentId)||{}).task||''):'';
-    const cm=((S.comments||{})[a.id]||[]).map(c=>`[${c.time}] ${c.author}: ${c.text}`).join(' | ');
-    const hg=a.hoshin?((S.hoshin||[]).find(h=>h.id===a.hoshin)||null):null;
-    rows.push([a.id,a.task,parent,a.owner,a.status,a.pri,a.target,a.dueDate||'',a.prog,hg?hg.code+' — '+hg.title:'',cm]);
-  });
-  _dl(_csv(rows),'text/csv','ehs-action-plan-'+_stamp()+'.csv');
-  toast('Action plan exported — opens in Excel','#0E8345');
-}
-
-function exportCasesCSV(){
-  const rows=[['Case No','Date','Time','Shift','Case Type','OSHA Recordable','Site / Dept','Occupation','Accident Type','Injury Type','Body Part','Body Part Detail','Treatment Level','Days Away','Days Restricted','Case Status','Medical Provider','Description','Root Cause','Corrective Action','Corrective Action Owner','Corrective Action Due','Notes']];
-  [...(S.iiCases||[])].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).forEach(c=>{
-    rows.push([c.caseNo||'',c.date||'',c.time||'',c.shift||'',c.caseType||'',c.caseType==='Recordable'?'Yes':'No',c.dept||'',c.occupation||'',c.accidentType||'',c.injuryType||'',c.bodyPart||'',c.detailBodyPart||'',c.treatment||'',c.daysAway??'',c.daysRestricted??'',c.caseStatus||'',c.provider||'',c.desc||'',c.rootCause||'',c.correctiveAction||'',c.caOwner||'',c.caDue||'',c.notes||'']);
-  });
-  _dl(_csv(rows),'text/csv','ehs-incident-cases-'+_stamp()+'.csv');
-  toast('Incident cases exported — Gensuite / Cority-ready','#0E8345');
-}
-
-function exportMetricsCSV(){
-  const curYear=new Date().getFullYear();
-  const rows=[['GE Aerospace Muskegon — EHS+S Metrics Export','Generated '+_stamp()],[]];
-  rows.push(['ROLLING I&I RATE — '+curYear]);
-  rows.push(['Month','Hours Worked','Recordables (case log)','Monthly Rate','Goal']);
-  (S.rollingTable||[]).forEach((m,i)=>{
-    const inj=_recCountFromLog(curYear,i);
-    const rate=(m.hours&&m.hours>0)?(inj*200000/m.hours):null;
-    rows.push([m.month,m.hours??'',inj,rate===null?'':rate.toFixed(2),m.goal]);
-  });
-  rows.push([]);
-  rows.push(['AUDIT & INSPECTION COMPLETION']);
-  rows.push(['Audit Type','Cadence',...MONTHS]);
-  (S.auditData||[]).forEach(a=>rows.push([a.label,a.cadence,...a.monthly.map(v=>v??'')]));
-  rows.push([]);
-  rows.push(['MEETING CADENCE (actual/goal)']);
-  rows.push(['Meeting','Frequency',...MONTHS]);
-  (S.meetingData||[]).forEach(m=>rows.push([m.label,m.cadence,...m.monthly.map(c=>((c.a??'')+'/'+(c.g??'')))]));
-  rows.push([]);
-  rows.push(['GOAL-TRACKED METRICS — monthly history']);
-  Object.entries(S.trackedMetrics||{}).forEach(([k,tm])=>{
-    rows.push([k,'Goal: '+tm.goal+(tm.unit||'')]);
-    Object.keys(tm.history||{}).sort().forEach(mk=>rows.push(['',mk,tm.history[mk]]));
-  });
-  rows.push([]);
-  rows.push(['SCORECARD ENTRIES']);
-  Object.values(S.metrics||{}).forEach(m=>rows.push([m.label,m.value,m.sub]));
-  _dl(_csv(rows),'text/csv','ehs-metrics-'+_stamp()+'.csv');
-  toast('Metrics exported — opens in Excel','#0E8345');
-}
-
-function exportOnePager(){
-  const s=computeSnapshot();
-  const total=totalCount(),done=totalDone(),pct=total?Math.round(done/total*100):0;
-  const now=new Date();
-  const dstr=now.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  const f=v=>v===null||v===undefined?'—':(typeof v==='number'&&!Number.isInteger(v)?v.toFixed(2):v);
-  const rateCol=r=>r===null?'#667085':(r<=s.iiGoal?'#0E8345':'#D92D20');
-  const tile=(val,label,sub,col)=>`<div class="t"><div class="tv" style="color:${col||'#16181D'}">${val}</div><div class="tl">${label}</div>${sub?`<div class="ts">${sub}</div>`:''}</div>`;
-  const lag=[
-    tile(f(s.ytdRate),`I&I Rate — ${s.curYear} YTD`,`Goal ≤ ${s.iiGoal.toFixed(2)}`,rateCol(s.ytdRate)),
-    tile(f(s.r12Rate),'Rolling 12-Mo I&I Rate',`Goal ≤ ${s.iiGoal.toFixed(2)}`,rateCol(s.r12Rate)),
-    tile(s.recYTD,'Recordables — YTD',`${s.recPrior} full-year ${s.priorYear}`,s.recYTD<=s.recPrior?'#0E8345':'#D92D20'),
-    tile(f(s.daysSince),'Days Since Recordable','From I&I case log',s.daysSince===null?'#667085':(s.daysSince>=30?'#0E8345':'#D97706')),
-    tile(s.firstAidYTD,'First Aid — YTD','Non-recordable','#16181D'),
-  ].join('');
-  const lead=[
-    tile(f(s.preAct),'Pre-Flight Checks',s.preGoal?`Goal ${s.preGoal}/mo`:'',s.preAct!==undefined&&s.preGoal&&s.preAct>=s.preGoal?'#0E8345':'#16181D'),
-    tile(s.trainAct===undefined?'—':f(s.trainAct)+'%','Training Completion',s.trainGoal?`Goal ≥ ${s.trainGoal}%`:'',s.trainAct!==undefined&&s.trainGoal&&s.trainAct>=s.trainGoal?'#0E8345':'#16181D'),
-    tile(f(s.cellMonth),'Cell Inspections — Mo','Goal 68/mo','#16181D'),
-    tile(s.ergoAssess,'Ergo Assessments — Mo',`Goal ${s.ergoAssessGoal}/mo`,'#16181D'),
-    tile(s.nearMissYTD,'Near Miss — YTD','Reporting drives prevention','#16181D'),
-    tile(s.vppAvg+'%','VPP Readiness','Avg milestone progress',s.vppAvg>=75?'#0E8345':s.vppAvg>=40?'#D97706':'#D92D20'),
-  ].join('');
-  const teamRows=Object.values(TEAM).map(t=>{
-    const acts=actionsFor(t.name);
-    const d=acts.filter(a=>a.status==='Complete').length;
-    const b=acts.filter(a=>a.status==='Behind').length;
-    const r=acts.filter(a=>a.status==='At-Risk').length;
-    const p=acts.length?Math.round(d/acts.length*100):0;
-    return `<tr><td style="font-weight:700;color:${t.color}">${esc(t.name)}</td><td>${acts.length}</td><td>${d}</td><td style="color:${b>0?'#D92D20':'#0E8345'}">${b}</td><td style="color:${r>0?'#D97706':'#0E8345'}">${r}</td><td style="font-weight:800">${p}%</td></tr>`;
-  }).join('');
-  const vppRows=S.vpp.slice(0,6).map(m=>`<div class="vrow"><div class="vname">${dspl(m.ms)}</div><div class="vbar"><div class="vfill" style="width:${Math.min(m.pct,100)}%;background:${m.pct>=75?'#0E8345':m.pct>=40?'#D97706':'#D92D20'}"></div></div><div class="vpct">${m.pct}%</div></div>`).join('');
-  const top3Rows=getTop3(S.actions).map((a,i)=>`<div class="arow"><span class="arank">${i+1}</span><div><div class="aname">${esc(a.task)}</div><div class="ameta">${esc(a.owner)} · ${a.status} · ${a.pri} · Due ${a.target}</div></div></div>`).join('');
-  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>EHS+S Executive Summary — GE Aerospace Muskegon</title><style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;color:#16181D;background:#fff;padding:28px 32px;font-size:11px}
-  .hdr{background:linear-gradient(120deg,#00003D,#0A1E5E 60%,#123C8C);color:#fff;border-radius:12px;padding:18px 24px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-  .hdr h1{font-size:19px;font-weight:800;letter-spacing:-.4px}
-  .hdr .sub{font-size:10.5px;opacity:.75;margin-top:3px}
-  .hdr .ge{width:44px;height:44px;border:2px solid rgba(255,255,255,.7);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
-  .sec{margin-bottom:12px}
-  .sec-t{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;display:flex;align-items:center;gap:6px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
-  .t{border:1px solid #E3E5E9;border-radius:9px;padding:9px 11px;background:#FAFBFC}
-  .tv{font-size:19px;font-weight:800;letter-spacing:-.6px}
-  .tl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#8A9099;margin-top:4px}
-  .ts{font-size:8.5px;color:#A8AEB7;margin-top:1px}
-  .cols{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:12px}
-  .box{border:1px solid #E3E5E9;border-radius:10px;overflow:hidden}
-  .box-t{background:#F6F7F9;padding:7px 12px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:#3C4149;border-bottom:1px solid #E3E5E9}
-  table{width:100%;border-collapse:collapse;font-size:9.5px}
-  th{text-align:left;padding:5px 8px;font-size:8px;text-transform:uppercase;color:#8A9099;border-bottom:1px solid #EFF0F3}
-  td{padding:5px 8px;border-bottom:1px solid #F4F5F7}
-  .vrow{display:flex;align-items:center;gap:8px;padding:5px 12px;border-bottom:1px solid #F4F5F7}
-  .vname{flex:1;font-size:9.5px;font-weight:600;line-height:1.3}
-  .vbar{width:70px;height:6px;background:#EAECF0;border-radius:4px;overflow:hidden}
-  .vfill{height:6px;border-radius:4px}
-  .vpct{width:28px;text-align:right;font-weight:800;font-size:9.5px}
-  .arow{display:flex;gap:8px;padding:6px 12px;border-bottom:1px solid #F4F5F7;align-items:flex-start}
-  .arank{width:16px;height:16px;border-radius:5px;background:#D92D20;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-  .aname{font-size:9.5px;font-weight:700;line-height:1.3}
-  .ameta{font-size:8.5px;color:#8A9099;margin-top:1px}
-  .foot{margin-top:12px;text-align:center;font-size:8.5px;color:#8A9099;letter-spacing:.4px}
-  .no-print{position:fixed;top:14px;right:14px;background:#1859C8;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-  @media print{.no-print{display:none}body{padding:0}}
-  @page{size:letter;margin:10mm}
-  </style></head><body>
-  <button class="no-print" onclick="window.print()">Print / Save as PDF</button>
-  <div class="hdr">
-    <div><h1>EHS+S Executive Summary</h1><div class="sub">GE Aerospace Muskegon · ${dstr} · ${total} actions tracked · ${pct}% complete</div></div>
-    <div class="ge">GE</div>
-  </div>
-  <div class="sec"><div class="sec-t" style="color:#D92D20">Lagging Indicators — Outcomes</div><div class="grid">${lag}</div></div>
-  <div class="sec"><div class="sec-t" style="color:#1859C8">Leading Indicators — Prevention</div><div class="grid">${lead}</div></div>
-  <div class="cols">
-    <div class="box"><div class="box-t">Team Scorecard</div><table><thead><tr><th>Member</th><th>Total</th><th>Done</th><th>Behind</th><th>At-Risk</th><th>%</th></tr></thead><tbody>${teamRows}</tbody></table></div>
-    <div class="box"><div class="box-t">VPP Star Path — Oct 2026 Target</div>${vppRows}</div>
-    <div class="box"><div class="box-t">Top Actions Needing Attention</div>${top3Rows}</div>
-  </div>
-  <div class="foot">EHS+S TEAM COMMAND CENTER · GE AEROSPACE MUSKEGON · 2026 STRATEGIC ACTION PLAN · Generated from live team data</div>
-  </body></html>`;
-  const w=window.open('','_blank');
-  if(!w){toast('Pop-up blocked — allow pop-ups to open the report','#D92D20');return;}
-  w.document.write(html);
-  w.document.close();
-}
-
-
-// ════════════════════════════════════════════════════
-// NORTH STAR PAGE — Hoshin Kanri breakthrough objectives
-// ════════════════════════════════════════════════════
-function avgHoshinProgress(){
-  const hs=S.hoshin||[];
-  if(!hs.length) return 0;
-  return Math.round(hs.reduce((s,h)=>s+(h.pct||0),0)/hs.length);
-}
-function actionsForHoshin(id){return (S.actions||[]).filter(a=>a.hoshin===id);}
-function hoshinSelectCell(a){
-  const hs=S.hoshin||[];
-  return `<select class="esel" onchange="upd(${a.id},'hoshin',this.value)" title="Link this action to a North Star objective"><option value=""${!a.hoshin?' selected':''}>—</option>${hs.map(h=>`<option value="${h.id}"${a.hoshin===h.id?' selected':''}>${h.code}</option>`).join('')}</select>`;
-}
-function updHoshin(id,field,val){
-  const h=(S.hoshin||[]).find(x=>x.id===id);
-  if(!h) return;
-  h[field]=field==='pct'?Math.max(0,Math.min(100,+val||0)):val;
-  saveS();buildHoshin();buildOverview();
-  toast('North Star updated','#0E8345');
-}
-function buildHoshin(){
-  const hs=S.hoshin||[];
-  const avg=avgHoshinProgress();
-  const assigned=(S.actions||[]).filter(a=>a.hoshin).length;
-  const alignPct=S.actions.length?Math.round(assigned/S.actions.length*100):0;
-  const cards=hs.map(h=>{
-    const linked=actionsForHoshin(h.id);
-    const done=linked.filter(a=>a.status==='Complete').length;
-    const beh=linked.filter(a=>['Behind','At-Risk'].includes(a.status)).length;
-    const exec=linked.length?Math.round(done/linked.length*100):0;
-    const list=linked.length?linked.map(a=>`<div class="top3-item" style="cursor:default;padding:8px 12px"><div class="top3-text"><div class="top3-task" style="font-size:11.5px;font-weight:600">${esc(a.task)}</div><div class="top3-meta">${esc(a.owner)} &middot; ${pri(a.pri)} &middot; Due ${a.target}</div></div><span class="${bk(a.status)}">${a.status}</span></div>`).join('')
-      :`<div style="padding:14px;text-align:center;color:var(--muted);font-size:11px">No actions linked yet — use the <b>North Star</b> column on any action, or the field in the Add Task form.</div>`;
-    return `<div class="card">
-      <div class="ch" style="background:linear-gradient(120deg,#00003D 0%,${h.color} 160%)">
-        <span class="ct" style="color:#fff">${ic(h.icon)} <span style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:7px;padding:2px 8px;font-size:10px;letter-spacing:.5px">${h.code}</span> ${esc(h.title)}</span>
-        <select class="esel" style="color:#fff;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)" onchange="updHoshin('${h.id}','status',this.value)">${opts(STATUS_OPTS,h.status)}</select>
-      </div>
-      <div class="hoshin-grid" style="padding:16px 20px">
-        <div>
-          <div class="flbl" style="margin-bottom:4px">Breakthrough Aim</div>
-          <textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updHoshin('${h.id}','aim',this.value)">${esc(h.aim)}</textarea>
-          <div class="flbl" style="margin:10px 0 4px">3-Year Vision</div>
-          <textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updHoshin('${h.id}','vision',this.value)">${esc(h.vision)}</textarea>
-          <div class="flbl" style="margin:10px 0 4px">This Year's Focus</div>
-          <textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updHoshin('${h.id}','focus',this.value)">${esc(h.focus)}</textarea>
-          <div class="flbl" style="margin:10px 0 4px">How We Measure It — Leading KPIs</div>
-          <textarea class="etxt" rows="1" oninput="autoGrow(this)" onchange="updHoshin('${h.id}','kpi',this.value)">${esc(h.kpi)}</textarea>
-        </div>
-        <div>
-          <div class="flbl" style="margin-bottom:4px">Champion</div>
-          <select class="esel" onchange="updHoshin('${h.id}','owner',this.value)">${opts([...PERSON_OPTS,'Full Team'],h.owner)}</select>
-          <div class="flbl" style="margin:14px 0 4px">Strategic Progress — champion's judgment</div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-            <input type="number" min="0" max="100" value="${h.pct}" style="width:52px;border:1px solid var(--border2);border-radius:6px;padding:2px 5px;font-size:12px;font-weight:700;text-align:center;outline:none;color:${pc(h.pct)}" onchange="updHoshin('${h.id}','pct',this.value)"/><span style="font-size:11px;color:var(--muted)">%</span>
-          </div>
-          ${pb(h.pct,8)}
-          <div class="flbl" style="margin:16px 0 4px">Action Execution — computed live</div>
-          ${linked.length?`<div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--muted);margin-bottom:3px"><span>${done}/${linked.length} complete${beh?` &middot; <span style="color:var(--red)">${beh} behind / at-risk</span>`:''}</span><span style="color:${pc(exec)};font-weight:800">${exec}%</span></div>${pb(exec,8)}`:`<div class="gband-empty">Link actions to see execution roll up here</div>`}
-        </div>
-      </div>
-      <div style="border-top:1px solid var(--border)">
-        <div class="flbl" style="padding:12px 20px 2px">Linked Actions (${linked.length})</div>
-        <div class="top3-list" style="padding:8px 16px 16px">${list}</div>
-      </div>
-    </div>`;
-  }).join('');
-  document.getElementById('pg-hoshin').innerHTML=`
-    <div class="hero">
-      <div class="hero-top">
-        <div>
-          <div class="hero-title">North Star Objectives</div>
-          <div class="hero-sub">Hoshin Kanri breakthrough goals &middot; every action on this site ladders up to one of these &middot; ${alignPct}% of actions aligned so far</div>
-        </div>
-        <div class="hero-badge">AVG STRATEGIC PROGRESS &middot; ${avg}%</div>
-      </div>
-    </div>
-    <div class="card"><div class="info-bar" style="border-bottom:none;display:block;line-height:1.6">Catchball is the point — refine these aims with the team, then link every action through the <b>North Star</b> column on the Actions tab. Strategic progress is the champion's judgment; execution is computed live from linked actions. Every field below is editable and syncs for everyone.</div></div>
-    ${cards}`;
-  autoGrowAll();
-}
-
 // ════════════════════════════════════════════════════
 // NAVIGATION
 // ════════════════════════════════════════════════════
 const PAGES={
-  overview:{label:"Overview"},
-  hoshin:  {label:"North Star"},
-  metrics: {label:"Metrics"},
-  vpp:     {label:"VPP"},
-  actions: {label:"Actions"},
-  team:    {label:"Team Roles"},
+  overview:{label:"📊 Overview"},
+  metrics: {label:"📈 Metrics"},
+  vpp:     {label:"⭐ VPP"},
+  actions: {label:"✅ Actions"},
+  team:    {label:"👥 Team Roles"},
   VP:      {label:"Victor"},
   SW:      {label:"Steve"},
   MS:      {label:"Mike"},
   RD:      {label:"Rich"},
-  ZT:      {label:"Zach"},
-  links:   {label:"Links"},
+  JK:      {label:"Jakob"},
+  links:   {label:"🔗 Links"},
 };
 let curPage='overview';
 const pageBuilders={
-  overview:buildOverview,hoshin:buildHoshin,actions:buildActions,vpp:buildVPP,
+  overview:buildOverview,actions:buildActions,vpp:buildVPP,
   metrics:buildMetrics,team:buildTeamRoles,links:buildLinks,
   VP:()=>buildPersonPage('VP'),SW:()=>buildPersonPage('SW'),
-  MS:()=>buildPersonPage('MS'),RD:()=>buildPersonPage('RD'),ZT:()=>buildPersonPage('ZT'),
+  MS:()=>buildPersonPage('MS'),RD:()=>buildPersonPage('RD'),JK:()=>buildPersonPage('JK'),
 };
 function buildNav(){
   document.getElementById('nav').innerHTML=Object.entries(PAGES).map(([k,v])=>
@@ -3822,34 +3314,6 @@ function initPinLock(){
 // ════════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════════
-
-// ── Motion: scroll parallax + reveal-on-scroll (respects reduced-motion) ──
-const _reducedMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-let _revObs=null;
-if(!_reducedMotion&&typeof IntersectionObserver!=='undefined'){
-  _revObs=new IntersectionObserver(es=>es.forEach(e=>{
-    if(e.isIntersecting){e.target.classList.add('reveal-in');_revObs.unobserve(e.target);}
-  }),{threshold:0.05,rootMargin:'0px 0px -30px 0px'});
-}
-function initReveal(){
-  if(!_revObs) return;
-  document.querySelectorAll('main .card:not(.reveal-done)').forEach(el=>{
-    el.classList.add('reveal-done');
-    const r=el.getBoundingClientRect();
-    // Only animate content below the fold — visible content never flickers on rebuilds
-    if(r.top>window.innerHeight-30){el.classList.add('reveal-init');_revObs.observe(el);}
-  });
-}
-window.addEventListener('scroll',()=>{
-  const y=window.scrollY||0;
-  document.documentElement.style.setProperty('--pary',String(Math.min(y,600)));
-  const tb=document.getElementById('topbar');
-  if(tb) tb.classList.toggle('scrolled',y>8);
-},{passive:true});
-const _mainMo=new MutationObserver(()=>{clearTimeout(window.__revT);window.__revT=setTimeout(initReveal,80);});
-_mainMo.observe(document.querySelector('main'),{childList:true,subtree:true});
-initReveal();
-
 initPinLock();
 buildNav();
 setSyncIndicator('connecting');
@@ -3859,7 +3323,7 @@ setTimeout(()=>{
   if(!firebaseReady){
     const el=document.getElementById('loading-screen');
     if(el){
-      el.innerHTML='<div style="font-size:14px;color:#D92D20;font-weight:700;text-align:center;padding:0 24px">Could not connect to the shared database.<br/><span style="font-size:12px;color:#667085;font-weight:500">Check your internet connection and reload the page. If this keeps happening, the Firebase configuration may need attention.</span></div>';
+      el.innerHTML='<div style="font-size:14px;color:#FF453A;font-weight:700;text-align:center;padding:0 24px">⚠️ Could not connect to the shared database.<br/><span style="font-size:12px;color:#8E8E93;font-weight:500">Check your internet connection and reload the page. If this keeps happening, the Firebase configuration may need attention.</span></div>';
     }
     setSyncIndicator('error');
   }
